@@ -232,7 +232,7 @@ export function renderPoroIndexPage() {
 // Sub-renderers
 function renderChaptersCards(chapters, lang) {
   return chapters.map(ch => `
-    <div class="poro-chapter-card" data-title="${ch.titleBangla} ${ch.titleEnglish}">
+    <a href="#/${lang}/poro/${ch.id}" class="poro-chapter-card" data-title="${ch.titleBangla} ${ch.titleEnglish}" style="text-decoration: none; color: inherit; display: flex;">
       <div class="poro-ch-top">
         <span class="poro-ch-badge">
           ${ch.number === 0 ? (lang === 'bn' ? 'ভূমিকা' : 'Intro') : (ch.number === 19 ? (lang === 'bn' ? 'উপসংহার' : 'Outro') : `${lang === 'bn' ? 'অধ্যায়' : 'Chapter'} ${ch.number}`)}
@@ -252,7 +252,7 @@ function renderChaptersCards(chapters, lang) {
       </p>
 
       <div class="poro-ch-quote">
-        "“${ch.keyQuote}”"
+        “${ch.keyQuote}”
       </div>
 
       <div class="poro-ch-footer">
@@ -260,12 +260,12 @@ function renderChaptersCards(chapters, lang) {
           <span class="icon-3d-wrap" style="width: 14px; height: 14px;">${Icon3DDocument}</span>
           <span>${lang === 'bn' ? `পৃষ্ঠা ${ch.pages}` : `Pages ${ch.pages}`}</span>
         </span>
-        <a href="#/${lang}/poro/${ch.id}" class="btn btn-primary btn-sm">
+        <span class="btn btn-primary btn-sm">
           <span>${lang === 'bn' ? 'অধ্যায় পড়ুন' : 'Read Chapter'}</span>
           <span>→</span>
-        </a>
+        </span>
       </div>
-    </div>
+    </a>
   `).join('');
 }
 

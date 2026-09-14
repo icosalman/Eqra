@@ -6,6 +6,7 @@ import { t, getLang } from '../i18n.js';
 import { updateMeta } from '../utils/seo.js';
 import { PORO_CHAPTERS, PORO_BOOK_METADATA } from '../data/poroBookData.js';
 import { formatColorCodedQuran } from '../utils/quranColors.js';
+import { Icon3DReflection, Icon3DPoro } from '../components/Icons3D.js';
 
 export function renderPoroChapterPage(params) {
   const lang = getLang();
