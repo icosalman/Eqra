@@ -216,8 +216,7 @@ export function bindHeaderEvents() {
 }
 
 function renderSearchResults(results, container, modal) {
-  const lang = getLang();
-  const total = results.surahs.length + results.hadiths.length + results.duas.length + results.topics.length;
+  const total = results.surahs.length + results.hadiths.length + results.duas.length;
 
   if (total === 0) {
     container.innerHTML = `
