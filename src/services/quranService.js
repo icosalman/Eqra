@@ -119,13 +119,13 @@ export async function getSurah(surahNum) {
 }
 
 /**
- * Universal Search across Surahs, Hadith, Duas, and Topics
+ * Universal Search across Surahs, Hadith, and Duas
  * @param {string} query 
  * @param {string} lang 
  */
 export function searchAll(query, lang = 'bn') {
   if (!query || query.trim().length < 2) {
-    return { surahs: [], hadiths: [], duas: [], topics: [] };
+    return { surahs: [], hadiths: [], duas: [] };
   }
 
   const q = query.toLowerCase().trim();

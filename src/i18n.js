@@ -7,21 +7,20 @@ const translations = {
     // App
     appName: 'EQRA',
     appTagline: 'কুরআন পড়ুন, বুঝুন, চিন্তা করুন',
-    appDescription: 'বাংলা ও ইংরেজিতে কুরআন, হাদিস, দোয়া এবং কুরআনভিত্তিক জ্ঞান।',
+    appDescription: 'বাংলা ও ইংরেজিতে সম্পূর্ণ কুরআন, বিশুদ্ধ হাদিস এবং কুরআনের শ্রেষ্ঠ দোয়া সমগ্র।',
     
     // Navigation
     navHome: 'হোম',
     navQuran: 'কুরআন',
     navHadith: 'হাদিস',
     navDua: 'দোয়া',
-    navTopics: 'বিষয়সমূহ',
     navSearch: 'খুঁজুন',
     navAbout: 'সম্পর্কে',
     
     // Hero
     heroArabic: 'ٱقْرَأْ',
     heroTitle: 'পড়ুন। বুঝুন। চিন্তা করুন।',
-    heroSubtitle: 'কুরআন, হাদিস, দোয়া এবং কুরআনভিত্তিক জ্ঞান — বাংলা ও ইংরেজিতে।',
+    heroSubtitle: 'কুরআন, সহীহ হাদিস ও দোয়া সমগ্র — বাংলা ও ইংরেজিতে।',
     heroCTA: 'কুরআন পড়ুন',
     heroSearchCTA: 'কুরআন খুঁজুন',
     heroBadge: '🕌 বিসমিল্লাহির রাহমানির রাহীম',
@@ -60,10 +59,6 @@ const translations = {
     duaTitle: 'কুরআনের দোয়া',
     duaSubtitle: 'পবিত্র কুরআন থেকে দোয়া সমগ্র',
     
-    // Topics
-    topicsTitle: 'বিষয়সমূহ',
-    topicsSubtitle: 'কুরআনভিত্তিক জ্ঞান ও বিষয়ভিত্তিক আলোচনা',
-    
     // Search
     searchPlaceholder: 'কুরআন, হাদিস, দোয়া খুঁজুন...',
     searchResults: 'ফলাফল',
@@ -80,17 +75,15 @@ const translations = {
     // Sections
     popularSurahs: 'জনপ্রিয় সূরা',
     quranicDuas: 'কুরআনের দোয়া',
-    popularTopics: 'জনপ্রিয় বিষয়',
     featuredHadith: 'বৈশিষ্ট্যযুক্ত হাদিস',
     continueReading: 'পড়া চালিয়ে যান',
     recentlyAdded: 'সম্প্রতি যোগ করা হয়েছে',
-    relatedTopics: 'সম্পর্কিত বিষয়',
     relatedAyahs: 'সম্পর্কিত আয়াত',
     relatedHadith: 'সম্পর্কিত হাদিস',
     relatedDuas: 'সম্পর্কিত দোয়া',
     
     // Footer
-    footerAbout: 'EQRA একটি বাংলা ও ইংরেজি ভাষায় কুরআন জ্ঞান প্ল্যাটফর্ম।',
+    footerAbout: 'EQRA একটি আধুনিক দ্বিভাষিক আল-কুরআন, সহীহ হাদিস ও দোয়া প্ল্যাটফর্ম।',
     footerQuickLinks: 'দ্রুত লিংক',
     footerResources: 'রিসোর্স',
     footerConnect: 'যোগাযোগ',
@@ -100,7 +93,6 @@ const translations = {
     catFaith: 'ঈমান',
     catPersonal: 'ব্যক্তিগত জীবন',
     catSociety: 'সমাজ',
-    catContemporary: 'সমসাময়িক বিষয়',
     
     // Misc
     language: 'বাংলা',
@@ -115,21 +107,20 @@ const translations = {
     // App
     appName: 'EQRA',
     appTagline: 'Read. Understand. Reflect.',
-    appDescription: 'Quran, Hadith, Dua and Quran-based knowledge in Bangla and English.',
+    appDescription: 'Complete Quran, authentic Hadith, and Quranic Duas in Bangla and English.',
     
     // Navigation
     navHome: 'Home',
     navQuran: 'Quran',
     navHadith: 'Hadith',
     navDua: 'Dua',
-    navTopics: 'Topics',
     navSearch: 'Search',
     navAbout: 'About',
     
     // Hero
     heroArabic: 'ٱقْرَأْ',
     heroTitle: 'Read. Understand. Reflect.',
-    heroSubtitle: 'Quran, Hadith, Dua and Quran-based knowledge — in Bangla and English.',
+    heroSubtitle: 'Quran, Sahih Hadith, and Quranic Duas — in Bangla and English.',
     heroCTA: 'Read Quran',
     heroSearchCTA: 'Search Quran',
     heroBadge: '🕌 Bismillahir Rahmanir Raheem',
@@ -168,10 +159,6 @@ const translations = {
     duaTitle: 'Quranic Duas',
     duaSubtitle: 'Supplications from the Holy Quran',
     
-    // Topics
-    topicsTitle: 'Topics',
-    topicsSubtitle: 'Quran-based knowledge and topical discussions',
-    
     // Search
     searchPlaceholder: 'Search Quran, Hadith, Dua...',
     searchResults: 'Results',
@@ -188,17 +175,15 @@ const translations = {
     // Sections
     popularSurahs: 'Popular Surahs',
     quranicDuas: 'Quranic Duas',
-    popularTopics: 'Popular Topics',
     featuredHadith: 'Featured Hadith',
     continueReading: 'Continue Reading',
     recentlyAdded: 'Recently Added',
-    relatedTopics: 'Related Topics',
     relatedAyahs: 'Related Ayahs',
     relatedHadith: 'Related Hadith',
     relatedDuas: 'Related Duas',
     
     // Footer
-    footerAbout: 'EQRA is a bilingual Quran knowledge platform in Bangla and English.',
+    footerAbout: 'EQRA is a modern bilingual Quran, Hadith, and Dua platform.',
     footerQuickLinks: 'Quick Links',
     footerResources: 'Resources',
     footerConnect: 'Connect',
@@ -208,7 +193,6 @@ const translations = {
     catFaith: 'Faith',
     catPersonal: 'Personal Life',
     catSociety: 'Society',
-    catContemporary: 'Contemporary',
     
     // Misc
     language: 'English',

@@ -111,7 +111,7 @@ export function renderHeader() {
 
         <div id="search-results-box" style="flex: 1; overflow-y: auto; max-height: 50vh; display: flex; flex-direction: column; gap: var(--space-3);">
           <div style="text-align: center; color: var(--color-text-muted); padding: var(--space-8);">
-            ${lang === 'bn' ? 'সূরা, আয়াত, হাদিস, দোয়া অথবা বিষয় টাইপ করে অনুসন্ধান করুন...' : 'Type a Surah, Ayah, Hadith, Dua or Topic to search...'}
+            ${lang === 'bn' ? 'সূরা, আয়াত, হাদিস অথবা দোয়া অনুসন্ধান করুন...' : 'Type a Surah, Ayah, Hadith or Dua to search...'}
           </div>
         </div>
       </div>
@@ -202,7 +202,7 @@ export function bindHeaderEvents() {
         if (!val || val.length < 2) {
           searchResultsBox.innerHTML = `
             <div style="text-align: center; color: var(--color-text-muted); padding: var(--space-8);">
-              ${getLang() === 'bn' ? 'সূরা, আয়াত, হাদিস, দোয়া অথবা বিষয় টাইপ করে অনুসন্ধান করুন...' : 'Type a Surah, Ayah, Hadith, Dua or Topic to search...'}
+              ${getLang() === 'bn' ? 'সূরা, আয়াত, হাদিস অথবা দোয়া অনুসন্ধান করুন...' : 'Type a Surah, Ayah, Hadith or Dua to search...'}
             </div>
           `;
           return;
@@ -216,6 +216,7 @@ export function bindHeaderEvents() {
 }
 
 function renderSearchResults(results, container, modal) {
+  const lang = getLang();
   const total = results.surahs.length + results.hadiths.length + results.duas.length;
 
   if (total === 0) {

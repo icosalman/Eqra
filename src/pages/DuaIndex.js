@@ -50,7 +50,7 @@ export function renderDuaIndexPage() {
           <!-- Live Search Input -->
           <div class="search-bar" style="max-width: 100%; margin-bottom: var(--space-4);">
             <span class="search-icon">🔍</span>
-            <input type="text" id="dua-search-input" class="search-input" placeholder="${lang === 'bn' ? 'দোয়া খুঁজুন (যেমন: ক্ষমা, পিতা-মাতা, সন্তান, রিজিক, ইউনুস, মুসা)...' : 'Search duas by topic, prophet, or keyword...'}" />
+            <input type="text" id="dua-search-input" class="search-input" placeholder="${lang === 'bn' ? 'দোয়া খুঁজুন (যেমন: ক্ষমা, পিতা-মাতা, সন্তান, রিজিক, ইউনুস, মুসা)...' : 'Search duas by prophet, category, or keyword...'}" />
           </div>
 
           <!-- Category Chips -->

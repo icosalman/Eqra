@@ -28,8 +28,8 @@ export function renderHomePage() {
   updateMeta({
     title: lang === 'bn' ? 'EQRA — কুরআন পড়ুন, বুঝুন, চিন্তা করুন' : 'EQRA — Read. Understand. Reflect.',
     description: lang === 'bn' 
-      ? 'বাংলা ও ইংরেজিতে আল-কুরআন, বিশুদ্ধ সহীহ হাদিস, কুরআনের শ্রেষ্ঠ দোয়া এবং বিষয়ভিত্তিক ইসলামী জ্ঞান।' 
-      : 'Read Al-Quran, authentic Sahih Hadith, Quranic Duas and topic-based knowledge in Bangla and English.',
+      ? 'বাংলা ও ইংরেজিতে আল-কুরআন, বিশুদ্ধ সহীহ হাদিস এবং কুরআনের শ্রেষ্ঠ দোয়া সমগ্র।' 
+      : 'Read Al-Quran, authentic Sahih Hadith, and Quranic Duas in Bangla and English.',
     canonicalPath: `#/${lang}/`
   });
 
@@ -210,7 +210,7 @@ export function renderHomePage() {
             <div class="feature-card">
               <div class="feature-icon">🔍</div>
               <div class="feature-title">${lang === 'bn' ? 'তাত্ক্ষণিক বহুভাষিক সার্চ' : 'Instant Universal Search'}</div>
-              <div class="feature-desc">${lang === 'bn' ? 'বাংলা, ইংরেজি ও আরবিতে যেকোনো শব্দ ও বিষয় চোখের পলকে খুঁজুন।' : 'Search across Surahs, Ayahs, Hadith and Duas in Bangla, English and Arabic.'}</div>
+              <div class="feature-desc">${lang === 'bn' ? 'বাংলা, ইংরেজি ও আরবিতে যেকোনো সূরা, আয়াত, হাদিস ও দোয়া চোখের পলকে খুঁজুন।' : 'Search across Surahs, Ayahs, Hadith and Duas in Bangla, English and Arabic.'}</div>
             </div>
 
             <div class="feature-card">
