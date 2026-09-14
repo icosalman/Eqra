@@ -14,6 +14,7 @@ import { renderHomePage, bindHomeEvents } from './pages/Home.js';
 import { renderQuranIndexPage, bindQuranIndexEvents } from './pages/QuranIndex.js';
 import { renderSurahPage, bindSurahPageEvents } from './pages/SurahPage.js';
 import { renderHadithIndexPage, bindHadithEvents } from './pages/HadithIndex.js';
+import { renderHadithBookPage, bindHadithBookEvents } from './pages/HadithBookPage.js';
 import { renderDuaIndexPage, bindDuaEvents } from './pages/DuaIndex.js';
 import { renderTopicsIndexPage } from './pages/TopicsIndex.js';
 import { renderTopicDetailPage } from './pages/TopicDetail.js';
@@ -94,8 +95,11 @@ router
   // Surah Reader
   .on('/:lang/quran/:surah', (params, query) => loadPage(renderSurahPage, bindSurahPageEvents, params, query))
 
-  // Hadith
+  // Hadith Index
   .on('/:lang/hadith', (params, query) => loadPage(renderHadithIndexPage, bindHadithEvents, params, query))
+
+  // Hadith Book Reader (Bukhari 97 books & Muslim 56 books)
+  .on('/:lang/hadith/:collection/:book', (params, query) => loadPage(renderHadithBookPage, bindHadithBookEvents, params, query))
 
   // Dua
   .on('/:lang/dua', (params, query) => loadPage(renderDuaIndexPage, bindDuaEvents, params, query))
