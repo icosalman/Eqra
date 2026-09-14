@@ -7,6 +7,7 @@ import { t, getLang } from '../i18n.js';
 import { updateMeta } from '../utils/seo.js';
 import { BUKHARI_BOOKS, MUSLIM_BOOKS } from '../data/hadithBooksMetadata.js';
 import { HADITHS_DATA } from '../data/hadiths.js';
+import { Icon3DHadith, Icon3DSearch } from '../components/Icons3D.js';
 
 export function renderHadithIndexPage() {
   const lang = getLang();
@@ -31,8 +32,9 @@ export function renderHadithIndexPage() {
 
         <!-- Section Header -->
         <header style="margin-bottom: var(--space-8); text-align: center;">
-          <span class="section-badge badge-hadith" style="margin-bottom: var(--space-3);">
-            📜 ${lang === 'bn' ? 'বিশুদ্ধ সুন্নাহর পূর্ণাঙ্গ ভাণ্ডার' : 'Complete Authentic Sunnah'}
+          <span class="section-badge badge-hadith" style="margin-bottom: var(--space-3); display: inline-flex; align-items: center; gap: 6px;">
+            <span class="icon-3d-wrap" style="width: 20px; height: 20px;">${Icon3DHadith}</span>
+            <span>${lang === 'bn' ? 'বিশুদ্ধ সুন্নাহর পূর্ণাঙ্গ ভাণ্ডার' : 'Complete Authentic Sunnah'}</span>
           </span>
           <h1 style="font-size: var(--text-4xl); font-weight: 800; color: var(--color-text-primary); margin-bottom: var(--space-2);">
             ${t('hadithTitle')}
@@ -48,7 +50,7 @@ export function renderHadithIndexPage() {
         <div style="display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: center; justify-content: space-between; margin-bottom: var(--space-6); background: var(--color-surface); padding: var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
           <!-- Search input -->
           <div class="search-bar" style="max-width: 380px;">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon">${Icon3DSearch}</span>
             <input type="text" id="hadith-search-input" class="search-input" placeholder="${lang === 'bn' ? 'অধ্যায়ের নাম দিয়ে খুঁজুন (যেমন: ঈমান, সালাত)...' : 'Filter by book name (e.g., Faith, Prayer)...'}" />
           </div>
 

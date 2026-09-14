@@ -5,6 +5,14 @@
 import { t, getLang } from '../i18n.js';
 import { isBookmarked, toggleBookmark } from '../utils/storage.js';
 import { audioPlayer } from './AudioPlayer.js';
+import { 
+  renderAyah3DBadge, 
+  Icon3DAudio, 
+  Icon3DCopy, 
+  Icon3DStarFilled, 
+  Icon3DStarOutline, 
+  Icon3DShare 
+} from './Icons3D.js';
 
 /**
  * Render a single Ayah card
@@ -23,9 +31,7 @@ export function renderAyahCard(ayah, surah, displayMode = 'all') {
   return `
     <article class="ayah-card" id="ayah-${ayah.numberInSurah}">
       <div class="ayah-header">
-        <div class="ayah-number-badge">
-          ${ayah.numberInSurah}
-        </div>
+        ${renderAyah3DBadge(ayah.numberInSurah)}
 
         <div class="ayah-actions">
           <!-- Play Audio -->
@@ -34,7 +40,7 @@ export function renderAyahCard(ayah, surah, displayMode = 'all') {
             data-title="${lang === 'bn' ? surah.banglaName : surah.englishName} : ${t('ayahWord')} ${ayah.numberInSurah}" 
             title="${t('audioPlay')}" 
             aria-label="Play recitation">
-            🔊
+            <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DAudio}</span>
           </button>
 
           <!-- Copy Verse -->
@@ -42,7 +48,7 @@ export function renderAyahCard(ayah, surah, displayMode = 'all') {
             data-copy="${ayah.arabic}\n\n${ayah.bangla}\n\n${ayah.english}\n— [${surah.englishName} ${surah.number}:${ayah.numberInSurah}]" 
             title="${t('copy')}" 
             aria-label="Copy Ayah">
-            📋
+            <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DCopy}</span>
           </button>
 
           <!-- Bookmark Verse -->
@@ -56,9 +62,8 @@ export function renderAyahCard(ayah, surah, displayMode = 'all') {
             data-bangla="${encodeURIComponent(ayah.bangla)}"
             data-english="${encodeURIComponent(ayah.english)}"
             title="${t('bookmark')}" 
-            aria-label="Bookmark Ayah"
-            style="${bookmarked ? 'color: var(--color-quran);' : ''}">
-            ${bookmarked ? '★' : '☆'}
+            aria-label="Bookmark Ayah">
+            <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${bookmarked ? Icon3DStarFilled : Icon3DStarOutline}</span>
           </button>
 
           <!-- Web Share -->
@@ -67,7 +72,7 @@ export function renderAyahCard(ayah, surah, displayMode = 'all') {
             data-text="${ayah.arabic}\n\n${lang === 'bn' ? ayah.bangla : ayah.english}" 
             title="${t('share')}" 
             aria-label="Share Ayah">
-            📤
+            <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DShare}</span>
           </button>
         </div>
       </div>
@@ -127,9 +132,9 @@ export function bindAyahCardEvents(container) {
       if (text) {
         try {
           await navigator.clipboard.writeText(text);
-          const original = btn.textContent;
-          btn.textContent = '✓';
-          setTimeout(() => { btn.textContent = original; }, 1500);
+          const original = btn.innerHTML;
+          btn.innerHTML = `<span style="font-size: 14px; color: var(--color-success); font-weight: 700;">✓</span>`;
+          setTimeout(() => { btn.innerHTML = original; }, 1500);
         } catch {
           // fallback
         }
@@ -153,8 +158,8 @@ export function bindAyahCardEvents(container) {
       };
 
       const added = toggleBookmark(item);
-      btn.textContent = added ? '★' : '☆';
-      btn.style.color = added ? 'var(--color-quran)' : '';
+      btn.innerHTML = `<span class="icon-3d-wrap" style="width: 18px; height: 18px;">${added ? Icon3DStarFilled : Icon3DStarOutline}</span>`;
+      btn.classList.toggle('active', added);
     });
   });
 
@@ -173,10 +178,11 @@ export function bindAyahCardEvents(container) {
         }
       } else {
         await navigator.clipboard.writeText(`${title}\n\n${text}\n\n${url}`);
-        const original = btn.textContent;
-        btn.textContent = '✓';
-        setTimeout(() => { btn.textContent = original; }, 1500);
+        const original = btn.innerHTML;
+        btn.innerHTML = `<span style="font-size: 14px; color: var(--color-success); font-weight: 700;">✓</span>`;
+        setTimeout(() => { btn.innerHTML = original; }, 1500);
       }
     });
   });
 }
+

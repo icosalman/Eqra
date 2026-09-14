@@ -9,6 +9,17 @@ import { KEY_AYAHS } from '../data/popularSurahs.js';
 import { DUAS_DATA } from '../data/duas.js';
 import { HADITHS_DATA } from '../data/hadiths.js';
 import { audioPlayer } from '../components/AudioPlayer.js';
+import { 
+  renderSurah3DBadge, 
+  Icon3DQuran, 
+  Icon3DHadith, 
+  Icon3DDua, 
+  Icon3DSearch, 
+  Icon3DPlay, 
+  Icon3DAudio, 
+  Icon3DMoon,
+  Icon3DSparkle
+} from '../components/Icons3D.js';
 
 export function renderHomePage() {
   const lang = getLang();
@@ -53,15 +64,15 @@ export function renderHomePage() {
 
           <div class="hero-cta">
             <a href="#/${lang}/quran" class="btn btn-primary btn-lg">
-              <span>📖</span>
+              <span class="icon-3d-wrap" style="width: 22px; height: 22px;">${Icon3DQuran}</span>
               <span>${t('heroCTA')}</span>
             </a>
             <button class="btn btn-secondary btn-lg" id="hero-search-trigger">
-              <span>🔍</span>
+              <span class="icon-3d-wrap" style="width: 20px; height: 20px;">${Icon3DSearch}</span>
               <span>${t('heroSearchCTA')}</span>
             </button>
             <a href="#/${lang}/dua" class="btn btn-secondary btn-lg">
-              <span>🤲</span>
+              <span class="icon-3d-wrap" style="width: 22px; height: 22px;">${Icon3DDua}</span>
               <span>${t('navDua')}</span>
             </a>
           </div>
@@ -72,8 +83,9 @@ export function renderHomePage() {
           <div class="card section-card-quran animate-fade-in" style="background: linear-gradient(135deg, var(--color-surface), var(--color-quran-bg));">
             <div class="section-header" style="margin-bottom: var(--space-4);">
               <div>
-                <span class="section-badge badge-quran">
-                  ✨ ${lang === 'bn' ? 'প্রতিদিনের আয়াত ও প্রজ্ঞা' : 'Daily Reflection Verse'}
+                <span class="section-badge badge-quran" style="display: inline-flex; align-items: center; gap: 6px;">
+                  <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DSparkle}</span>
+                  <span>${lang === 'bn' ? 'প্রতিদিনের আয়াত ও প্রজ্ঞা' : 'Daily Reflection Verse'}</span>
                 </span>
                 <h2 class="section-title" style="margin-top: var(--space-2);">
                   ${lang === 'bn' ? featuredAyah.titleBangla : featuredAyah.titleEnglish}
@@ -83,8 +95,9 @@ export function renderHomePage() {
                 </div>
               </div>
 
-              <button class="btn btn-primary btn-sm" id="play-daily-ayah" data-audio="${featuredAyah.audio}">
-                <span>▶</span> <span>${t('audioPlay')}</span>
+              <button class="btn btn-primary btn-sm" id="play-daily-ayah" data-audio="${featuredAyah.audio}" style="display: inline-flex; align-items: center; gap: 6px;">
+                <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DPlay}</span>
+                <span>${t('audioPlay')}</span>
               </button>
             </div>
 
@@ -115,7 +128,10 @@ export function renderHomePage() {
         <section class="section">
           <div class="section-header">
             <div>
-              <span class="section-badge badge-quran">📖 ${t('navQuran')}</span>
+              <span class="section-badge badge-quran" style="display: inline-flex; align-items: center; gap: 6px;">
+                <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DQuran}</span>
+                <span>${t('navQuran')}</span>
+              </span>
               <h2 class="section-title" style="margin-top: var(--space-2);">${t('popularSurahs')}</h2>
               <div class="section-subtitle">${lang === 'bn' ? 'নিয়মিত পাঠ্য ও বরকতময় সূরাসমূহ' : 'Frequently recited and beloved Surahs'}</div>
             </div>
@@ -127,7 +143,7 @@ export function renderHomePage() {
           <div class="grid-4 stagger">
             ${popularSurahs.map(s => `
               <a href="#/${lang}/quran/${s.number}" class="surah-card">
-                <div class="surah-number">${s.number}</div>
+                ${renderSurah3DBadge(s.number)}
                 <div class="surah-info">
                   <div class="surah-name-local">${lang === 'bn' ? s.banglaName : s.englishName}</div>
                   <div class="surah-meta">${lang === 'bn' ? s.banglaMeaning : s.englishMeaning} • ${s.ayahs} ${t('ayahPlural')}</div>
@@ -144,7 +160,10 @@ export function renderHomePage() {
             <!-- Featured Dua -->
             <div class="card section-card-dua">
               <div class="section-header" style="margin-bottom: var(--space-3);">
-                <span class="section-badge badge-dua">🤲 ${t('navDua')}</span>
+                <span class="section-badge badge-dua" style="display: inline-flex; align-items: center; gap: 6px;">
+                  <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DDua}</span>
+                  <span>${t('navDua')}</span>
+                </span>
                 <a href="#/${lang}/dua" class="btn btn-ghost btn-sm" style="color: var(--color-dua);">
                   ${t('seeAll')} →
                 </a>
@@ -160,8 +179,9 @@ export function renderHomePage() {
               </p>
               <div style="display: flex; align-items: center; justify-content: space-between; font-size: var(--text-xs); color: var(--color-text-muted);">
                 <span>${featuredDua.reference}</span>
-                <button class="btn btn-ghost btn-sm play-dua-btn" data-audio="${featuredDua.audio}" style="color: var(--color-dua);">
-                  🔊 ${t('audioPlay')}
+                <button class="btn btn-ghost btn-sm play-dua-btn" data-audio="${featuredDua.audio}" style="color: var(--color-dua); display: inline-flex; align-items: center; gap: 4px;">
+                  <span class="icon-3d-wrap" style="width: 16px; height: 16px;">${Icon3DAudio}</span>
+                  <span>${t('audioPlay')}</span>
                 </button>
               </div>
             </div>
@@ -169,13 +189,16 @@ export function renderHomePage() {
             <!-- Featured Hadith -->
             <div class="card section-card-hadith">
               <div class="section-header" style="margin-bottom: var(--space-3);">
-                <span class="section-badge badge-hadith">📜 ${t('navHadith')}</span>
+                <span class="section-badge badge-hadith" style="display: inline-flex; align-items: center; gap: 6px;">
+                  <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DHadith}</span>
+                  <span>${t('navHadith')}</span>
+                </span>
                 <a href="#/${lang}/hadith" class="btn btn-ghost btn-sm" style="color: var(--color-hadith);">
                   ${t('seeAll')} →
                 </a>
               </div>
-              <div class="hadith-card-source">
-                <span>📖</span>
+              <div class="hadith-card-source" style="display: inline-flex; align-items: center; gap: 6px;">
+                <span class="icon-3d-wrap" style="width: 16px; height: 16px;">${Icon3DQuran}</span>
                 <span>${featuredHadith.reference} • ${lang === 'bn' ? featuredHadith.gradeBangla : featuredHadith.grade}</span>
               </div>
               <div style="font-family: var(--font-arabic); font-size: var(--text-base); color: var(--color-arabic); direction: rtl; text-align: right; line-height: 1.8; margin-bottom: var(--space-3);">
@@ -191,30 +214,37 @@ export function renderHomePage() {
           </div>
         </section>
 
-
         <!-- Platform Features Grid -->
         <section class="section">
           <div class="features-grid">
             <div class="feature-card">
-              <div class="feature-icon">✨</div>
+              <div class="feature-icon" style="display: flex; align-items: center; justify-content: center;">
+                <span class="icon-3d-wrap" style="width: 42px; height: 42px;">${Icon3DSparkle}</span>
+              </div>
               <div class="feature-title">${lang === 'bn' ? '১১৪টি সম্পূর্ণ সূরা' : 'Complete 114 Surahs'}</div>
               <div class="feature-desc">${lang === 'bn' ? 'কিং ফাহদ কমপ্লেক্সের বিশুদ্ধ উসমানী রসম ও প্রতি আয়াতভিত্তিক অনুবাদ।' : 'Authentic Uthmanic script with verse-by-verse bilingual translations.'}</div>
             </div>
 
             <div class="feature-card">
-              <div class="feature-icon">🔊</div>
+              <div class="feature-icon" style="display: flex; align-items: center; justify-content: center;">
+                <span class="icon-3d-wrap" style="width: 42px; height: 42px;">${Icon3DAudio}</span>
+              </div>
               <div class="feature-title">${lang === 'bn' ? 'উচ্চমানের অডিও তিলাওয়াত' : 'HQ Audio Recitation'}</div>
               <div class="feature-desc">${lang === 'bn' ? 'শায়েখ মিশারি রাশিদ আল-আফাসীর সুললিত কণ্ঠের স্পষ্ট তিলাওয়াত।' : 'Soulful crystal-clear recitation by Sheikh Mishary Rashid Al-Afasy.'}</div>
             </div>
 
             <div class="feature-card">
-              <div class="feature-icon">🔍</div>
+              <div class="feature-icon" style="display: flex; align-items: center; justify-content: center;">
+                <span class="icon-3d-wrap" style="width: 42px; height: 42px;">${Icon3DSearch}</span>
+              </div>
               <div class="feature-title">${lang === 'bn' ? 'তাত্ক্ষণিক বহুভাষিক সার্চ' : 'Instant Universal Search'}</div>
               <div class="feature-desc">${lang === 'bn' ? 'বাংলা, ইংরেজি ও আরবিতে যেকোনো সূরা, আয়াত, হাদিস ও দোয়া চোখের পলকে খুঁজুন।' : 'Search across Surahs, Ayahs, Hadith and Duas in Bangla, English and Arabic.'}</div>
             </div>
 
             <div class="feature-card">
-              <div class="feature-icon">🌙</div>
+              <div class="feature-icon" style="display: flex; align-items: center; justify-content: center;">
+                <span class="icon-3d-wrap" style="width: 42px; height: 42px;">${Icon3DMoon}</span>
+              </div>
               <div class="feature-title">${lang === 'bn' ? 'ডার্ক ও লাইট মোড' : 'Reading Friendly Modes'}</div>
               <div class="feature-desc">${lang === 'bn' ? 'রাত্রিকালীন পাঠের জন্য চোখের আরামদায়ক ডার্ক মোড এবং ফন্ট সাইজ নিয়ন্ত্রণ।' : 'Eye-comfort night theme, font resizing, and clean distraction-free reader.'}</div>
             </div>

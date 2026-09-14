@@ -6,6 +6,19 @@ import { t, getLang, setLang } from '../i18n.js';
 import { router } from '../router.js';
 import { getBookmarks } from '../utils/storage.js';
 import { searchAll } from '../services/quranService.js';
+import { 
+  renderSurah3DBadge,
+  Icon3DHome, 
+  Icon3DQuran, 
+  Icon3DHadith, 
+  Icon3DDua, 
+  Icon3DPoro, 
+  Icon3DBookmark, 
+  Icon3DSearch, 
+  Icon3DMoon, 
+  Icon3DSun, 
+  Icon3DAbout 
+} from './Icons3D.js';
 
 export function renderHeader() {
   const lang = getLang();
@@ -22,31 +35,31 @@ export function renderHeader() {
           <span class="header-logo-arabic">ٱقْرَأْ</span>
         </a>
 
-        <!-- Desktop Navigation -->
+        <!-- Desktop Navigation with 3D Icons -->
         <nav class="nav" aria-label="Main Navigation">
           <a href="#/${lang}/" class="nav-link ${currentPath === `#/${lang}/` || currentPath === `#/${lang}` ? 'active' : ''}">
-            <span class="nav-link-icon">🏠</span>
+            <span class="nav-link-icon-3d">${Icon3DHome}</span>
             <span>${t('navHome')}</span>
           </a>
           <a href="#/${lang}/quran" class="nav-link ${currentPath.includes('/quran') ? 'active' : ''}">
-            <span class="nav-link-icon">📖</span>
+            <span class="nav-link-icon-3d">${Icon3DQuran}</span>
             <span>${t('navQuran')}</span>
           </a>
           <a href="#/${lang}/hadith" class="nav-link ${currentPath.includes('/hadith') ? 'active' : ''}">
-            <span class="nav-link-icon">📜</span>
+            <span class="nav-link-icon-3d">${Icon3DHadith}</span>
             <span>${t('navHadith')}</span>
           </a>
           <a href="#/${lang}/dua" class="nav-link ${currentPath.includes('/dua') ? 'active' : ''}">
-            <span class="nav-link-icon">🤲</span>
+            <span class="nav-link-icon-3d">${Icon3DDua}</span>
             <span>${t('navDua')}</span>
           </a>
           <a href="#/${lang}/poro" class="nav-link ${currentPath.includes('/poro') ? 'active' : ''}">
-            <span class="nav-link-icon">📘</span>
+            <span class="nav-link-icon-3d">${Icon3DPoro}</span>
             <span>${t('navPoro')}</span>
             <span class="poro-nav-badge">NEW</span>
           </a>
           <a href="#/${lang}/bookmarks" class="nav-link ${currentPath.includes('/bookmarks') ? 'active' : ''}">
-            <span class="nav-link-icon">🔖</span>
+            <span class="nav-link-icon-3d">${Icon3DBookmark}</span>
             <span>${lang === 'bn' ? 'সংরক্ষিত' : 'Saved'}</span>
             ${bookmarksCount > 0 ? `<span class="section-badge badge-quran" style="padding: 1px 6px; font-size: 10px;">${bookmarksCount}</span>` : ''}
           </a>
@@ -54,8 +67,8 @@ export function renderHeader() {
 
         <!-- Header Actions: Search, Lang, Theme, Mobile -->
         <div class="header-actions">
-          <button class="btn-ghost" id="open-search-btn" title="${t('searchPlaceholder')}" aria-label="Search" style="font-size: 1.1rem; padding: 6px 10px;">
-            🔍
+          <button class="btn-ghost btn-search-3d" id="open-search-btn" title="${t('searchPlaceholder')}" aria-label="Search">
+            <span class="icon-3d-wrap">${Icon3DSearch}</span>
           </button>
 
           <!-- Language Switcher -->
@@ -65,8 +78,8 @@ export function renderHeader() {
           </div>
 
           <!-- Theme Toggle -->
-          <button class="theme-toggle" id="theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">
-            ${isDark ? '☀️' : '🌙'}
+          <button class="theme-toggle btn-theme-3d" id="theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">
+            <span class="icon-3d-wrap">${isDark ? Icon3DSun : Icon3DMoon}</span>
           </button>
 
           <!-- Mobile Menu Button -->
@@ -76,28 +89,28 @@ export function renderHeader() {
         </div>
       </div>
 
-      <!-- Mobile Navigation Drawer -->
+      <!-- Mobile Navigation Drawer with 3D Icons -->
       <div class="mobile-nav" id="mobile-drawer">
         <a href="#/${lang}/" class="mobile-nav-link">
-          <span>🏠</span> <span>${t('navHome')}</span>
+          <span class="nav-link-icon-3d">${Icon3DHome}</span> <span>${t('navHome')}</span>
         </a>
         <a href="#/${lang}/quran" class="mobile-nav-link">
-          <span>📖</span> <span>${t('navQuran')}</span>
+          <span class="nav-link-icon-3d">${Icon3DQuran}</span> <span>${t('navQuran')}</span>
         </a>
         <a href="#/${lang}/hadith" class="mobile-nav-link">
-          <span>📜</span> <span>${t('navHadith')}</span>
+          <span class="nav-link-icon-3d">${Icon3DHadith}</span> <span>${t('navHadith')}</span>
         </a>
         <a href="#/${lang}/dua" class="mobile-nav-link">
-          <span>🤲</span> <span>${t('navDua')}</span>
+          <span class="nav-link-icon-3d">${Icon3DDua}</span> <span>${t('navDua')}</span>
         </a>
         <a href="#/${lang}/poro" class="mobile-nav-link">
-          <span>📘</span> <span>${t('navPoro')} (${lang === 'bn' ? 'বই' : 'Book'})</span>
+          <span class="nav-link-icon-3d">${Icon3DPoro}</span> <span>${t('navPoro')} (${lang === 'bn' ? 'বই' : 'Book'})</span>
         </a>
         <a href="#/${lang}/bookmarks" class="mobile-nav-link">
-          <span>🔖</span> <span>${lang === 'bn' ? 'সংরক্ষিত আয়াত ও দোয়া' : 'Saved Bookmarks'} (${bookmarksCount})</span>
+          <span class="nav-link-icon-3d">${Icon3DBookmark}</span> <span>${lang === 'bn' ? 'সংরক্ষিত আয়াত ও দোয়া' : 'Saved Bookmarks'} (${bookmarksCount})</span>
         </a>
         <a href="#/${lang}/about" class="mobile-nav-link">
-          <span>ℹ️</span> <span>${t('navAbout')}</span>
+          <span class="nav-link-icon-3d">${Icon3DAbout}</span> <span>${t('navAbout')}</span>
         </a>
       </div>
     </header>
@@ -107,13 +120,13 @@ export function renderHeader() {
       <div class="card" style="width: 90%; max-width: 640px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; padding: var(--space-6); background: var(--color-surface); box-shadow: var(--shadow-xl);">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4);">
           <div style="font-weight: 700; font-size: var(--text-lg); color: var(--color-text-primary); display: flex; align-items: center; gap: var(--space-2);">
-            <span>🔍</span> <span>${lang === 'bn' ? 'কুরআন ও হাদিস অনুসন্ধান' : 'Search Quran & Hadith'}</span>
+            <span class="icon-3d-wrap">${Icon3DSearch}</span> <span>${lang === 'bn' ? 'কুরআন ও হাদিস অনুসন্ধান' : 'Search Quran & Hadith'}</span>
           </div>
           <button id="close-search-btn" class="btn-ghost" style="font-size: 1.25rem;">✕</button>
         </div>
 
         <div class="search-bar" style="max-width: 100%; margin-bottom: var(--space-4);">
-          <span class="search-icon">🔍</span>
+          <span class="search-icon">${Icon3DSearch}</span>
           <input type="text" id="modal-search-input" class="search-input" placeholder="${t('searchPlaceholder')}" autofocus autocomplete="off" />
         </div>
 
@@ -244,7 +257,7 @@ function renderSearchResults(results, container, modal) {
     results.surahs.forEach(s => {
       html += `
         <a href="#/${lang}/quran/${s.number}" class="surah-card search-item-link" style="padding: var(--space-2) var(--space-3);">
-          <div class="surah-number" style="width: 32px; height: 32px; font-size: 12px;">${s.number}</div>
+          ${renderSurah3DBadge(s.number, 36)}
           <div class="surah-info">
             <div style="font-weight: 600; color: var(--color-text-primary); font-size: var(--text-sm);">
               ${lang === 'bn' ? s.banglaName : s.englishName}
@@ -259,7 +272,7 @@ function renderSearchResults(results, container, modal) {
 
   // Poro Book Chapters
   if (results.poroChapters && results.poroChapters.length > 0) {
-    html += `<div style="font-size: var(--text-xs); font-weight: 700; color: var(--color-poro); text-transform: uppercase; margin-top: var(--space-2);">📘 ${lang === 'bn' ? 'পড়ো বইয়ের অধ্যায়' : 'Poro Chapters'} (${results.poroChapters.length})</div>`;
+    html += `<div style="font-size: var(--text-xs); font-weight: 700; color: var(--color-poro); text-transform: uppercase; margin-top: var(--space-2); display: flex; align-items: center; gap: 6px;"><span class="icon-3d-wrap" style="width: 16px; height: 16px;">${Icon3DPoro}</span> <span>${lang === 'bn' ? 'পড়ো বইয়ের অধ্যায়' : 'Poro Chapters'} (${results.poroChapters.length})</span></div>`;
     results.poroChapters.forEach(c => {
       html += `
         <a href="#/${lang}/poro/${c.id}" class="card search-item-link" style="padding: var(--space-3); border-left: 3px solid var(--color-poro);">

@@ -5,6 +5,7 @@
 
 import { t, getLang } from '../i18n.js';
 import { updateMeta } from '../utils/seo.js';
+import { Icon3DHadith, Icon3DFeedback } from '../components/Icons3D.js';
 
 export function renderAboutPage() {
   const lang = getLang();
@@ -39,8 +40,9 @@ export function renderAboutPage() {
 
         <!-- Authentic Sources Section -->
         <section class="section" style="padding-top: 0;">
-          <h2 style="font-size: var(--text-2xl); font-weight: 700; margin-bottom: var(--space-4);">
-            📜 ${lang === 'bn' ? 'ব্যবহৃত বিশুদ্ধ তথ্যসূত্র ও টেক্সট' : 'Authentic Data Sources'}
+          <h2 style="font-size: var(--text-2xl); font-weight: 700; margin-bottom: var(--space-4); display: flex; align-items: center; gap: 8px;">
+            <span class="icon-3d-wrap" style="width: 24px; height: 24px;">${Icon3DHadith}</span>
+            <span>${lang === 'bn' ? 'ব্যবহৃত বিশুদ্ধ তথ্যসূত্র ও টেক্সট' : 'Authentic Data Sources'}</span>
           </h2>
 
           <div style="display: flex; flex-direction: column; gap: var(--space-4);">
@@ -94,8 +96,9 @@ export function renderAboutPage() {
         <!-- Feedback Form -->
         <section class="section" style="padding-top: 0;">
           <div class="card" style="padding: var(--space-6);">
-            <h3 style="font-size: var(--text-xl); font-weight: 700; margin-bottom: var(--space-2);">
-              ✉️ ${lang === 'bn' ? 'মতামত বা সংশোধনী জানান' : 'Feedback & Suggestions'}
+            <h3 style="font-size: var(--text-xl); font-weight: 700; margin-bottom: var(--space-2); display: flex; align-items: center; gap: 8px;">
+              <span class="icon-3d-wrap" style="width: 24px; height: 24px;">${Icon3DFeedback}</span>
+              <span>${lang === 'bn' ? 'মতামত বা সংশোধনী জানান' : 'Feedback & Suggestions'}</span>
             </h3>
             <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-4);">
               ${lang === 'bn' ? 'কোনো অসঙ্গতি বা পরামর্শ থাকলে আমাদের লিখে জানাতে পারেন।' : 'Feel free to share your thoughts, feedback, or report any typo.'}

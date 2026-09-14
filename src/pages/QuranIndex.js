@@ -5,6 +5,7 @@
 import { t, getLang } from '../i18n.js';
 import { updateMeta } from '../utils/seo.js';
 import { SURAHS_METADATA } from '../data/quranMetadata.js';
+import { renderSurah3DBadge, Icon3DSearch } from '../components/Icons3D.js';
 
 export function renderQuranIndexPage() {
   const lang = getLang();
@@ -41,7 +42,7 @@ export function renderQuranIndexPage() {
         <div style="display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: center; justify-content: space-between; margin-bottom: var(--space-6); background: var(--color-surface); padding: var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
           <!-- Live Filter Input -->
           <div class="search-bar" style="max-width: 360px;">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon">${Icon3DSearch}</span>
             <input type="text" id="quran-search-input" class="search-input" placeholder="${lang === 'bn' ? 'সূরা নাম বা নম্বর দিয়ে খুঁজুন...' : 'Search by Surah name or number...'}" />
           </div>
 
@@ -79,7 +80,7 @@ function renderSurahCards(list, lang) {
 
   return list.map(s => `
     <a href="#/${lang}/quran/${s.number}" class="surah-card" data-number="${s.number}" data-type="${s.revelationType}">
-      <div class="surah-number">${s.number}</div>
+      ${renderSurah3DBadge(s.number)}
       <div class="surah-info">
         <div class="surah-name-local" style="font-weight: 600; font-size: var(--text-base);">
           ${lang === 'bn' ? s.banglaName : s.englishName}

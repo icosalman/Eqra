@@ -8,6 +8,14 @@ import { updateMeta } from '../utils/seo.js';
 import { DUAS_DATA } from '../data/duas.js';
 import { audioPlayer } from '../components/AudioPlayer.js';
 import { toggleBookmark, isBookmarked } from '../utils/storage.js';
+import { 
+  Icon3DDua, 
+  Icon3DSearch, 
+  Icon3DAudio, 
+  Icon3DCopy, 
+  Icon3DStarFilled, 
+  Icon3DStarOutline 
+} from '../components/Icons3D.js';
 
 export function renderDuaIndexPage() {
   const lang = getLang();
@@ -32,8 +40,9 @@ export function renderDuaIndexPage() {
 
         <!-- Page Header -->
         <header style="margin-bottom: var(--space-8); text-align: center;">
-          <span class="section-badge badge-dua" style="margin-bottom: var(--space-3);">
-            🤲 ${lang === 'bn' ? 'কুরআনের পূর্ণাঙ্গ দোয়া ভাণ্ডার' : 'Complete Quranic Supplications'}
+          <span class="section-badge badge-dua" style="margin-bottom: var(--space-3); display: inline-flex; align-items: center; gap: 6px;">
+            <span class="icon-3d-wrap" style="width: 20px; height: 20px;">${Icon3DDua}</span>
+            <span>${lang === 'bn' ? 'কুরআনের পূর্ণাঙ্গ দোয়া ভাণ্ডার' : 'Complete Quranic Supplications'}</span>
           </span>
           <h1 style="font-size: var(--text-4xl); font-weight: 800; color: var(--color-text-primary); margin-bottom: var(--space-2);">
             ${t('duaTitle')}
@@ -49,7 +58,7 @@ export function renderDuaIndexPage() {
         <div style="background: var(--color-surface); padding: var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--color-border); margin-bottom: var(--space-6);">
           <!-- Live Search Input -->
           <div class="search-bar" style="max-width: 100%; margin-bottom: var(--space-4);">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon">${Icon3DSearch}</span>
             <input type="text" id="dua-search-input" class="search-input" placeholder="${lang === 'bn' ? 'দোয়া খুঁজুন (যেমন: ক্ষমা, পিতা-মাতা, সন্তান, রিজিক, ইউনুস, মুসা)...' : 'Search duas by prophet, category, or keyword...'}" />
           </div>
 
@@ -118,12 +127,12 @@ function renderDuaCards(list, lang) {
 
           <div style="display: flex; gap: var(--space-2); align-items: center;">
             <button class="ayah-action-btn play-dua-btn" data-audio="${d.audio}" title="${t('audioPlay')}">
-              🔊
+              <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DAudio}</span>
             </button>
             <button class="ayah-action-btn copy-dua-btn" 
               data-copy="${d.arabic}\n\n${d.bangla}\n\n${d.english}\n— [${d.reference}]" 
               title="${t('copy')}">
-              📋
+              <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DCopy}</span>
             </button>
             <button class="ayah-action-btn bookmark-dua-btn ${bookmarked ? 'active' : ''}" 
               data-id="${bookmarkId}"
@@ -131,9 +140,8 @@ function renderDuaCards(list, lang) {
               data-arabic="${encodeURIComponent(d.arabic)}"
               data-bangla="${encodeURIComponent(d.bangla)}"
               data-english="${encodeURIComponent(d.english)}"
-              title="${t('bookmark')}"
-              style="${bookmarked ? 'color: var(--color-dua);' : ''}">
-              ${bookmarked ? '★' : '☆'}
+              title="${t('bookmark')}">
+              <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${bookmarked ? Icon3DStarFilled : Icon3DStarOutline}</span>
             </button>
           </div>
         </div>
@@ -178,41 +186,42 @@ function renderDuaCards(list, lang) {
   }).join('');
 }
 
-export function bindDuaEvents() {
-  const filterBtns = document.querySelectorAll('[data-dua-category]');
-  const listContainer = document.getElementById('duas-cards-list');
+export function bindDuaIndexEvents() {
   const searchInput = document.getElementById('dua-search-input');
-  const lang = getLang();
+  const listContainer = document.getElementById('duas-cards-list');
+  const catButtons = document.querySelectorAll('[data-dua-category]');
 
   let activeCategory = 'all';
   let searchTerm = '';
 
   function filterDuas() {
-    let filtered = DUAS_DATA;
+    let list = DUAS_DATA;
 
     if (activeCategory !== 'all') {
-      filtered = filtered.filter(d => d.category === activeCategory);
+      list = list.filter(d => d.category === activeCategory);
     }
 
     if (searchTerm) {
       const q = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(d => 
-        d.titleBangla.toLowerCase().includes(q) ||
-        d.titleEnglish.toLowerCase().includes(q) ||
-        d.bangla.toLowerCase().includes(q) ||
-        d.english.toLowerCase().includes(q) ||
-        d.arabic.includes(q) ||
-        d.reference.toLowerCase().includes(q)
-      );
+      list = list.filter(d => {
+        return (
+          d.titleBangla.toLowerCase().includes(q) ||
+          d.titleEnglish.toLowerCase().includes(q) ||
+          d.bangla.toLowerCase().includes(q) ||
+          d.english.toLowerCase().includes(q) ||
+          d.arabic.includes(q) ||
+          d.reference.toLowerCase().includes(q)
+        );
+      });
     }
 
-    listContainer.innerHTML = renderDuaCards(filtered, lang);
+    listContainer.innerHTML = renderDuaCards(list, getLang());
     bindDuaCardActions();
   }
 
-  filterBtns.forEach(btn => {
+  catButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
+      catButtons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activeCategory = btn.getAttribute('data-dua-category');
       filterDuas();
@@ -247,8 +256,9 @@ export function bindDuaEvents() {
         const text = btn.getAttribute('data-copy');
         if (text) {
           await navigator.clipboard.writeText(text);
-          btn.textContent = '✓';
-          setTimeout(() => { btn.textContent = '📋'; }, 1500);
+          const original = btn.innerHTML;
+          btn.innerHTML = `<span style="font-size: 14px; color: var(--color-success); font-weight: 700;">✓</span>`;
+          setTimeout(() => { btn.innerHTML = original; }, 1500);
         }
       });
     });
@@ -267,8 +277,8 @@ export function bindDuaEvents() {
         };
 
         const added = toggleBookmark(item);
-        btn.textContent = added ? '★' : '☆';
-        btn.style.color = added ? 'var(--color-dua)' : '';
+        btn.innerHTML = `<span class="icon-3d-wrap" style="width: 18px; height: 18px;">${added ? Icon3DStarFilled : Icon3DStarOutline}</span>`;
+        btn.classList.toggle('active', added);
       });
     });
 
@@ -291,3 +301,5 @@ export function bindDuaEvents() {
 
   bindDuaCardActions();
 }
+
+export const bindDuaEvents = bindDuaIndexEvents;

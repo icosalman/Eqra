@@ -5,6 +5,7 @@
 import { t, getLang } from '../i18n.js';
 import { updateMeta } from '../utils/seo.js';
 import { getBookmarks, toggleBookmark } from '../utils/storage.js';
+import { Icon3DBookmark } from '../components/Icons3D.js';
 
 export function renderBookmarksPage() {
   const lang = getLang();
@@ -27,8 +28,9 @@ export function renderBookmarksPage() {
         </nav>
 
         <header style="margin-bottom: var(--space-8); text-align: center;">
-          <span class="section-badge badge-quran" style="margin-bottom: var(--space-3);">
-            🔖 ${lang === 'bn' ? 'ব্যক্তিগত সংগ্রহ' : 'My Collection'}
+          <span class="section-badge badge-quran" style="margin-bottom: var(--space-3); display: inline-flex; align-items: center; gap: 6px;">
+            <span class="icon-3d-wrap" style="width: 20px; height: 20px;">${Icon3DBookmark}</span>
+            <span>${lang === 'bn' ? 'ব্যক্তিগত সংগ্রহ' : 'My Collection'}</span>
           </span>
           <h1 style="font-size: var(--text-4xl); font-weight: 800; color: var(--color-text-primary); margin-bottom: var(--space-2);">
             ${lang === 'bn' ? 'সংরক্ষিত আয়াত ও দোয়া' : 'Saved Bookmarks'}
@@ -41,7 +43,9 @@ export function renderBookmarksPage() {
         <div id="bookmarks-list" style="display: flex; flex-direction: column; gap: var(--space-4);">
           ${bookmarks.length === 0 ? `
             <div class="card" style="text-align: center; padding: var(--space-12);">
-              <div style="font-size: var(--text-4xl); margin-bottom: var(--space-3);">🔖</div>
+              <div style="display: flex; justify-content: center; margin-bottom: var(--space-4);">
+                <span class="icon-3d-wrap" style="width: 52px; height: 52px;">${Icon3DBookmark}</span>
+              </div>
               <h2 style="font-size: var(--text-xl); font-weight: 700; margin-bottom: var(--space-2);">
                 ${lang === 'bn' ? 'এখনো কোনো আয়াত বা দোয়া সংরক্ষণ করা হয়নি' : 'No Bookmarks Saved Yet'}
               </h2>

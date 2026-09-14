@@ -5,99 +5,109 @@
 import { t, getLang } from '../i18n.js';
 import { updateMeta } from '../utils/seo.js';
 import { 
-  PORO_BOOK_METADATA, 
   PORO_CHAPTERS, 
   PORO_LIFE_GUIDELINES, 
   PORO_SCIENCE_EXHIBITS, 
   PORO_METAPHORS 
 } from '../data/poroBookData.js';
+import { 
+  Icon3DPoro, 
+  Icon3DSparkle, 
+  Icon3DScience, 
+  Icon3DQuran, 
+  Icon3DMetaphor, 
+  Icon3DSearch, 
+  Icon3DTime, 
+  Icon3DDocument 
+} from '../components/Icons3D.js';
 
 export function renderPoroIndexPage() {
   const lang = getLang();
 
   updateMeta({
-    title: lang === 'bn' 
-      ? 'পড়ো — কুরআন নিয়ে আধুনিক মানুষের বৈজ্ঞানিক ও যৌক্তিক ভাবনা | EQRA' 
-      : 'Poro — Rational and Scientific Quranic Reflections | EQRA',
-    description: lang === 'bn'
-      ? 'ওমর আল জাবির রচিত এবং সরোবর প্রকাশন প্রকাশিত সাড়াজাগানো বই "পড়ো" এর সম্পূর্ণ ইন্টারঅ্যাক্টিভ সংস্করণ। বৈজ্ঞানিক যুক্তি, আধুনিক মনস্তত্ত্ব ও কুরআনের গভীর উপলব্ধি।'
-      : 'Interactive online edition of the acclaimed book "Poro" by Omar Al Zabir. Scientific reflections, modern psychology, and rational insights from the Quran.',
+    title: lang === 'bn' ? 'পড়ো — কুরআন অনুধাবন ও তাফসীর গ্রন্থ নির্যাস | EQRA' : 'Poro — Quranic Reflection & Tafsir Masterwork | EQRA',
+    description: lang === 'bn' 
+      ? 'কুরআন বোঝার শ্রেষ্ঠ সহায়ক "পড়ো" বইয়ের পূর্ণাঙ্গ ডিজিটাল সংস্করণ। সূরা ফাতিহার গভীর রহস্য, কুরআনের ৪৪টি জীবনবিধান, বিজ্ঞান ও আল-কুরআন।' 
+      : 'Comprehensive digital edition of "Poro" — A deep companion to understanding the Quran, Tafsir, Life Guidelines, and Science in the Light of Revelation.',
     canonicalPath: `#/${lang}/poro`
   });
 
   return `
     <div class="page poro-page">
       <div class="container">
-        <!-- Hero Section -->
+        <!-- Breadcrumbs -->
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <a href="#/${lang}/">${t('navHome')}</a>
+          <span class="breadcrumbs-separator">/</span>
+          <span class="breadcrumbs-current">${t('navPoro')}</span>
+        </nav>
+
+        <!-- Hero Showcase Banner -->
         <section class="poro-hero animate-fade-in-up">
           <div class="poro-hero-badge">
-            📘 ${lang === 'bn' ? 'বিশেষ প্রদর্শনী ও অধ্যয়ন' : 'Special Book Edition'} • ${PORO_BOOK_METADATA.publisher}
+            <span>✨</span>
+            <span>${lang === 'bn' ? 'বিশেষ কুরআন অধ্যয়ন সংস্করণ' : 'Special Quran Study Edition'}</span>
           </div>
-          
-          <div class="poro-hero-arabic">ٱقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ</div>
 
           <h1 class="poro-hero-title">
-            ${lang === 'bn' ? 'পড়ো' : 'PORO'}
+            ${lang === 'bn' ? 'পড়ো — কুরআনকে জানার এবং বোঝার বই' : 'PORO — Read & Understand The Quran'}
           </h1>
           
-          <p class="poro-hero-tagline">
-            ${lang === 'bn' ? PORO_BOOK_METADATA.subtitle : 'Rational and Scientific Quranic Reflections for Modern Minds'}
+          <p class="poro-hero-subtitle">
+            ${lang === 'bn' 
+              ? 'কুরআন কেন নাযিল হয়েছিল? কীভাবে এই মহাগ্রন্থ আমাদের জীবনের প্রতিটি সংকটে পথ দেখায়? সূরা ফাতিহার অদেখা রহস্য, কুরআনের বিজ্ঞান, এবং দৈনন্দিন জীবনের জীবন্ত জীবনবিধান।' 
+              : 'Why was the Quran revealed? How does this divine Book guide through personal struggles, modern challenges, science, and the spiritual secrets of Surah Al-Fatihah?'}
           </p>
 
-          <p class="poro-hero-desc">
-            ${lang === 'bn' ? PORO_BOOK_METADATA.coreMission : 'Not a traditional Tafsir, but an extraordinary synthesis of 21st-century science, rational inquiry, and deep Quranic wisdom.'}
-          </p>
-
-          <!-- Book Metadata Badges -->
-          <div class="poro-stats-row">
-            <div class="poro-stat-badge">
+          <!-- Book Statistics Ribbon -->
+          <div class="poro-stats-ribbon">
+            <div class="poro-stat-item">
               <span class="poro-stat-num">১৮</span>
               <span class="poro-stat-label">${lang === 'bn' ? 'মূল অধ্যায়' : 'Chapters'}</span>
             </div>
-            <div class="poro-stat-badge">
+            <div class="poro-stat-item">
               <span class="poro-stat-num">৪৪+</span>
               <span class="poro-stat-label">${lang === 'bn' ? 'জীবনবিধান' : 'Life Codes'}</span>
             </div>
-            <div class="poro-stat-badge">
+            <div class="poro-stat-item">
               <span class="poro-stat-num">১৯</span>
               <span class="poro-stat-label">${lang === 'bn' ? 'প্রামাণ্য তাফসীর' : 'Tafsir Sources'}</span>
             </div>
-            <div class="poro-stat-badge">
+            <div class="poro-stat-item">
               <span class="poro-stat-num">১৮৪</span>
               <span class="poro-stat-label">${lang === 'bn' ? 'পৃষ্ঠার নির্যাস' : 'Pages'}</span>
             </div>
           </div>
 
-          <!-- Quick Actions -->
           <div class="poro-hero-actions">
             <a href="#/${lang}/poro/ch-1" class="btn btn-primary btn-lg">
               <span>📖</span>
-              <span>${lang === 'bn' ? 'পড়া শুরু করুন' : 'Start Reading'}</span>
+              <span>${lang === 'bn' ? 'প্রথম অধ্যায় থেকে পড়া শুরু করুন' : 'Start Reading Chapter 1'}</span>
             </a>
-            <a href="#/${lang}/poro/ch-intro" class="btn btn-secondary btn-lg">
-              <span>ℹ️</span>
-              <span>${lang === 'bn' ? 'বইয়ের পরিচিতি' : 'Book Preface'}</span>
+            <a href="#tab-lifecode" class="btn btn-secondary btn-lg" id="btn-jump-guidelines">
+              <span>🌟</span>
+              <span>${lang === 'bn' ? '৪৪টি জীবনবিধান দেখুন' : 'Explore Life Codes'}</span>
             </a>
           </div>
         </section>
 
-        <!-- Interactive Tabs Navigation -->
+        <!-- Interactive Tabs Navigation with 3D Icons -->
         <div class="poro-tabs-nav-wrap">
           <div class="poro-tabs-nav" id="poro-tabs-nav">
             <button class="poro-tab-btn active" data-tab="chapters">
-              <span>📑</span> <span>${lang === 'bn' ? 'সূচিপত্র ও অধ্যায়' : 'Chapters'}</span>
+              <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DPoro}</span> <span>${lang === 'bn' ? 'সূচিপত্র ও অধ্যায়' : 'Chapters'}</span>
             </button>
             <button class="poro-tab-btn" data-tab="lifecode">
-              <span>🌟</span> <span>${lang === 'bn' ? 'কুরআনের জীবনবিধান' : 'Life Guidelines'}</span>
+              <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DSparkle}</span> <span>${lang === 'bn' ? 'কুরআনের জীবনবিধান' : 'Life Guidelines'}</span>
             </button>
             <button class="poro-tab-btn" data-tab="science">
-              <span>🔬</span> <span>${lang === 'bn' ? 'বিজ্ঞান ও যুক্তি' : 'Science & Wonders'}</span>
+              <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DScience}</span> <span>${lang === 'bn' ? 'বিজ্ঞান ও যুক্তি' : 'Science & Wonders'}</span>
             </button>
             <button class="poro-tab-btn" data-tab="fatiha">
-              <span>📖</span> <span>${lang === 'bn' ? 'সূরা ফাতিহার রহস্য' : 'Surah Fatiha'}</span>
+              <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DQuran}</span> <span>${lang === 'bn' ? 'সূরা ফাতিহার রহস্য' : 'Surah Fatiha'}</span>
             </button>
             <button class="poro-tab-btn" data-tab="metaphors">
-              <span>🎭</span> <span>${lang === 'bn' ? 'অবিস্মরণীয় উপমা' : 'Iconic Metaphors'}</span>
+              <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DMetaphor}</span> <span>${lang === 'bn' ? 'অবিস্মরণীয় উপমা' : 'Iconic Metaphors'}</span>
             </button>
           </div>
         </div>
@@ -219,7 +229,10 @@ function renderChaptersCards(chapters, lang) {
         <span class="poro-ch-badge">
           ${ch.number === 0 ? (lang === 'bn' ? 'ভূমিকা' : 'Intro') : (ch.number === 19 ? (lang === 'bn' ? 'উপসংহার' : 'Outro') : `${lang === 'bn' ? 'অধ্যায়' : 'Chapter'} ${ch.number}`)}
         </span>
-        <span class="poro-ch-time">⏱️ ${ch.readTimeMinutes} ${lang === 'bn' ? 'মিনিট' : 'min'}</span>
+        <span class="poro-ch-time" style="display: inline-flex; align-items: center; gap: 4px;">
+          <span class="icon-3d-wrap" style="width: 14px; height: 14px;">${Icon3DTime}</span>
+          <span>${ch.readTimeMinutes} ${lang === 'bn' ? 'মিনিট' : 'min'}</span>
+        </span>
       </div>
 
       <h3 class="poro-ch-title">
@@ -235,7 +248,10 @@ function renderChaptersCards(chapters, lang) {
       </div>
 
       <div class="poro-ch-footer">
-        <span class="poro-ch-pages">📄 ${lang === 'bn' ? `পৃষ্ঠা ${ch.pages}` : `Pages ${ch.pages}`}</span>
+        <span class="poro-ch-pages" style="display: inline-flex; align-items: center; gap: 4px;">
+          <span class="icon-3d-wrap" style="width: 14px; height: 14px;">${Icon3DDocument}</span>
+          <span>${lang === 'bn' ? `পৃষ্ঠা ${ch.pages}` : `Pages ${ch.pages}`}</span>
+        </span>
         <a href="#/${lang}/poro/${ch.id}" class="btn btn-primary btn-sm">
           <span>${lang === 'bn' ? 'অধ্যায় পড়ুন' : 'Read Chapter'}</span>
           <span>→</span>

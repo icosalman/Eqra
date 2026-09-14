@@ -7,19 +7,25 @@ import { t, getLang } from '../i18n.js';
 import { updateMeta, breadcrumbSchema, setStructuredData } from '../utils/seo.js';
 import { getSurah, getSurahMeta } from '../services/quranService.js';
 import { renderAyahCard, bindAyahCardEvents } from '../components/AyahCard.js';
-import { audioPlayer } from '../components/AudioPlayer.js';
 import { getSettings, saveSettings } from '../utils/storage.js';
+import { audioPlayer } from '../components/AudioPlayer.js';
+import { 
+  renderSurah3DBadge, 
+  Icon3DAudio, 
+  Icon3DQuran 
+} from '../components/Icons3D.js';
 
-export async function renderSurahPage(params) {
+export function renderSurahPage(params) {
   const lang = getLang();
-  const surahIdentifier = params.surah || 1;
-  const meta = getSurahMeta(surahIdentifier);
+  const surahNum = parseInt(params.surah || 1, 10);
+  const meta = getSurahMeta(surahNum);
 
   if (!meta) {
     return `
       <div class="page">
-        <div class="container" style="text-align: center; padding: var(--space-16) 0;">
-          <h2>${t('notFound')}</h2>
+        <div class="container" style="text-align: center; padding: var(--space-16);">
+          <h1>${t('error')}</h1>
+          <p style="color: var(--color-text-secondary); margin-top: var(--space-2);">Surah not found</p>
           <a href="#/${lang}/quran" class="btn btn-primary" style="margin-top: var(--space-4);">${t('goBack')}</a>
         </div>
       </div>
@@ -27,8 +33,8 @@ export async function renderSurahPage(params) {
   }
 
   updateMeta({
-    title: `${lang === 'bn' ? meta.banglaName : meta.englishName} (${meta.name}) — অর্থ ও অনুবাদ | EQRA`,
-    description: `${meta.englishName} (${meta.banglaName}) — ${meta.ayahs} ${t('ayahPlural')}, ${meta.type}। আরবি টেক্সট, বাংলা ও ইংরেজি অনুবাদ এবং অডিও তিলাওয়াত।`,
+    title: `${lang === 'bn' ? meta.banglaName : meta.englishName} (${meta.name}) — আয়াত ও অনুবাদ | EQRA`,
+    description: `সূরা ${meta.banglaName} (${meta.englishName}): ${meta.ayahs} আয়াত, ${meta.banglaMeaning}। কিং ফাহদ কমপ্লেক্সের বিশুদ্ধ আরবি, বাংলা ও ইংরেজি অনুবাদ।`,
     canonicalPath: `#/${lang}/quran/${meta.number}`
   });
 
@@ -57,8 +63,11 @@ export async function renderSurahPage(params) {
           <span class="breadcrumbs-current">${lang === 'bn' ? meta.banglaName : meta.englishName}</span>
         </nav>
 
-        <!-- Surah Header Card -->
+        <!-- Surah Header Card with 3D Medallion -->
         <header class="card animate-fade-in" style="text-align: center; padding: var(--space-8); margin-bottom: var(--space-6); background: linear-gradient(180deg, var(--color-surface), var(--color-quran-bg));">
+          <div style="display: flex; justify-content: center; margin-bottom: var(--space-4);">
+            ${renderSurah3DBadge(meta.number, 58)}
+          </div>
           <span class="section-badge badge-quran" style="margin-bottom: var(--space-3);">
             ${lang === 'bn' ? meta.banglaType : meta.type} • ${meta.ayahs} ${t('ayahPlural')} • ${t('juzWord')} ${meta.juz}
           </span>
@@ -74,12 +83,12 @@ export async function renderSurahPage(params) {
 
           <!-- Actions: Listen to Whole Surah -->
           <div style="display: flex; align-items: center; justify-content: center; gap: var(--space-3); flex-wrap: wrap;">
-            <button class="btn btn-primary" id="play-full-surah-btn">
-              <span>🔊</span>
+            <button class="btn btn-primary" id="play-full-surah-btn" style="display: inline-flex; align-items: center; gap: 8px;">
+              <span class="icon-3d-wrap" style="width: 20px; height: 20px;">${Icon3DAudio}</span>
               <span>${lang === 'bn' ? 'সম্পূর্ণ সূরা শুনুন' : 'Listen to Full Surah'}</span>
             </button>
-            <a href="#/${lang}/quran" class="btn btn-secondary">
-              <span>📑</span>
+            <a href="#/${lang}/quran" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 8px;">
+              <span class="icon-3d-wrap" style="width: 20px; height: 20px;">${Icon3DQuran}</span>
               <span>${lang === 'bn' ? 'সূরার তালিকা' : 'Surah List'}</span>
             </a>
           </div>
@@ -141,8 +150,8 @@ export async function renderSurahPage(params) {
             </a>
           ` : '<div></div>'}
 
-          <a href="#/${lang}/quran" class="btn btn-ghost">
-            <span>📖</span>
+          <a href="#/${lang}/quran" class="btn btn-ghost" style="display: inline-flex; align-items: center; gap: 6px;">
+            <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DQuran}</span>
             <span>${lang === 'bn' ? 'সূচিপত্র' : 'Index'}</span>
           </a>
 

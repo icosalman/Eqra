@@ -81,22 +81,15 @@ export function renderPoroChapterPage(params) {
             </div>
           ` : ''}
 
-          <!-- Chapter Summary Quote -->
-          <div class="poro-ch-pullquote">
-            <div class="quote-mark">“</div>
-            <p>${chapter.keyQuote}</p>
-          </div>
+          <!-- Core Chapter Sections -->
+          <div class="poro-sections-flow">
+            ${chapter.sections.map((sec, idx) => `
+              <div class="poro-section-block" id="sec-${idx}">
+                ${sec.heading ? `<h2 class="poro-sec-heading">${sec.heading}</h2>` : ''}
+                <div class="poro-sec-body">
+                  ${formatContentParagraphs(sec.content)}
+                </div>
 
-          <!-- Chapter Sections Content -->
-          <div class="poro-article-body">
-            <div class="poro-paragraph-lead">
-              ${chapter.summary}
-            </div>
-
-            ${chapter.sections.map(sec => `
-              <div class="poro-section-block">
-                ${sec.heading ? `<h2 class="poro-section-h2">${sec.heading}</h2>` : ''}
-                ${sec.content ? `<div class="poro-section-text">${formatContentParagraphs(sec.content)}</div>` : ''}
                 ${sec.bullets ? `
                   <ul class="poro-bullets-list">
                     ${sec.bullets.map(b => `<li>${b}</li>`).join('')}
@@ -109,8 +102,8 @@ export function renderPoroChapterPage(params) {
           <!-- Reflection Box: চিন্তার খোরাক -->
           ${chapter.reflection ? `
             <div class="poro-reflection-box">
-              <div class="poro-refl-header">
-                <span class="poro-refl-icon">🤔</span>
+              <div class="poro-refl-header" style="display: flex; align-items: center; gap: 8px;">
+                <span class="icon-3d-wrap" style="width: 24px; height: 24px;">${Icon3DReflection}</span>
                 <span class="poro-refl-title">${lang === 'bn' ? 'চিন্তার খোরাক (ব্যক্তিগত আত্মসমালোচনা)' : 'Self-Reflection Takeaway'}</span>
               </div>
               <p class="poro-refl-text">
@@ -129,8 +122,9 @@ export function renderPoroChapterPage(params) {
             ` : '<div style="flex:1;"></div>'}
 
             <div class="poro-nav-center">
-              <a href="#/${lang}/poro" class="btn btn-secondary btn-sm">
-                📑 ${lang === 'bn' ? 'সূচিপত্র' : 'All Chapters'}
+              <a href="#/${lang}/poro" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+                <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DPoro}</span>
+                <span>${lang === 'bn' ? 'সূচিপত্র' : 'All Chapters'}</span>
               </a>
             </div>
 

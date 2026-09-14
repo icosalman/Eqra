@@ -7,6 +7,12 @@ import { t, getLang } from '../i18n.js';
 import { updateMeta, breadcrumbSchema, setStructuredData } from '../utils/seo.js';
 import { getHadithBook, getBookMeta, getHadithBooks } from '../services/hadithService.js';
 import { toggleBookmark, isBookmarked } from '../utils/storage.js';
+import { 
+  Icon3DHadith, 
+  Icon3DCopy, 
+  Icon3DStarFilled, 
+  Icon3DStarOutline 
+} from '../components/Icons3D.js';
 
 export async function renderHadithBookPage(params) {
   const lang = getLang();
@@ -79,8 +85,8 @@ export async function renderHadithBookPage(params) {
             </a>
           ` : '<div></div>'}
 
-          <a href="#/${lang}/hadith" class="btn btn-ghost">
-            <span>📜</span>
+          <a href="#/${lang}/hadith" class="btn btn-ghost" style="display: inline-flex; align-items: center; gap: 6px;">
+            <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DHadith}</span>
             <span>${lang === 'bn' ? 'অধ্যায় তালিকা' : 'Books List'}</span>
           </a>
 
@@ -121,8 +127,8 @@ export async function bindHadithBookEvents(params) {
     return `
       <article class="card hadith-card" id="hadith-${h.hadithNumber}">
         <div class="section-header" style="margin-bottom: var(--space-3);">
-          <div class="hadith-card-source">
-            <span>📜</span>
+          <div class="hadith-card-source" style="display: inline-flex; align-items: center; gap: 6px;">
+            <span class="icon-3d-wrap" style="width: 16px; height: 16px;">${Icon3DHadith}</span>
             <span>${h.reference}</span>
           </div>
 
@@ -130,7 +136,7 @@ export async function bindHadithBookEvents(params) {
             <button class="ayah-action-btn copy-hadith-btn" 
               data-copy="${h.arabic ? `${h.arabic}\n\n` : ''}${h.bangla}\n\n— [${h.reference}]" 
               title="${t('copy')}">
-              📋
+              <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DCopy}</span>
             </button>
             <button class="ayah-action-btn bookmark-hadith-btn ${bookmarked ? 'active' : ''}" 
               data-id="${bookmarkId}"
@@ -138,9 +144,8 @@ export async function bindHadithBookEvents(params) {
               data-arabic="${encodeURIComponent(h.arabic || '')}"
               data-bangla="${encodeURIComponent(h.bangla || '')}"
               data-english="${encodeURIComponent(h.english || '')}"
-              title="${t('bookmark')}"
-              style="${bookmarked ? 'color: var(--color-hadith);' : ''}">
-              ${bookmarked ? '★' : '☆'}
+              title="${t('bookmark')}">
+              <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${bookmarked ? Icon3DStarFilled : Icon3DStarOutline}</span>
             </button>
           </div>
         </div>
@@ -171,9 +176,9 @@ export async function bindHadithBookEvents(params) {
       const text = btn.getAttribute('data-copy');
       if (text) {
         await navigator.clipboard.writeText(text);
-        const original = btn.textContent;
-        btn.textContent = '✓';
-        setTimeout(() => { btn.textContent = original; }, 1500);
+        const original = btn.innerHTML;
+        btn.innerHTML = `<span style="font-size: 14px; color: var(--color-success); font-weight: 700;">✓</span>`;
+        setTimeout(() => { btn.innerHTML = original; }, 1500);
       }
     });
   });
@@ -192,8 +197,8 @@ export async function bindHadithBookEvents(params) {
       };
 
       const added = toggleBookmark(item);
-      btn.textContent = added ? '★' : '☆';
-      btn.style.color = added ? 'var(--color-hadith)' : '';
+      btn.innerHTML = `<span class="icon-3d-wrap" style="width: 18px; height: 18px;">${added ? Icon3DStarFilled : Icon3DStarOutline}</span>`;
+      btn.classList.toggle('active', added);
     });
   });
 }
