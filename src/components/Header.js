@@ -40,10 +40,6 @@ export function renderHeader() {
             <span class="nav-link-icon">🤲</span>
             <span>${t('navDua')}</span>
           </a>
-          <a href="#/${lang}/topics" class="nav-link ${currentPath.includes('/topics') ? 'active' : ''}">
-            <span class="nav-link-icon">💡</span>
-            <span>${t('navTopics')}</span>
-          </a>
           <a href="#/${lang}/bookmarks" class="nav-link ${currentPath.includes('/bookmarks') ? 'active' : ''}">
             <span class="nav-link-icon">🔖</span>
             <span>${lang === 'bn' ? 'সংরক্ষিত' : 'Saved'}</span>
@@ -88,9 +84,6 @@ export function renderHeader() {
         </a>
         <a href="#/${lang}/dua" class="mobile-nav-link">
           <span>🤲</span> <span>${t('navDua')}</span>
-        </a>
-        <a href="#/${lang}/topics" class="mobile-nav-link">
-          <span>💡</span> <span>${t('navTopics')}</span>
         </a>
         <a href="#/${lang}/bookmarks" class="mobile-nav-link">
           <span>🔖</span> <span>${lang === 'bn' ? 'সংরক্ষিত আয়াত ও দোয়া' : 'Saved Bookmarks'} (${bookmarksCount})</span>
@@ -284,18 +277,6 @@ function renderSearchResults(results, container, modal) {
     });
   }
 
-  // Topics
-  if (results.topics.length > 0) {
-    html += `<div style="font-size: var(--text-xs); font-weight: 700; color: var(--color-topic); text-transform: uppercase; margin-top: var(--space-2);">${t('navTopics')} (${results.topics.length})</div>`;
-    results.topics.forEach(tp => {
-      html += `
-        <a href="#/${lang}/topics/${tp.slug}" class="card search-item-link section-card-topic" style="padding: var(--space-3);">
-          <div style="font-weight: 600; font-size: var(--text-sm);">${lang === 'bn' ? tp.titleBangla : tp.titleEnglish}</div>
-          <div style="font-size: var(--text-xs); color: var(--color-text-muted);">${lang === 'bn' ? tp.categoryBangla : tp.categoryEnglish}</div>
-        </a>
-      `;
-    });
-  }
 
   container.innerHTML = html;
 

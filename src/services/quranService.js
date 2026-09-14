@@ -7,7 +7,6 @@ import { SURAHS_METADATA } from '../data/quranMetadata.js';
 import { PRELOADED_SURAHS } from '../data/popularSurahs.js';
 import { HADITHS_DATA } from '../data/hadiths.js';
 import { DUAS_DATA } from '../data/duas.js';
-import { TOPICS_DATA } from '../data/topics.js';
 
 const cache = new Map();
 
@@ -167,17 +166,7 @@ export function searchAll(query, lang = 'bn') {
     );
   }).slice(0, 8);
 
-  // Search Topics
-  const topics = TOPICS_DATA.filter(t => {
-    return (
-      t.titleBangla.toLowerCase().includes(q) ||
-      t.titleEnglish.toLowerCase().includes(q) ||
-      t.summaryBangla.toLowerCase().includes(q) ||
-      t.summaryEnglish.toLowerCase().includes(q)
-    );
-  }).slice(0, 6);
-
-  return { surahs, hadiths, duas, topics };
+  return { surahs, hadiths, duas };
 }
 
 export default {

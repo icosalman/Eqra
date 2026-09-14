@@ -47,7 +47,6 @@ export function renderFooter() {
             <div class="footer-links">
               <a href="#/${lang}/hadith" class="footer-link">${lang === 'bn' ? 'সহীহ হাদিস সমগ্র' : 'Sahih Hadith Collection'}</a>
               <a href="#/${lang}/dua" class="footer-link">${lang === 'bn' ? 'কুরআনের দোয়া সমগ্র' : 'Quranic Duas Collection'}</a>
-              <a href="#/${lang}/topics" class="footer-link">${lang === 'bn' ? 'বিষয়ভিত্তিক কুরআন' : 'Topical Quran Study'}</a>
               <a href="#/${lang}/bookmarks" class="footer-link">${lang === 'bn' ? 'সংরক্ষিত আয়াত ও দোয়া' : 'Saved Verses & Duas'}</a>
               <a href="#/${lang}/about" class="footer-link">${t('navAbout')}</a>
             </div>

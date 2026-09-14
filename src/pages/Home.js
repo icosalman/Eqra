@@ -8,7 +8,6 @@ import { SURAHS_METADATA } from '../data/quranMetadata.js';
 import { KEY_AYAHS } from '../data/popularSurahs.js';
 import { DUAS_DATA } from '../data/duas.js';
 import { HADITHS_DATA } from '../data/hadiths.js';
-import { TOPICS_DATA } from '../data/topics.js';
 import { audioPlayer } from '../components/AudioPlayer.js';
 
 export function renderHomePage() {
@@ -192,36 +191,6 @@ export function renderHomePage() {
           </div>
         </section>
 
-        <!-- Topic Knowledge Graph -->
-        <section class="section">
-          <div class="section-header">
-            <div>
-              <span class="section-badge badge-topic">💡 ${t('navTopics')}</span>
-              <h2 class="section-title" style="margin-top: var(--space-2);">${t('popularTopics')}</h2>
-              <div class="section-subtitle">${lang === 'bn' ? 'জীবন ঘনিষ্ঠ বিষয়ে কুরআন ও সুন্নাহর নির্দেশনা' : 'Quranic guidance on themes of human life'}</div>
-            </div>
-            <a href="#/${lang}/topics" class="btn btn-secondary btn-sm">
-              ${t('seeAll')} →
-            </a>
-          </div>
-
-          <div class="grid-4 stagger">
-            ${TOPICS_DATA.map(tp => `
-              <a href="#/${lang}/topics/${tp.slug}" class="card section-card-topic" style="display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                  <span class="tag" style="margin-bottom: var(--space-2);">${lang === 'bn' ? tp.categoryBangla : tp.categoryEnglish}</span>
-                  <h3 class="topic-card-title">${lang === 'bn' ? tp.titleBangla : tp.titleEnglish}</h3>
-                  <p class="topic-card-excerpt">
-                    ${lang === 'bn' ? tp.summaryBangla : tp.summaryEnglish}
-                  </p>
-                </div>
-                <div style="margin-top: var(--space-4); font-size: var(--text-xs); color: var(--color-topic); font-weight: 600;">
-                  ${tp.ayahCount} ${t('ayahPlural')} • ${lang === 'bn' ? 'বিস্তারিত দেখুন →' : 'Read Topic →'}
-                </div>
-              </a>
-            `).join('')}
-          </div>
-        </section>
 
         <!-- Platform Features Grid -->
         <section class="section">

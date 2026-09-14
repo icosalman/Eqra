@@ -16,8 +16,6 @@ import { renderSurahPage, bindSurahPageEvents } from './pages/SurahPage.js';
 import { renderHadithIndexPage, bindHadithEvents } from './pages/HadithIndex.js';
 import { renderHadithBookPage, bindHadithBookEvents } from './pages/HadithBookPage.js';
 import { renderDuaIndexPage, bindDuaEvents } from './pages/DuaIndex.js';
-import { renderTopicsIndexPage } from './pages/TopicsIndex.js';
-import { renderTopicDetailPage } from './pages/TopicDetail.js';
 import { renderBookmarksPage, bindBookmarksEvents } from './pages/BookmarksPage.js';
 import { renderAboutPage } from './pages/About.js';
 
@@ -104,9 +102,6 @@ router
   // Dua
   .on('/:lang/dua', (params, query) => loadPage(renderDuaIndexPage, bindDuaEvents, params, query))
 
-  // Topics
-  .on('/:lang/topics', (params, query) => loadPage(renderTopicsIndexPage, null, params, query))
-  .on('/:lang/topics/:topic', (params, query) => loadPage(renderTopicDetailPage, null, params, query))
 
   // Bookmarks
   .on('/:lang/bookmarks', (params, query) => loadPage(renderBookmarksPage, bindBookmarksEvents, params, query))
