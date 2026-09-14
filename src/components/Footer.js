@@ -1,0 +1,80 @@
+// ============================================
+// EQRA — Global Footer Component
+// ============================================
+
+import { t, getLang } from '../i18n.js';
+
+export function renderFooter() {
+  const lang = getLang();
+
+  return `
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <!-- Brand -->
+          <div>
+            <div class="footer-brand-name">EQRA • ٱقْرَأْ</div>
+            <p class="footer-brand-desc">
+              ${lang === 'bn' 
+                ? 'পবিত্র আল-কুরআনের নূর ও প্রজ্ঞাকে মানুষের হৃদয়ে পৌঁছে দেওয়ার জন্য একটি আধুনিক, নির্ভুল ও দ্বিভাষিক ডিজিটাল প্ল্যাটফর্ম।' 
+                : 'A modern, authentic, and bilingual digital platform dedicated to bringing the light, wisdom, and reflection of the Holy Quran to hearts worldwide.'}
+            </p>
+            <div style="margin-top: var(--space-4); display: flex; gap: var(--space-2);">
+              <span class="tag">Uthmanic Hafs</span>
+              <span class="tag">Sahih Translations</span>
+              <span class="tag">Mishary Al-Afasy</span>
+            </div>
+          </div>
+
+          <!-- Quran Links -->
+          <div>
+            <div class="footer-heading">${t('navQuran')}</div>
+            <div class="footer-links">
+              <a href="#/${lang}/quran/1" class="footer-link">সূরা আল-ফাতিহা (Al-Fatihah)</a>
+              <a href="#/${lang}/quran/2" class="footer-link">সূরা আল-বাকারা (Al-Baqarah)</a>
+              <a href="#/${lang}/quran/36" class="footer-link">সূরা ইয়াসীন (Ya-Sin)</a>
+              <a href="#/${lang}/quran/55" class="footer-link">সূরা আর-রহমান (Ar-Rahman)</a>
+              <a href="#/${lang}/quran/67" class="footer-link">সূরা আল-মুলক (Al-Mulk)</a>
+              <a href="#/${lang}/quran" class="footer-link" style="color: var(--color-quran); font-weight: 600;">
+                ${lang === 'bn' ? 'সকল ১১৪টি সূরা দেখুন →' : 'View All 114 Surahs →'}
+              </a>
+            </div>
+          </div>
+
+          <!-- Resources -->
+          <div>
+            <div class="footer-heading">${lang === 'bn' ? 'রিসোর্স ও অনুসন্ধান' : 'Resources'}</div>
+            <div class="footer-links">
+              <a href="#/${lang}/hadith" class="footer-link">${lang === 'bn' ? 'সহীহ হাদিস সমগ্র' : 'Sahih Hadith Collection'}</a>
+              <a href="#/${lang}/dua" class="footer-link">${lang === 'bn' ? 'কুরআনের দোয়া সমগ্র' : 'Quranic Duas Collection'}</a>
+              <a href="#/${lang}/topics" class="footer-link">${lang === 'bn' ? 'বিষয়ভিত্তিক কুরআন' : 'Topical Quran Study'}</a>
+              <a href="#/${lang}/bookmarks" class="footer-link">${lang === 'bn' ? 'সংরক্ষিত আয়াত ও দোয়া' : 'Saved Verses & Duas'}</a>
+              <a href="#/${lang}/about" class="footer-link">${t('navAbout')}</a>
+            </div>
+          </div>
+
+          <!-- Islamic Network info -->
+          <div>
+            <div class="footer-heading">${lang === 'bn' ? 'বিশুদ্ধ তথ্যসূত্র' : 'Authentic Sources'}</div>
+            <div class="footer-links">
+              <span class="footer-link">King Fahd Quran Complex</span>
+              <span class="footer-link">Tanzil.net Verified Text</span>
+              <span class="footer-link">Sahih International</span>
+              <span class="footer-link">Muhiuddin Khan Translation</span>
+              <span class="footer-link">Islamic Network Audio CDN</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div>${t('footerCopyright')}</div>
+          <div style="display: flex; gap: var(--space-4);">
+            <a href="#/${lang}/" class="footer-link">EQRA.COM</a>
+            <span>•</span>
+            <span>بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  `;
+}
