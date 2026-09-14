@@ -346,6 +346,16 @@ export function bindPoroIndexEvents() {
     });
   }
 
+  // Explicit Chapter Cards Click Navigation
+  document.querySelectorAll('.poro-chapter-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      const href = card.getAttribute('href');
+      if (href) {
+        window.location.hash = href.replace(/^#/, '');
+      }
+    });
+  });
+
   // Life Guidelines Category Filters
   const filterBtns = document.querySelectorAll('#lifecode-filters button');
   filterBtns.forEach(btn => {

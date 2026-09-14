@@ -10,12 +10,17 @@ import { Icon3DReflection, Icon3DPoro } from '../components/Icons3D.js';
 
 export function renderPoroChapterPage(params) {
   const lang = getLang();
-  const chapterId = params.chapter || 'ch-1';
-  const chapterIndex = PORO_CHAPTERS.findIndex(c => c.id === chapterId);
-  const chapter = PORO_CHAPTERS[chapterIndex] || PORO_CHAPTERS[1];
+  const rawId = String(params.chapter || 'ch-1').toLowerCase().trim();
+  const chapterIndex = PORO_CHAPTERS.findIndex(c => 
+    c.id.toLowerCase() === rawId || 
+    String(c.number) === rawId || 
+    c.id.toLowerCase() === `ch-${rawId}`
+  );
+  const safeIndex = chapterIndex >= 0 ? chapterIndex : 1;
+  const chapter = PORO_CHAPTERS[safeIndex];
 
-  const prevChapter = chapterIndex > 0 ? PORO_CHAPTERS[chapterIndex - 1] : null;
-  const nextChapter = chapterIndex < PORO_CHAPTERS.length - 1 ? PORO_CHAPTERS[chapterIndex + 1] : null;
+  const prevChapter = safeIndex > 0 ? PORO_CHAPTERS[safeIndex - 1] : null;
+  const nextChapter = safeIndex < PORO_CHAPTERS.length - 1 ? PORO_CHAPTERS[safeIndex + 1] : null;
 
   updateMeta({
     title: `${chapter.titleBangla} — পড়ো | EQRA`,
@@ -83,11 +88,26 @@ export function renderPoroChapterPage(params) {
             </div>
           ` : ''}
 
+          <!-- Key Pullquote matching screenshot -->
+          ${chapter.keyQuote ? `
+            <div class="poro-ch-pullquote">
+              <span class="poro-quote-mark">“</span>
+              <p class="poro-quote-text">${chapter.keyQuote}</p>
+            </div>
+          ` : ''}
+
+          <!-- Lead Summary matching screenshot -->
+          ${chapter.summary ? `
+            <p class="poro-paragraph-lead">
+              ${chapter.summary}
+            </p>
+          ` : ''}
+
           <!-- Core Chapter Sections -->
           <div class="poro-sections-flow">
             ${chapter.sections.map((sec, idx) => `
               <div class="poro-section-block" id="sec-${idx}">
-                ${sec.heading ? `<h2 class="poro-sec-heading">${sec.heading}</h2>` : ''}
+                ${sec.heading ? `<h2 class="poro-sec-heading poro-section-h2">${sec.heading}</h2>` : ''}
                 <div class="poro-sec-body">
                   ${formatContentParagraphs(sec.content)}
                 </div>
