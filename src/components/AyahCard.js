@@ -5,6 +5,7 @@
 import { t, getLang } from '../i18n.js';
 import { isBookmarked, toggleBookmark } from '../utils/storage.js';
 import { audioPlayer } from './AudioPlayer.js';
+import { formatColorCodedQuran } from '../utils/quranColors.js';
 import { 
   renderAyah3DBadge, 
   Icon3DAudio, 
@@ -77,9 +78,9 @@ export function renderAyahCard(ayah, surah, displayMode = 'all') {
         </div>
       </div>
 
-      <!-- Arabic Text -->
+      <!-- Arabic Text (Color Coded Tajweed) -->
       <div class="ayah-arabic">
-        ${ayah.arabic}
+        ${formatColorCodedQuran(ayah.arabic)}
       </div>
 
       <!-- Bangla Translation -->

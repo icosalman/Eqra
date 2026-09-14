@@ -79,7 +79,7 @@ function renderSurahCards(list, lang) {
   }
 
   return list.map(s => `
-    <a href="#/${lang}/quran/${s.number}" class="surah-card" data-number="${s.number}" data-type="${s.revelationType}">
+    <a href="#/${lang}/quran/${s.number}" class="surah-card" data-number="${s.number}" data-type="${s.type || s.revelationType}">
       ${renderSurah3DBadge(s.number)}
       <div class="surah-info">
         <div class="surah-name-local" style="font-weight: 600; font-size: var(--text-base);">
@@ -112,7 +112,11 @@ export function bindQuranIndexEvents() {
     let filtered = SURAHS_METADATA;
 
     if (activeFilter !== 'all') {
-      filtered = filtered.filter(s => s.revelationType === activeFilter);
+      const target = activeFilter.toLowerCase();
+      filtered = filtered.filter(s => 
+        (s.type && s.type.toLowerCase() === target) || 
+        (s.revelationType && s.revelationType.toLowerCase() === target)
+      );
     }
 
     if (searchTerm) {

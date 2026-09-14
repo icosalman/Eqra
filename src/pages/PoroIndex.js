@@ -42,52 +42,60 @@ export function renderPoroIndexPage() {
           <span class="breadcrumbs-current">${t('navPoro')}</span>
         </nav>
 
-        <!-- Hero Showcase Banner -->
+        <!-- Hero Showcase Banner (Exact replica of attached design) -->
         <section class="poro-hero animate-fade-in-up">
           <div class="poro-hero-badge">
-            <span>✨</span>
-            <span>${lang === 'bn' ? 'বিশেষ কুরআন অধ্যয়ন সংস্করণ' : 'Special Quran Study Edition'}</span>
+            <span>📘</span>
+            <span>${lang === 'bn' ? 'বিশেষ প্রদর্শনী ও অধ্যয়ন • সরোবর প্রকাশন (Shorobor Prokashon)' : 'Special Exhibition & Study • Shorobor Prokashon'}</span>
+          </div>
+
+          <div class="poro-hero-arabic">
+            اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ
           </div>
 
           <h1 class="poro-hero-title">
-            ${lang === 'bn' ? 'পড়ো — কুরআনকে জানার এবং বোঝার বই' : 'PORO — Read & Understand The Quran'}
+            ${lang === 'bn' ? 'পড়ো' : 'PORO'}
           </h1>
           
-          <p class="poro-hero-subtitle">
+          <div class="poro-hero-tagline">
+            ${lang === 'bn' ? 'কুরআন নিয়ে আধুনিক মানুষের বৈজ্ঞানিক ও যৌক্তিক ভাবনার সংকলন' : 'A compilation of modern scientific and rational reflections on the Quran'}
+          </div>
+
+          <p class="poro-hero-desc">
             ${lang === 'bn' 
-              ? 'কুরআন কেন নাযিল হয়েছিল? কীভাবে এই মহাগ্রন্থ আমাদের জীবনের প্রতিটি সংকটে পথ দেখায়? সূরা ফাতিহার অদেখা রহস্য, কুরআনের বিজ্ঞান, এবং দৈনন্দিন জীবনের জীবন্ত জীবনবিধান।' 
-              : 'Why was the Quran revealed? How does this divine Book guide through personal struggles, modern challenges, science, and the spiritual secrets of Surah Al-Fatihah?'}
+              ? 'এটি কোনো তাফসীর নয়। আধুনিক যুগের মানুষের জন্য কুরআনের আয়াতগুলোকে বৈজ্ঞানিক ও যৌক্তিক দৃষ্টিকোণ থেকে দেখা এবং সমসাময়িক প্রশ্ন, দ্বন্দ্ব ও ঘটনাগুলোর ওপর প্রাসঙ্গিক আলোচনা।' 
+              : 'This is not a traditional Tafsir. It explores Quranic verses from contemporary scientific and rational perspectives, addressing modern dilemmas, questions, and realities.'}
           </p>
 
-          <!-- Book Statistics Ribbon -->
-          <div class="poro-stats-ribbon">
-            <div class="poro-stat-item">
-              <span class="poro-stat-num">১৮</span>
-              <span class="poro-stat-label">${lang === 'bn' ? 'মূল অধ্যায়' : 'Chapters'}</span>
+          <!-- Book Statistics Row (4 White Cards) -->
+          <div class="poro-stats-row">
+            <div class="poro-stat-card">
+              <div class="poro-stat-num">১৮</div>
+              <div class="poro-stat-label">${lang === 'bn' ? 'মূল অধ্যায়' : 'Chapters'}</div>
             </div>
-            <div class="poro-stat-item">
-              <span class="poro-stat-num">৪৪+</span>
-              <span class="poro-stat-label">${lang === 'bn' ? 'জীবনবিধান' : 'Life Codes'}</span>
+            <div class="poro-stat-card">
+              <div class="poro-stat-num">৪৪+</div>
+              <div class="poro-stat-label">${lang === 'bn' ? 'জীবনবিধান' : 'Life Codes'}</div>
             </div>
-            <div class="poro-stat-item">
-              <span class="poro-stat-num">১৯</span>
-              <span class="poro-stat-label">${lang === 'bn' ? 'প্রামাণ্য তাফসীর' : 'Tafsir Sources'}</span>
+            <div class="poro-stat-card">
+              <div class="poro-stat-num">১৯</div>
+              <div class="poro-stat-label">${lang === 'bn' ? 'প্রামাণ্য তাফসীর' : 'Tafsir Sources'}</div>
             </div>
-            <div class="poro-stat-item">
-              <span class="poro-stat-num">১৮৪</span>
-              <span class="poro-stat-label">${lang === 'bn' ? 'পৃষ্ঠার নির্যাস' : 'Pages'}</span>
+            <div class="poro-stat-card">
+              <div class="poro-stat-num">১৮৪</div>
+              <div class="poro-stat-label">${lang === 'bn' ? 'পৃষ্ঠার নির্যাস' : 'Pages'}</div>
             </div>
           </div>
 
           <div class="poro-hero-actions">
-            <a href="#/${lang}/poro/ch-1" class="btn btn-primary btn-lg">
+            <a href="#/${lang}/poro/ch-1" class="poro-btn-green">
               <span>📖</span>
-              <span>${lang === 'bn' ? 'প্রথম অধ্যায় থেকে পড়া শুরু করুন' : 'Start Reading Chapter 1'}</span>
+              <span>${lang === 'bn' ? 'পড়া শুরু করুন' : 'Start Reading'}</span>
             </a>
-            <a href="#tab-lifecode" class="btn btn-secondary btn-lg" id="btn-jump-guidelines">
-              <span>🌟</span>
-              <span>${lang === 'bn' ? '৪৪টি জীবনবিধান দেখুন' : 'Explore Life Codes'}</span>
-            </a>
+            <button type="button" class="poro-btn-white" id="btn-poro-book-info">
+              <span>ℹ️</span>
+              <span>${lang === 'bn' ? 'বইয়ের পরিচিতি' : 'Book Info'}</span>
+            </button>
           </div>
         </section>
 
@@ -356,4 +364,65 @@ export function bindPoroIndexEvents() {
       });
     });
   });
+
+  // Book Info Modal
+  const bookInfoBtn = document.getElementById('btn-poro-book-info');
+  if (bookInfoBtn) {
+    bookInfoBtn.addEventListener('click', () => {
+      const existing = document.getElementById('poro-info-modal');
+      if (existing) existing.remove();
+
+      const lang = getLang();
+      const modal = document.createElement('div');
+      modal.id = 'poro-info-modal';
+      modal.className = 'modal-backdrop active';
+      modal.innerHTML = `
+        <div class="modal-card animate-scale-up" style="max-width: 540px;">
+          <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.5rem;">📘</span>
+              <h3 style="font-size: var(--text-lg); font-weight: 700; margin: 0; color: var(--color-text-primary);">
+                ${lang === 'bn' ? 'বই পরিচিতি — পড়ো' : 'About the Book — PORO'}
+              </h3>
+            </div>
+            <button class="modal-close" id="close-poro-info-modal" aria-label="Close">✕</button>
+          </div>
+          <div class="modal-body" style="line-height: 1.7; font-size: var(--text-sm); color: var(--color-text-secondary);">
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; margin-bottom: var(--space-4); background: var(--color-surface-hover); padding: var(--space-3); border-radius: var(--radius-md);">
+              <strong>${lang === 'bn' ? 'লেখক:' : 'Author:'}</strong> <span>${lang === 'bn' ? 'ওমর আল জাবির' : 'Omar Al Zabir'}</span>
+              <strong>${lang === 'bn' ? 'প্রকাশনী:' : 'Publisher:'}</strong> <span>${lang === 'bn' ? 'সরোবর প্রকাশন (Shorobor)' : 'Shorobor Prokashon'}</span>
+              <strong>${lang === 'bn' ? 'ধরন:' : 'Genre:'}</strong> <span>${lang === 'bn' ? 'কুরআন অনুধাবন, যুক্তি ও বিজ্ঞান' : 'Quranic Reflection, Logic & Science'}</span>
+              <strong>${lang === 'bn' ? 'কলেবর:' : 'Length:'}</strong> <span>${lang === 'bn' ? '১৮টি অধ্যায় • ১৮৪ পৃষ্ঠা' : '18 Chapters • 184 Pages'}</span>
+            </div>
+            <p style="margin-bottom: var(--space-3);">
+              ${lang === 'bn' 
+                ? '<strong>"পড়ো"</strong> কোনো প্রথাগত তাফসীর গ্রন্থ নয়। আধুনিক যুগের শিক্ষিত মুসলিম এবং তরুণ প্রজন্মের মানসিক দ্বন্দ্ব, বৈজ্ঞানিক জিজ্ঞাসা, এবং দৈনন্দিন জীবনের বাস্তবিক সমস্যার সাথে আল-কুরআনের চিরন্তন শিক্ষার অপূর্ব মেলবন্ধন ঘটিয়েছে এই বইটি।' 
+                : '<strong>"PORO"</strong> is not a traditional Tafsir. It bridges the modern intellectual mindset with eternal Quranic wisdom, offering scientific insights, psychological depth, and 44 daily life guidelines.'}
+            </p>
+            <p style="margin-bottom: 0;">
+              ${lang === 'bn'
+                ? 'বইটিতে সূরা ফাতিহার গভীর ভাষাতাত্ত্বিক রহস্য, মহাবিশ্বের ফাইন-টিউনিং, মানবদেহের বিস্ময় এবং ব্যক্তিগত জীবন পরিচালনার স্পষ্ট বিধান আলোচনা করা হয়েছে।'
+                : 'The book explores the linguistic miracles of Surah Al-Fatihah, fine-tuning of the universe, biological marvels, and practical guidance for contemporary challenges.'}
+            </p>
+          </div>
+          <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: var(--space-2); margin-top: var(--space-4);">
+            <a href="#/${lang}/poro/ch-1" class="btn btn-primary" id="btn-modal-read-now">
+              <span>📖</span>
+              <span>${lang === 'bn' ? 'পড়া শুরু করুন' : 'Start Reading'}</span>
+            </a>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+
+      const closeModal = () => modal.remove();
+      modal.querySelector('#close-poro-info-modal').addEventListener('click', closeModal);
+      const readNowBtn = modal.querySelector('#btn-modal-read-now');
+      if (readNowBtn) readNowBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+    });
+  }
 }

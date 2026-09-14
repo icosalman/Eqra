@@ -5,6 +5,7 @@
 import { t, getLang } from '../i18n.js';
 import { updateMeta } from '../utils/seo.js';
 import { getBookmarks, toggleBookmark } from '../utils/storage.js';
+import { formatColorCodedQuran } from '../utils/quranColors.js';
 import { Icon3DBookmark } from '../components/Icons3D.js';
 
 export function renderBookmarksPage() {
@@ -69,7 +70,7 @@ export function renderBookmarksPage() {
 
               ${item.arabic ? `
                 <div class="ayah-arabic" style="font-size: var(--quran-size-sm); margin-bottom: var(--space-3);">
-                  ${item.arabic}
+                  ${formatColorCodedQuran(item.arabic)}
                 </div>
               ` : ''}
 

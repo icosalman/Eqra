@@ -9,6 +9,7 @@ import { KEY_AYAHS } from '../data/popularSurahs.js';
 import { DUAS_DATA } from '../data/duas.js';
 import { HADITHS_DATA } from '../data/hadiths.js';
 import { audioPlayer } from '../components/AudioPlayer.js';
+import { formatColorCodedQuran } from '../utils/quranColors.js';
 import { 
   renderSurah3DBadge, 
   Icon3DQuran, 
@@ -101,9 +102,9 @@ export function renderHomePage() {
               </button>
             </div>
 
-            <!-- Arabic Calligraphy -->
+            <!-- Arabic Calligraphy (Color Coded Tajweed) -->
             <div class="ayah-arabic" style="font-size: var(--quran-size-lg); border-bottom: 1px dashed var(--color-border); padding-bottom: var(--space-4);">
-              ${featuredAyah.arabic}
+              ${formatColorCodedQuran(featuredAyah.arabic)}
             </div>
 
             <!-- Bangla & English -->

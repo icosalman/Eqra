@@ -5,6 +5,7 @@
 import { t, getLang } from '../i18n.js';
 import { updateMeta } from '../utils/seo.js';
 import { PORO_CHAPTERS, PORO_BOOK_METADATA } from '../data/poroBookData.js';
+import { formatColorCodedQuran } from '../utils/quranColors.js';
 
 export function renderPoroChapterPage(params) {
   const lang = getLang();
@@ -73,7 +74,7 @@ export function renderPoroChapterPage(params) {
           ${chapter.keyAyah ? `
             <div class="poro-featured-ayah-box">
               <div class="ayah-arabic" style="font-size: var(--text-2xl); line-height: 2; margin-bottom: var(--space-4);">
-                ${chapter.keyAyah.arabic}
+                ${formatColorCodedQuran(chapter.keyAyah.arabic)}
               </div>
               <div class="poro-ayah-trans">
                 “${chapter.keyAyah.translation}”

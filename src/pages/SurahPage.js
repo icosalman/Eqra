@@ -9,6 +9,7 @@ import { getSurah, getSurahMeta } from '../services/quranService.js';
 import { renderAyahCard, bindAyahCardEvents } from '../components/AyahCard.js';
 import { getSettings, saveSettings } from '../utils/storage.js';
 import { audioPlayer } from '../components/AudioPlayer.js';
+import { formatColorCodedQuran, renderTajweedLegend } from '../utils/quranColors.js';
 import { 
   renderSurah3DBadge, 
   Icon3DAudio, 
@@ -120,11 +121,14 @@ export function renderSurahPage(params) {
           </div>
         </div>
 
+        <!-- Color-Coded Tajweed Guide Bar -->
+        ${renderTajweedLegend(lang)}
+
         <!-- Bismillah Header (except Surah 9 At-Tawbah) -->
         ${meta.number !== 9 ? `
           <div style="text-align: center; padding: var(--space-6) 0 var(--space-8); border-bottom: 1px solid var(--color-border-light);">
             <div style="font-family: var(--font-arabic); font-size: var(--text-3xl); color: var(--color-quran); line-height: 2;">
-              بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
+              ${formatColorCodedQuran('بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ')}
             </div>
             <div style="font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--space-1);">
               ${lang === 'bn' ? 'পরম করুণাময় অতি দয়ালু আল্লাহর নামে শুরু' : 'In the name of Allah, the Entirely Merciful, the Especially Merciful'}
@@ -247,6 +251,20 @@ export async function bindSurahPageEvents(params) {
     const arabicElements = document.querySelectorAll('.ayah-arabic');
     arabicElements.forEach(el => {
       el.style.fontSize = fontSizes[currentFontSizeLevel];
+    });
+  }
+
+  // Tajweed Legend Toggle
+  const legendToggle = document.getElementById('toggle-tajweed-legend');
+  const legendDropdown = document.getElementById('tajweed-legend-dropdown');
+  if (legendToggle && legendDropdown) {
+    legendToggle.addEventListener('click', () => {
+      const isVisible = legendDropdown.style.display !== 'none';
+      legendDropdown.style.display = isVisible ? 'none' : 'flex';
+      const hint = legendToggle.querySelector('.tajweed-legend-hint');
+      if (hint) {
+        hint.textContent = isVisible ? (getLang() === 'bn' ? 'সহজে পড়ার নিয়মাবলি ▾' : 'Legend ▾') : (getLang() === 'bn' ? 'বন্ধ করুন ▴' : 'Close ▴');
+      }
     });
   }
 }
