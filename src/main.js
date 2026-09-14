@@ -16,6 +16,8 @@ import { renderSurahPage, bindSurahPageEvents } from './pages/SurahPage.js';
 import { renderHadithIndexPage, bindHadithEvents } from './pages/HadithIndex.js';
 import { renderHadithBookPage, bindHadithBookEvents } from './pages/HadithBookPage.js';
 import { renderDuaIndexPage, bindDuaEvents } from './pages/DuaIndex.js';
+import { renderPoroIndexPage, bindPoroIndexEvents } from './pages/PoroIndex.js';
+import { renderPoroChapterPage, bindPoroChapterEvents } from './pages/PoroChapter.js';
 import { renderBookmarksPage, bindBookmarksEvents } from './pages/BookmarksPage.js';
 import { renderAboutPage } from './pages/About.js';
 
@@ -102,6 +104,9 @@ router
   // Dua
   .on('/:lang/dua', (params, query) => loadPage(renderDuaIndexPage, bindDuaEvents, params, query))
 
+  // Poro Book Hub & Chapters
+  .on('/:lang/poro', (params, query) => loadPage(renderPoroIndexPage, bindPoroIndexEvents, params, query))
+  .on('/:lang/poro/:chapter', (params, query) => loadPage(renderPoroChapterPage, bindPoroChapterEvents, params, query))
 
   // Bookmarks
   .on('/:lang/bookmarks', (params, query) => loadPage(renderBookmarksPage, bindBookmarksEvents, params, query))

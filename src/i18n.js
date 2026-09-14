@@ -14,6 +14,7 @@ const translations = {
     navQuran: 'কুরআন',
     navHadith: 'হাদিস',
     navDua: 'দোয়া',
+    navPoro: 'পড়ো',
     navSearch: 'খুঁজুন',
     navAbout: 'সম্পর্কে',
     
@@ -114,6 +115,7 @@ const translations = {
     navQuran: 'Quran',
     navHadith: 'Hadith',
     navDua: 'Dua',
+    navPoro: 'Poro',
     navSearch: 'Search',
     navAbout: 'About',
     

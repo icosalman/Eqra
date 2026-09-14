@@ -40,6 +40,11 @@ export function renderHeader() {
             <span class="nav-link-icon">🤲</span>
             <span>${t('navDua')}</span>
           </a>
+          <a href="#/${lang}/poro" class="nav-link ${currentPath.includes('/poro') ? 'active' : ''}">
+            <span class="nav-link-icon">📘</span>
+            <span>${t('navPoro')}</span>
+            <span class="poro-nav-badge">NEW</span>
+          </a>
           <a href="#/${lang}/bookmarks" class="nav-link ${currentPath.includes('/bookmarks') ? 'active' : ''}">
             <span class="nav-link-icon">🔖</span>
             <span>${lang === 'bn' ? 'সংরক্ষিত' : 'Saved'}</span>
@@ -84,6 +89,9 @@ export function renderHeader() {
         </a>
         <a href="#/${lang}/dua" class="mobile-nav-link">
           <span>🤲</span> <span>${t('navDua')}</span>
+        </a>
+        <a href="#/${lang}/poro" class="mobile-nav-link">
+          <span>📘</span> <span>${t('navPoro')} (${lang === 'bn' ? 'বই' : 'Book'})</span>
         </a>
         <a href="#/${lang}/bookmarks" class="mobile-nav-link">
           <span>🔖</span> <span>${lang === 'bn' ? 'সংরক্ষিত আয়াত ও দোয়া' : 'Saved Bookmarks'} (${bookmarksCount})</span>
@@ -217,7 +225,7 @@ export function bindHeaderEvents() {
 
 function renderSearchResults(results, container, modal) {
   const lang = getLang();
-  const total = results.surahs.length + results.hadiths.length + results.duas.length;
+  const total = results.surahs.length + results.hadiths.length + results.duas.length + (results.poroChapters ? results.poroChapters.length : 0);
 
   if (total === 0) {
     container.innerHTML = `
@@ -244,6 +252,19 @@ function renderSearchResults(results, container, modal) {
             <div class="surah-meta">${lang === 'bn' ? s.banglaMeaning : s.englishMeaning} • ${s.ayahs} ${t('ayahPlural')}</div>
           </div>
           <div class="surah-name-arabic" style="font-size: var(--text-base);">${s.name}</div>
+        </a>
+      `;
+    });
+  }
+
+  // Poro Book Chapters
+  if (results.poroChapters && results.poroChapters.length > 0) {
+    html += `<div style="font-size: var(--text-xs); font-weight: 700; color: var(--color-poro); text-transform: uppercase; margin-top: var(--space-2);">📘 ${lang === 'bn' ? 'পড়ো বইয়ের অধ্যায়' : 'Poro Chapters'} (${results.poroChapters.length})</div>`;
+    results.poroChapters.forEach(c => {
+      html += `
+        <a href="#/${lang}/poro/${c.id}" class="card search-item-link" style="padding: var(--space-3); border-left: 3px solid var(--color-poro);">
+          <div style="font-weight: 600; font-size: var(--text-sm); color: var(--color-text-primary);">${lang === 'bn' ? c.titleBangla : c.titleEnglish}</div>
+          <div style="font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.4;">${c.summary}</div>
         </a>
       `;
     });
