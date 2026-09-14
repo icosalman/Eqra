@@ -6,7 +6,6 @@
 import { t, getLang } from '../i18n.js';
 import { updateMeta } from '../utils/seo.js';
 import { BUKHARI_BOOKS, MUSLIM_BOOKS } from '../data/hadithBooksMetadata.js';
-import { HADITHS_DATA } from '../data/hadiths.js';
 import { Icon3DHadith, Icon3DSearch } from '../components/Icons3D.js';
 
 export function renderHadithIndexPage() {
@@ -62,9 +61,6 @@ export function renderHadithIndexPage() {
             <button class="display-toggle-btn" data-collection="muslim">
               ${lang === 'bn' ? 'সহীহ মুসলিম (৫৬টি কিতাব)' : 'Sahih Muslim (56 Books)'}
             </button>
-            <button class="display-toggle-btn" data-collection="featured">
-              ${lang === 'bn' ? 'নির্বাচিত হাদিস' : 'Featured Hadith'}
-            </button>
           </div>
         </div>
 
@@ -111,38 +107,7 @@ function renderBooksGrid(books, collection, lang) {
   `;
 }
 
-function renderFeaturedHadiths(lang) {
-  return `
-    <div class="stagger" style="display: flex; flex-direction: column; gap: var(--space-6); max-width: 800px; margin: 0 auto;">
-      ${HADITHS_DATA.map(h => `
-        <article class="card hadith-card">
-          <div class="section-header" style="margin-bottom: var(--space-3);">
-            <div class="hadith-card-source">
-              <span>📜</span>
-              <span>${h.reference}</span>
-              <span class="tag" style="background: var(--color-hadith-bg); color: var(--color-hadith); border-color: var(--color-hadith-light);">
-                ${lang === 'bn' ? h.gradeBangla : h.grade}
-              </span>
-            </div>
-          </div>
 
-          <div style="font-size: var(--text-sm); font-weight: 600; color: var(--color-text-primary); margin-bottom: var(--space-2);">
-            ${lang === 'bn' ? h.narratorBangla : h.narratorEnglish}
-          </div>
-
-          <div style="font-family: var(--font-arabic); font-size: var(--text-lg); line-height: 2; color: var(--color-arabic); direction: rtl; text-align: right; margin-bottom: var(--space-4); padding: var(--space-2) 0; border-bottom: 1px dashed var(--color-border-light);">
-            ${h.arabic}
-          </div>
-
-          <div style="display: flex; flex-direction: column; gap: var(--space-3); margin-bottom: var(--space-4);">
-            <div class="ayah-translation-bn">${h.bangla}</div>
-            <div class="ayah-translation-en">${h.english}</div>
-          </div>
-        </article>
-      `).join('')}
-    </div>
-  `;
-}
 
 export function bindHadithEvents() {
   const filterBtns = document.querySelectorAll('[data-collection]');
@@ -154,11 +119,6 @@ export function bindHadithEvents() {
   let searchTerm = '';
 
   function updateView() {
-    if (activeCollection === 'featured') {
-      container.innerHTML = renderFeaturedHadiths(lang);
-      return;
-    }
-
     const fullList = activeCollection === 'muslim' ? MUSLIM_BOOKS : BUKHARI_BOOKS;
     let filtered = fullList;
 
