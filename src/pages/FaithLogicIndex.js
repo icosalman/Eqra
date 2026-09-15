@@ -54,7 +54,7 @@ export function renderFaithLogicIndex() {
           </div>
           <div style="display: flex; align-items: center; gap: 8px; font-size: var(--text-sm); font-weight: 600; color: var(--color-text-muted);">
             <span style="font-size: 18px;">✨</span>
-            <span>${isBn ? 'ডিজিটাল রিডার ও PDF' : 'Digital Reader & PDF'}</span>
+            <span>${isBn ? 'ডিজিটাল অধ্যায় ও যুক্তি বিশ্লেষণ' : 'Digital Chapters & Logic'}</span>
           </div>
         </div>
       </section>
@@ -66,7 +66,7 @@ export function renderFaithLogicIndex() {
             ${isBn ? 'নির্বাচিত গ্রন্থাবলি' : 'Featured Masterpieces'}
           </h2>
           <p style="color: var(--color-text-muted); font-size: var(--text-sm);">
-            ${isBn ? 'পছন্দের বইটি নির্বাচন করে অধ্যায়ভিত্তিক রিডার অথবা অরিজিনাল PDF সরাসরি উপভোগ করুন' : 'Select a book to read interactively with logic breakdowns or view the full PDF'}
+            ${isBn ? 'পছন্দের বইটি নির্বাচন করে অধ্যায়ভিত্তিক বুদ্ধিবৃত্তিক যুক্তি ও বিশ্লেষণ উপভোগ করুন' : 'Select a book to explore chapters with structured logic matrices and summaries'}
           </p>
         </div>
 
@@ -151,9 +151,9 @@ export function renderFaithLogicIndex() {
                       <span>📖</span>
                       <span>${isBn ? 'ডিজিটাল অধ্যায় রিডার' : 'Digital Reader'}</span>
                     </a>
-                    <a href="#/${lang}/faith-and-logic/${book.id}?mode=pdf" class="btn-secondary" style="flex: 1; text-align: center; text-decoration: none; font-size: var(--text-xs); padding: 10px 14px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
-                      <span>📄</span>
-                      <span>${isBn ? 'অরিজিনাল PDF ভিউয়ার' : 'PDF Viewer'}</span>
+                    <a href="${book.rokomariUrl}" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="flex: 1; text-align: center; text-decoration: none; font-size: var(--text-xs); padding: 10px 14px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                      <span>🛒</span>
+                      <span>${isBn ? 'রকমারি থেকে কিনুন' : 'Buy Original'}</span>
                     </a>
                   </div>
                 </div>
@@ -288,9 +288,9 @@ export function bindFaithLogicIndexEvents() {
               <span>${isBn ? 'সম্পূর্ণ অধ্যায় পড়ুন' : 'Read Chapter'}</span>
               <span>→</span>
             </a>
-            <a href="#/${lang}/faith-and-logic/${ch.bookId}?mode=pdf" style="font-size: 11px; color: var(--color-text-muted); text-decoration: none;">
-              📄 PDF (পৃষ্ঠা ${ch.page})
-            </a>
+            <span style="font-size: 11px; color: var(--color-text-muted);">
+              📖 ${isBn ? `পৃষ্ঠা ${ch.page}` : `Page ${ch.page}`}
+            </span>
           </div>
         </div>
       `;

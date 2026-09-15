@@ -26,8 +26,8 @@ export function renderUnderstandQuranIndex() {
       ? 'কুরআনের ৫০% ও ৬৫% শব্দভাণ্ডার শিক্ষা — সহজে কুরআন বোঝার উপায় | EQRA' 
       : 'Understand 50% & 65% of the Holy Quran — High-Frequency Vocabulary | EQRA',
     description: isBn 
-      ? 'ড. ইসলাম ফিকরি (Arabic 101)-এর বিশ্বখ্যাত গবেষণা: মাত্র ৭৭টি শব্দে কুরআনের ৫০% এবং ১৯৫টি শব্দে ৬৫% অর্থ বোঝার প্রামাণ্য ডিজিটাল প্ল্যাটফর্ম ও মূল PDF রিডার।'
-      : 'Master 50% of the Quran with just 77 high-frequency words (Book 1) and up to 65% with 195 essential nouns & adjectives (Book 2). Interactive digital reader & original PDFs.',
+      ? 'ড. ইসলাম ফিকরি (Arabic 101)-এর বিশ্বখ্যাত গবেষণা: মাত্র ৭৭টি শব্দে কুরআনের ৫০% এবং ১৯৫টি শব্দে ৬৫% অর্থ বোঝার প্রামাণ্য ডিজিটাল প্ল্যাটফর্ম ও অনুশীলন।'
+      : 'Master 50% of the Quran with just 77 high-frequency words (Book 1) and up to 65% with 195 essential nouns & adjectives (Book 2). Interactive digital reader & vocabulary drills.',
     canonicalPath: `#/${lang}/understand-quran`
   });
 
@@ -72,8 +72,10 @@ export function renderUnderstandQuranIndex() {
             <a href="#/${lang}/understand-quran/book-2" class="btn btn-secondary" style="border: 1px solid var(--color-border); font-weight: 600; padding: 10px 20px;">
               <span>📗 ${isBn ? '২য় খণ্ড: ৬৫% শব্দভাণ্ডার' : 'Book 2: 65% Vocabulary'}</span>
             </a>
-            <a href="#/${lang}/understand-quran/book-1?mode=pdf" class="btn btn-secondary" style="border: 1px solid var(--color-border); font-weight: 600; padding: 10px 20px;">
-              <span>📄 ${isBn ? 'অরিজিনাল PDF ভিউয়ার' : 'Original PDF Viewer'}</span>
+            <a href="${book1.youtubePlaylist}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="border: 1px solid var(--color-border); font-weight: 600; padding: 10px 20px; display: inline-flex; align-items: center; gap: 6px;">
+              <span>▶️</span>
+              <span>${isBn ? 'অফিসিয়াল ভিডিও ক্লাস' : 'Video Course'}</span>
+              <span>↗️</span>
             </a>
           </div>
         </header>
@@ -101,7 +103,7 @@ export function renderUnderstandQuranIndex() {
           <div class="vocab-stat-card">
             <div style="font-size: var(--text-2xl); font-weight: 800; color: #8B5CF6;">${isBn ? '১০০% উন্মুক্ত' : '100% Free & Open'}</div>
             <div style="font-size: var(--text-xs); color: var(--color-text-secondary); margin-top: 4px;">
-              ${isBn ? 'ইন্টারেক্টিভ রিডার ও মূল PDF ডাউনলোড' : 'Digital reader, quizzes & official PDF downloads'}
+              ${isBn ? 'ইন্টারেক্টিভ রিডার ও শব্দভাণ্ডার অনুশীলন' : 'Digital reader, quizzes & interactive exercises'}
             </div>
           </div>
         </div>
@@ -193,14 +195,11 @@ export function renderUnderstandQuranIndex() {
 
               <!-- Buttons -->
               <div style="display: flex; gap: var(--space-2); flex-wrap: wrap; margin-top: var(--space-4);">
-                <a href="#/${lang}/understand-quran/book-1" class="btn btn-primary" style="flex: 1; text-align: center; font-size: var(--text-xs); background: #0284C7; border: none; font-weight: 700;">
-                  📖 ${isBn ? 'ডিজিটাল রিডার খুলুন' : 'Open Digital Reader'}
+                <a href="#/${lang}/understand-quran/book-1" class="btn btn-primary" style="flex: 1; text-align: center; font-size: var(--text-xs); background: #0284C7; border: none; font-weight: 700; padding: 10px 14px;">
+                  📖 ${isBn ? 'ডিজিটাল রিডার ও অনুশীলন' : 'Open Digital Learning'} →
                 </a>
-                <a href="#/${lang}/understand-quran/book-1?mode=pdf" class="btn btn-secondary" style="font-size: var(--text-xs);">
-                  📄 ${isBn ? 'PDF ভিউয়ার' : 'PDF Viewer'}
-                </a>
-                <a href="${book1.pdfUrl}" download="understand-quran-50.pdf" class="btn btn-secondary" style="font-size: var(--text-xs);" title="${isBn ? 'PDF ডাউনলোড' : 'Download PDF'}">
-                  📥
+                <a href="${book1.youtubePlaylist}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="font-size: var(--text-xs); display: inline-flex; align-items: center; gap: 4px;" title="${isBn ? 'ইউটিউব ভিডিও ক্লাস' : 'YouTube Lessons'}">
+                  ▶️ ${isBn ? 'ভিডিও ক্লাস' : 'Video Lesson'} ↗️
                 </a>
               </div>
             </div>
@@ -243,14 +242,11 @@ export function renderUnderstandQuranIndex() {
 
               <!-- Buttons -->
               <div style="display: flex; gap: var(--space-2); flex-wrap: wrap; margin-top: var(--space-4);">
-                <a href="#/${lang}/understand-quran/book-2" class="btn btn-primary" style="flex: 1; text-align: center; font-size: var(--text-xs); background: #059669; border: none; font-weight: 700;">
-                  📖 ${isBn ? 'ডিজিটাল রিডার খুলুন' : 'Open Digital Reader'}
+                <a href="#/${lang}/understand-quran/book-2" class="btn btn-primary" style="flex: 1; text-align: center; font-size: var(--text-xs); background: #059669; border: none; font-weight: 700; padding: 10px 14px;">
+                  📖 ${isBn ? 'ডিজিটাল রিডার ও অনুশীলন' : 'Open Digital Learning'} →
                 </a>
-                <a href="#/${lang}/understand-quran/book-2?mode=pdf" class="btn btn-secondary" style="font-size: var(--text-xs);">
-                  📄 ${isBn ? 'PDF ভিউয়ার' : 'PDF Viewer'}
-                </a>
-                <a href="${book2.pdfUrl}" download="understand-quran-65.pdf" class="btn btn-secondary" style="font-size: var(--text-xs);" title="${isBn ? 'PDF ডাউনলোড' : 'Download PDF'}">
-                  📥
+                <a href="${book2.youtubePlaylist}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="font-size: var(--text-xs); display: inline-flex; align-items: center; gap: 4px;" title="${isBn ? 'ইউটিউব ভিডিও ক্লাস' : 'YouTube Lessons'}">
+                  ▶️ ${isBn ? 'ভিডিও ক্লাস' : 'Video Lesson'} ↗️
                 </a>
               </div>
             </div>

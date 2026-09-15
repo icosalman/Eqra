@@ -1,6 +1,6 @@
 // ============================================
 // EQRA — Understand Quran Vocabulary Book Reader
-// Dual Modes: Interactive Digital Reader + Original PDF Viewer
+// Interactive Digital Vocabulary Reader & Quizzes
 // Strict Bilingual Separation: Pure Bengali in 'bn', Authentic English in 'en'
 // ============================================
 
@@ -40,9 +40,6 @@ export function renderUnderstandQuranBookPage(params = {}) {
   const prevList = currentListIdx > 0 ? allLists[currentListIdx - 1] : null;
   const nextList = currentListIdx < allLists.length - 1 ? allLists[currentListIdx + 1] : null;
 
-  // Dual mode check from URL
-  const hash = window.location.hash;
-  const initialMode = hash.includes('mode=pdf') ? 'pdf' : 'digital';
 
   const bookTitle = isBn ? book.titleBn : book.titleEn;
   const listTitle = isBn ? activeList.titleBn : activeList.titleEn;
@@ -111,29 +108,23 @@ export function renderUnderstandQuranBookPage(params = {}) {
               <div><strong>${isBn ? 'সংস্করণ:' : 'Edition:'}</strong> ${book.edition}</div>
             </div>
 
-            <!-- Dual Mode Tabs & Download -->
+            <!-- Course Links & Actions -->
             <div style="display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap;">
-              <div class="reader-mode-tabs" role="tablist">
-                <button class="reader-mode-tab ${initialMode === 'digital' ? 'active' : ''}" id="vocab-tab-digital" data-mode="digital">
-                  <span>📖</span>
-                  <span>${isBn ? 'ডিজিটাল রিডার' : 'Digital Reader'}</span>
-                </button>
-                <button class="reader-mode-tab ${initialMode === 'pdf' ? 'active' : ''}" id="vocab-tab-pdf" data-mode="pdf">
-                  <span>📄</span>
-                  <span>${isBn ? 'অরিজিনাল PDF ভিউয়ার' : 'Original PDF'}</span>
-                </button>
-              </div>
-
-              <a href="${book.pdfUrl}" download="${book.id}.pdf" class="btn-ghost" style="font-size: var(--text-xs); padding: 6px 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--color-border);" title="${isBn ? 'মূল PDF ডাউনলোড করুন' : 'Download Original PDF'}">
-                <span>📥</span>
-                <span>${isBn ? 'PDF ডাউনলোড' : 'Download PDF'}</span>
+              <a href="${book.youtubePlaylist}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" style="font-size: var(--text-xs); display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--color-border); text-decoration: none;">
+                <span>▶️</span>
+                <span>${isBn ? 'অফিসিয়াল ভিডিও ক্লাস (Arabic 101)' : 'Official Video Class'}</span>
+                <span>↗️</span>
+              </a>
+              <a href="#/${lang}/understand-quran" class="btn-ghost" style="font-size: var(--text-xs); padding: 6px 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--color-border);">
+                <span>←</span>
+                <span>${isBn ? 'সকল তালিকা' : 'All Lists'}</span>
               </a>
             </div>
           </div>
         </div>
 
-        <!-- VIEW 1: DIGITAL READER MODE -->
-        <div id="vocab-view-digital" style="${initialMode === 'digital' ? 'display: block;' : 'display: none;'}">
+        <!-- DIGITAL READER MODE -->
+        <div id="vocab-view-digital">
           <div style="display: grid; grid-template-columns: 280px 1fr; gap: var(--space-6); align-items: start;">
             
             <!-- Sidebar: Lists Navigation -->
@@ -225,43 +216,6 @@ export function renderUnderstandQuranBookPage(params = {}) {
           </div>
         </div>
 
-        <!-- VIEW 2: ORIGINAL PDF VIEWER MODE -->
-        <div id="vocab-view-pdf" style="${initialMode === 'pdf' ? 'display: block;' : 'display: none;'}">
-          <div class="card" style="padding: var(--space-4); margin-bottom: var(--space-6); border: 1px solid var(--color-border); border-radius: var(--radius-xl);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); flex-wrap: wrap; gap: var(--space-2);">
-              <div>
-                <h3 style="font-size: var(--text-base); font-weight: 700; color: var(--color-text-primary); display: flex; align-items: center; gap: 8px; margin: 0 0 4px 0;">
-                  <span>📄</span>
-                  <span>${bookTitle} — ${isBn ? 'অরিজিনাল PDF ভিউয়ার' : 'Original PDF Viewer'}</span>
-                </h3>
-                <p style="font-size: var(--text-xs); color: var(--color-text-secondary); margin: 0;">
-                  ${isBn 
-                    ? 'ড. ইসলাম ফিকরি-র মূল মুদ্রিত প্রকাশনার সম্পূর্ণ স্ক্যান পৃষ্ঠা সরাসরি পড়ুন ও ডাউনলোড করুন।'
-                    : 'Read and navigate the official original publication by Drs. Islam Fekry directly in your browser.'}
-                </p>
-              </div>
-
-              <div style="display: flex; gap: var(--space-2);">
-                <a href="${book.pdfUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" style="font-size: var(--text-xs);">
-                  ↗️ ${isBn ? 'নতুন ট্যাবে খুলুন' : 'Open in New Tab'}
-                </a>
-                <a href="${book.pdfUrl}" download="${book.id}.pdf" class="btn btn-primary btn-sm" style="font-size: var(--text-xs); background: #0284C7; border: none;">
-                  📥 ${isBn ? 'ডাউনলোড PDF' : 'Download PDF'}
-                </a>
-              </div>
-            </div>
-
-            <!-- PDF Viewer Frame -->
-            <div style="position: relative; width: 100%; border-radius: var(--radius-lg); overflow: hidden; background: #1E293B;">
-              <iframe 
-                src="${book.pdfUrl}#toolbar=1&navpanes=1" 
-                class="pdf-viewer-frame" 
-                style="width: 100%; height: 85vh; border: none;" 
-                title="${bookTitle}">
-              </iframe>
-            </div>
-          </div>
-        </div>
 
       </div>
     </div>
@@ -437,34 +391,6 @@ function renderQuizWidget(bookId, lang) {
 export function bindUnderstandQuranBookEvents() {
   bindTajweedInteractions();
 
-  // Dual mode toggle tabs
-  const tabDigital = document.getElementById('vocab-tab-digital');
-  const tabPdf = document.getElementById('vocab-tab-pdf');
-  const viewDigital = document.getElementById('vocab-view-digital');
-  const viewPdf = document.getElementById('vocab-view-pdf');
-
-  if (tabDigital && tabPdf) {
-    tabDigital.addEventListener('click', () => {
-      tabDigital.classList.add('active');
-      tabPdf.classList.remove('active');
-      if (viewDigital) viewDigital.style.display = 'block';
-      if (viewPdf) viewPdf.style.display = 'none';
-      const hash = window.location.hash.replace(/[?&]mode=pdf/, '');
-      window.history.replaceState(null, '', hash);
-    });
-
-    tabPdf.addEventListener('click', () => {
-      tabPdf.classList.add('active');
-      tabDigital.classList.remove('active');
-      if (viewDigital) viewDigital.style.display = 'none';
-      if (viewPdf) viewPdf.style.display = 'block';
-      const hash = window.location.hash;
-      if (!hash.includes('mode=pdf')) {
-        const separator = hash.includes('?') ? '&' : '?';
-        window.history.replaceState(null, '', `${hash}${separator}mode=pdf`);
-      }
-    });
-  }
 
   // Sidebar list search
   const listSearch = document.getElementById('vocab-list-search');

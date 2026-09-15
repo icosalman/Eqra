@@ -140,12 +140,12 @@ export function renderHeader() {
               </a>
             </div>
           </div>
-          <!-- Understand Quran 50% & 65% Dropdown -->
+          <!-- Quran Vocabulary Dropdown -->
           <div class="nav-item-dropdown ${currentPath.includes('/understand-quran') ? 'active' : ''}">
             <a href="#/${lang}/understand-quran" class="nav-link ${currentPath.includes('/understand-quran') ? 'active' : ''}">
               <span class="nav-link-icon-3d">${Icon3DVocab}</span>
-              <span>${lang === 'bn' ? 'কুরআন ৫০%' : 'Understand 50%'}</span>
-              <span class="poro-nav-badge" style="background: linear-gradient(135deg, #0284C7, #0369A1);">50%-65%</span>
+              <span>${lang === 'bn' ? 'কুরআন শব্দার্থ' : 'Quran Vocabulary'}</span>
+              <span class="poro-nav-badge" style="background: linear-gradient(135deg, #0284C7, #0369A1);">VOCAB</span>
               <span class="dropdown-chevron">▾</span>
             </a>
             <div class="nav-dropdown-menu">
@@ -160,23 +160,15 @@ export function renderHeader() {
               <a href="#/${lang}/understand-quran/book-1" class="dropdown-item ${currentPath.includes('/understand-quran/book-1') ? 'active' : ''}">
                 <span class="dropdown-item-icon">📘</span>
                 <div class="dropdown-item-text">
-                  <span class="dropdown-item-title">${lang === 'bn' ? '১ম খণ্ড: ৫০% কুরআন শিক্ষা' : 'Book 1: Understand 50%'}</span>
+                  <span class="dropdown-item-title">${lang === 'bn' ? '১ম খণ্ড: ৫০% মূল শব্দভাণ্ডার' : 'Part 1: 50% High-Frequency Words'}</span>
                   <span class="dropdown-item-desc">${lang === 'bn' ? '৭৭টি মূল শব্দ ও ৭টি অধ্যায়' : '77 High-Frequency Words'}</span>
                 </div>
               </a>
               <a href="#/${lang}/understand-quran/book-2" class="dropdown-item ${currentPath.includes('/understand-quran/book-2') ? 'active' : ''}">
                 <span class="dropdown-item-icon">📗</span>
                 <div class="dropdown-item-text">
-                  <span class="dropdown-item-title">${lang === 'bn' ? '২য় খণ্ড: ৬৫% শব্দভাণ্ডার' : 'Book 2: Learn 50% - 65%'}</span>
+                  <span class="dropdown-item-title">${lang === 'bn' ? '২য় খণ্ড: ৬৫% শব্দভাণ্ডার' : 'Part 2: 65% Vocabulary'}</span>
                   <span class="dropdown-item-desc">${lang === 'bn' ? '১৯৫টি গুণবাচক বিশেষ্য ও বিশেষণ' : '195 Nouns & Adjectives'}</span>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#/${lang}/understand-quran/book-1?mode=pdf" class="dropdown-item">
-                <span class="dropdown-item-icon">📄</span>
-                <div class="dropdown-item-text">
-                  <span class="dropdown-item-title">${lang === 'bn' ? 'অরিজিনাল PDF ভিউয়ার' : 'Original PDF Viewer'}</span>
-                  <span class="dropdown-item-desc">${lang === 'bn' ? 'ড. ইসলাম ফিকরি-র মূল বই' : 'Official Publication Viewer'}</span>
                 </div>
               </a>
             </div>
@@ -266,16 +258,16 @@ export function renderHeader() {
         <div class="mobile-nav-group">
           <div class="mobile-nav-heading">
             <span class="nav-link-icon-3d" style="font-size:16px;">${Icon3DVocab}</span>
-            <span>${lang === 'bn' ? 'কুরআন ৫০% ও ৬৫% শিক্ষা' : 'Understand 50% - 65% Quran'}</span>
+            <span>${lang === 'bn' ? 'কুরআন শব্দার্থ ও শব্দভাণ্ডার' : 'Quran Vocabulary'}</span>
           </div>
           <a href="#/${lang}/understand-quran" class="mobile-nav-sublink ${currentPath === `#/${lang}/understand-quran` || currentPath === `#/${lang}/understand-quran/` ? 'active' : ''}">
-            <span>📊</span> <span>${lang === 'bn' ? 'কোর্স হাব ও মেথডোলজি' : 'Course Overview & Method'}</span>
+            <span>📊</span> <span>${lang === 'bn' ? 'শব্দভাণ্ডার হাব ও মেথডোলজি' : 'Course Overview & Method'}</span>
           </a>
           <a href="#/${lang}/understand-quran/book-1" class="mobile-nav-sublink ${currentPath.includes('/understand-quran/book-1') ? 'active' : ''}">
-            <span>📘</span> <span>${lang === 'bn' ? '১ম খণ্ড: ৫০% কুরআন শিক্ষা (ডিজিটাল ও PDF)' : 'Book 1: 50% Quran (Digital & PDF)'}</span>
+            <span>📘</span> <span>${lang === 'bn' ? '১ম খণ্ড: ৫০% মূল শব্দভাণ্ডার' : 'Part 1: 50% High-Frequency Words'}</span>
           </a>
           <a href="#/${lang}/understand-quran/book-2" class="mobile-nav-sublink ${currentPath.includes('/understand-quran/book-2') ? 'active' : ''}">
-            <span>📗</span> <span>${lang === 'bn' ? '২য় খণ্ড: ৬৫% শব্দভাণ্ডার (ডিজিটাল ও PDF)' : 'Book 2: 65% Quran (Digital & PDF)'}</span>
+            <span>📗</span> <span>${lang === 'bn' ? '২য় খণ্ড: ৬৫% শব্দভাণ্ডার' : 'Part 2: 65% Vocabulary'}</span>
           </a>
         </div>
         <a href="#/${lang}/about" class="mobile-nav-link">
