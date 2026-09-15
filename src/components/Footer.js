@@ -41,13 +41,19 @@ export function renderFooter() {
             </div>
           </div>
 
-          <!-- Resources -->
+          <!-- Resources & Umrah -->
           <div>
-            <div class="footer-heading">${lang === 'bn' ? 'রিসোর্স ও অনুসন্ধান' : 'Resources'}</div>
+            <div class="footer-heading">${lang === 'bn' ? 'উমরাহ ও রিসোর্স' : 'Umrah & Resources'}</div>
             <div class="footer-links">
-              <a href="#/${lang}/hadith" class="footer-link">${lang === 'bn' ? 'সহীহ হাদিস সমগ্র' : 'Sahih Hadith Collection'}</a>
-              <a href="#/${lang}/dua" class="footer-link">${lang === 'bn' ? 'কুরআনের দোয়া সমগ্র' : 'Quranic Duas Collection'}</a>
-              <a href="#/${lang}/bookmarks" class="footer-link">${lang === 'bn' ? 'সংরক্ষিত আয়াত ও দোয়া' : 'Saved Verses & Duas'}</a>
+              <a href="#/${lang}/umrah" class="footer-link" style="color: #059669; font-weight: 700;">
+                🕋 ${lang === 'bn' ? 'উমরাহ পোর্টাল হাব' : 'Umrah Portal Hub'}
+              </a>
+              <a href="#/${lang}/umrah/guide" class="footer-link">${lang === 'bn' ? 'উমরাহ পূর্ণাঙ্গ গাইড' : 'Step-by-Step Umrah'}</a>
+              <a href="#/${lang}/umrah/checklist" class="footer-link">${lang === 'bn' ? 'প্রস্তুতি চেকলিস্ট' : 'Interactive Checklist'}</a>
+              <a href="#/${lang}/umrah/duas" class="footer-link">${lang === 'bn' ? 'উমরাহর সহীহ দোয়া' : 'Authentic Duas'}</a>
+              <a href="#/${lang}/hadith" class="footer-link">${lang === 'bn' ? 'সহীহ হাদিস সমগ্র' : 'Sahih Hadith'}</a>
+              <a href="#/${lang}/dua" class="footer-link">${lang === 'bn' ? 'কুরআনের দোয়া সমগ্র' : 'Quranic Duas'}</a>
+              <a href="#/${lang}/bookmarks" class="footer-link">${lang === 'bn' ? 'সংরক্ষিত আয়াত ও দোয়া' : 'Saved Bookmarks'}</a>
               <a href="#/${lang}/about" class="footer-link">${t('navAbout')}</a>
             </div>
           </div>

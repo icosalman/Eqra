@@ -22,6 +22,8 @@ import { renderBookmarksPage, bindBookmarksEvents } from './pages/BookmarksPage.
 import { renderAboutPage } from './pages/About.js';
 import { renderFaithLogicIndex, bindFaithLogicIndexEvents } from './pages/FaithLogicIndex.js';
 import { renderFaithLogicBookPage, bindFaithLogicBookEvents } from './pages/FaithLogicBookPage.js';
+import { renderUmrahIndexPage, bindUmrahIndexEvents } from './pages/UmrahIndex.js';
+import { renderUmrahSubPage, bindUmrahSubPageEvents } from './pages/UmrahPage.js';
 
 // Initialize Theme
 const savedTheme = localStorage.getItem('eqra-theme') || 'light';
@@ -120,6 +122,16 @@ router
   .on('/:lang/faith-and-logic', (params, query) => loadPage(renderFaithLogicIndex, bindFaithLogicIndexEvents, params, query))
   .on('/:lang/faith-and-logic/:book', (params, query) => loadPage(renderFaithLogicBookPage, bindFaithLogicBookEvents, params, query))
   .on('/:lang/faith-and-logic/:book/:chapter', (params, query) => loadPage(renderFaithLogicBookPage, bindFaithLogicBookEvents, params, query))
+
+  // Umrah Portal (Digital Umrah Guide & Hub)
+  .on('/:lang/umrah', (params, query) => loadPage(renderUmrahIndexPage, bindUmrahIndexEvents, params, query))
+  .on('/:lang/umrah/', (params, query) => loadPage(renderUmrahIndexPage, bindUmrahIndexEvents, params, query))
+  .on('/:lang/umrah/:section', (params, query) => loadPage(
+    (p) => renderUmrahSubPage(p.section),
+    (p) => bindUmrahSubPageEvents(p.section),
+    params,
+    query
+  ))
 
   // 404 Fallback
   .on('*', () => {

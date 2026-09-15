@@ -926,4 +926,123 @@ export const Icon3DBookSajid2 = `
   </svg>
 `;
 
+/**
+ * 3D Kaaba Icon for Umrah Portal (Volumetric Black Cube with Gold Kiswah Band & Door)
+ */
+export const Icon3DUmrah = `
+  <svg viewBox="0 0 48 48" width="22" height="22" class="icon-3d-svg">
+    <defs>
+      <linearGradient id="kaaba-top" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#334155"/>
+        <stop offset="100%" stop-color="#1E293B"/>
+      </linearGradient>
+      <linearGradient id="kaaba-left" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#1E293B"/>
+        <stop offset="100%" stop-color="#0F172A"/>
+      </linearGradient>
+      <linearGradient id="kaaba-right" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#0F172A"/>
+        <stop offset="100%" stop-color="#020617"/>
+      </linearGradient>
+      <linearGradient id="kaaba-gold" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#FEF08A"/>
+        <stop offset="50%" stop-color="#F59E0B"/>
+        <stop offset="100%" stop-color="#B45309"/>
+      </linearGradient>
+      <filter id="kaaba-shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.5"/>
+      </filter>
+    </defs>
+    <g filter="url(#kaaba-shadow)">
+      <!-- Top Face (Isometric) -->
+      <polygon points="24,6 38,13 24,20 10,13" fill="url(#kaaba-top)"/>
+      <!-- Left Face -->
+      <polygon points="10,13 24,20 24,40 10,33" fill="url(#kaaba-left)"/>
+      <!-- Right Face -->
+      <polygon points="24,20 38,13 38,33 24,40" fill="url(#kaaba-right)"/>
+      <!-- Golden Kiswah Band (Left Face) -->
+      <polygon points="10,17 24,24 24,26.5 10,19.5" fill="url(#kaaba-gold)"/>
+      <!-- Golden Kiswah Band (Right Face) -->
+      <polygon points="24,24 38,17 38,19.5 24,26.5" fill="url(#kaaba-gold)"/>
+      <!-- Golden Door (Bab al-Kaaba) on Right Face -->
+      <polygon points="28,26 34,23 34,33 28,36" fill="url(#kaaba-gold)" stroke="#78350F" stroke-width="0.5"/>
+      <!-- Hajar al-Aswad Corner Glow -->
+      <circle cx="24" cy="40" r="1.5" fill="#FFFFFF" opacity="0.9"/>
+    </g>
+  </svg>
+`;
 
+/**
+ * 3D Interactive Checklist Icon
+ */
+export const Icon3DChecklist = `
+  <svg viewBox="0 0 48 48" width="22" height="22" class="icon-3d-svg">
+    <defs>
+      <linearGradient id="check-board" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#38BDF8"/>
+        <stop offset="100%" stop-color="#0284C7"/>
+      </linearGradient>
+      <filter id="check-shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2.5" stdDeviation="2" flood-color="#0369A1" flood-opacity="0.35"/>
+      </filter>
+    </defs>
+    <g filter="url(#check-shadow)">
+      <rect x="10" y="8" width="28" height="34" rx="4" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+      <rect x="17" y="5" width="14" height="6" rx="2" fill="url(#check-board)"/>
+      <!-- Checklist Row 1 -->
+      <circle cx="16" cy="18" r="2.5" fill="#10B981"/>
+      <line x1="22" y1="18" x2="33" y2="18" stroke="#334155" stroke-width="2" stroke-linecap="round"/>
+      <!-- Checklist Row 2 -->
+      <circle cx="16" cy="26" r="2.5" fill="#10B981"/>
+      <line x1="22" y1="26" x2="31" y2="26" stroke="#334155" stroke-width="2" stroke-linecap="round"/>
+      <!-- Checklist Row 3 -->
+      <circle cx="16" cy="34" r="2.5" fill="#E2E8F0" stroke="#94A3B8" stroke-width="1"/>
+      <line x1="22" y1="34" x2="29" y2="34" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/>
+    </g>
+  </svg>
+`;
+
+/**
+ * 3D Compass Icon for Miqat & Direction
+ */
+export const Icon3DCompass = `
+  <svg viewBox="0 0 48 48" width="22" height="22" class="icon-3d-svg">
+    <defs>
+      <linearGradient id="comp-ring" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FBBF24"/>
+        <stop offset="50%" stop-color="#D97706"/>
+        <stop offset="100%" stop-color="#78350F"/>
+      </linearGradient>
+      <filter id="comp-shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="2" flood-color="#78350F" flood-opacity="0.3"/>
+      </filter>
+    </defs>
+    <g filter="url(#comp-shadow)">
+      <circle cx="24" cy="24" r="17" fill="#0F172A" stroke="url(#comp-ring)" stroke-width="2.5"/>
+      <polygon points="24,10 28,24 24,21 20,24" fill="#EF4444"/>
+      <polygon points="24,38 28,24 24,27 20,24" fill="#E2E8F0"/>
+      <circle cx="24" cy="24" r="3" fill="#FBBF24"/>
+    </g>
+  </svg>
+`;
+
+/**
+ * 3D Tawaf Orbit Icon
+ */
+export const Icon3DTawaf = `
+  <svg viewBox="0 0 48 48" width="22" height="22" class="icon-3d-svg">
+    <circle cx="24" cy="24" r="16" fill="none" stroke="#0284C7" stroke-width="2.5" stroke-dasharray="8 4"/>
+    <rect x="20" y="20" width="8" height="8" rx="1.5" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+    <polygon points="38,20 42,24 38,28" fill="#0284C7"/>
+  </svg>
+`;
+
+/**
+ * 3D Sa'i Hills Icon
+ */
+export const Icon3DSai = `
+  <svg viewBox="0 0 48 48" width="22" height="22" class="icon-3d-svg">
+    <path d="M6,36 L18,18 L26,30 L34,14 L42,36 Z" fill="#059669" opacity="0.85"/>
+    <line x1="8" y1="38" x2="40" y2="38" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+`;

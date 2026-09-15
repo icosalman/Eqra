@@ -26,9 +26,15 @@ const translations = {
     logicMatrix: 'যুক্তির সারসংক্ষেপ',
     allegation: 'উত্থাপিত অভিযোগ / প্রশ্ন',
     sajidAnswer: 'সাজিদের যৌক্তিক জবাব',
-    evidence: 'কুরআন, হাদিস ও বিজ্ঞানের দলিল',
     navSearch: 'খুঁজুন',
     navAbout: 'সম্পর্কে',
+    navUmrah: 'উমরাহ',
+    umrahPortalTitle: 'উমরাহ — শুরু থেকে শেষ পর্যন্ত সম্পূর্ণ গাইড',
+    umrahPortalSubtitle: 'সহীহ সুন্নাহ ও নির্ভরযোগ্য সৌদি সরকারি নির্দেশিকা মোতাবেক ধাপে ধাপে পূর্ণাঙ্গ উমরাহ প্রস্তুতি পোর্টাল',
+    startUmrahCTA: 'উমরাহ শুরু করুন',
+    checklistCTA: 'উমরাহ Checklist',
+    sourcesAndEvidence: 'তথ্যসূত্র ও সত্যতা নিরূপণ',
+    lastVerifiedDate: 'সর্বশেষ যাচাইকৃত: সেপ্টেম্বর ২০২৬',
     
     // Hero
     heroArabic: 'ٱقْرَأْ',
@@ -150,6 +156,13 @@ const translations = {
     evidence: 'Evidence from Quran, Hadith & Science',
     navSearch: 'Search',
     navAbout: 'About',
+    navUmrah: 'Umrah',
+    umrahPortalTitle: 'Umrah — The Complete Evidence-Based Guide',
+    umrahPortalSubtitle: 'Step-by-step preparation and ritual companion grounded in authentic Sunnah and official Saudi guidelines',
+    startUmrahCTA: 'Start Umrah Guide',
+    checklistCTA: 'Umrah Checklist',
+    sourcesAndEvidence: 'Sources & Authenticity Verification',
+    lastVerifiedDate: 'Last verified: September 2026',
     
     // Hero
     heroArabic: 'ٱقْرَأْ',

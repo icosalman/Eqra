@@ -4,7 +4,6 @@
 
 import { t, getLang, setLang } from '../i18n.js';
 import { router } from '../router.js';
-import { getBookmarks } from '../utils/storage.js';
 import { searchAll } from '../services/quranService.js';
 import { 
   renderSurah3DBadge,
@@ -13,20 +12,19 @@ import {
   Icon3DHadith, 
   Icon3DDua, 
   Icon3DPoro, 
-  Icon3DBookmark, 
   Icon3DSearch, 
   Icon3DMoon, 
   Icon3DSun, 
   Icon3DAbout,
   Icon3DLogic,
   Icon3DBookSajid1,
-  Icon3DBookSajid2
+  Icon3DBookSajid2,
+  Icon3DUmrah
 } from './Icons3D.js';
 
 export function renderHeader() {
   const lang = getLang();
   const currentPath = window.location.hash || `/#/${lang}/`;
-  const bookmarksCount = getBookmarks().length;
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
   return `
@@ -93,11 +91,53 @@ export function renderHeader() {
               </a>
             </div>
           </div>
-          <a href="#/${lang}/bookmarks" class="nav-link ${currentPath.includes('/bookmarks') ? 'active' : ''}">
-            <span class="nav-link-icon-3d">${Icon3DBookmark}</span>
-            <span>${lang === 'bn' ? 'সংরক্ষিত' : 'Saved'}</span>
-            ${bookmarksCount > 0 ? `<span class="section-badge badge-quran" style="padding: 1px 6px; font-size: 10px;">${bookmarksCount}</span>` : ''}
-          </a>
+          <!-- Umrah Portal Dropdown -->
+          <div class="nav-item-dropdown ${currentPath.includes('/umrah') ? 'active' : ''}">
+            <a href="#/${lang}/umrah" class="nav-link ${currentPath.includes('/umrah') ? 'active' : ''}">
+              <span class="nav-link-icon-3d">${Icon3DUmrah}</span>
+              <span>${lang === 'bn' ? 'উমরাহ' : 'Umrah'}</span>
+              <span class="poro-nav-badge" style="background: linear-gradient(135deg, #059669, #047857);">GUIDE</span>
+              <span class="dropdown-chevron">▾</span>
+            </a>
+            <div class="nav-dropdown-menu">
+              <a href="#/${lang}/umrah" class="dropdown-item ${currentPath === `#/${lang}/umrah` || currentPath === `#/${lang}/umrah/` ? 'active' : ''}">
+                <span class="dropdown-item-icon">${Icon3DUmrah}</span>
+                <div class="dropdown-item-text">
+                  <span class="dropdown-item-title">${lang === 'bn' ? 'উমরাহ মূল হাব' : 'Umrah Portal Hub'}</span>
+                  <span class="dropdown-item-desc">${lang === 'bn' ? '৮টি ধারাবাহিক ধাপ ও পূর্ণাঙ্গ গাইড' : '8-step journey & core overview'}</span>
+                </div>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#/${lang}/umrah/guide" class="dropdown-item ${currentPath.includes('/guide') ? 'active' : ''}">
+                <span class="dropdown-item-icon">🕋</span>
+                <div class="dropdown-item-text">
+                  <span class="dropdown-item-title">${lang === 'bn' ? 'ধাপে ধাপে গাইড' : 'Step-by-Step Guide'}</span>
+                  <span class="dropdown-item-desc">${lang === 'bn' ? 'মীক্বাত থেকে হলক্ব/ক্বসর পর্যন্ত' : 'From Miqat to Tahallul'}</span>
+                </div>
+              </a>
+              <a href="#/${lang}/umrah/checklist" class="dropdown-item ${currentPath.includes('/checklist') ? 'active' : ''}">
+                <span class="dropdown-item-icon">📋</span>
+                <div class="dropdown-item-text">
+                  <span class="dropdown-item-title">${lang === 'bn' ? 'ইন্টারঅ্যাক্টিভ চেকলিস্ট' : 'Interactive Checklist'}</span>
+                  <span class="dropdown-item-desc">${lang === 'bn' ? 'প্রস্তুতি ও নথিপত্র ট্র্যাকার' : 'Gear, documents & spiritual items'}</span>
+                </div>
+              </a>
+              <a href="#/${lang}/umrah/duas" class="dropdown-item ${currentPath.includes('/duas') ? 'active' : ''}">
+                <span class="dropdown-item-icon">📿</span>
+                <div class="dropdown-item-text">
+                  <span class="dropdown-item-title">${lang === 'bn' ? 'সহীহ দোয়াসমূহ' : 'Authentic Duas'}</span>
+                  <span class="dropdown-item-desc">${lang === 'bn' ? 'তালবিয়াহ, তাওয়াফ ও সাঈর দোয়া' : 'Talbiyah, Tawaf & Sa\'i supplications'}</span>
+                </div>
+              </a>
+              <a href="#/${lang}/umrah/faq" class="dropdown-item ${currentPath.includes('/faq') ? 'active' : ''}">
+                <span class="dropdown-item-icon">❓</span>
+                <div class="dropdown-item-text">
+                  <span class="dropdown-item-title">${lang === 'bn' ? 'উমরাহ প্রশ্নোত্তর (FAQ)' : 'Verified Umrah FAQ'}</span>
+                  <span class="dropdown-item-desc">${lang === 'bn' ? 'প্রয়োজনীয় সমাধান ও ফতোয়া' : 'Common questions answered with evidence'}</span>
+                </div>
+              </a>
+            </div>
+          </div>
         </nav>
 
         <!-- Header Actions: Search, Lang, Theme, Mobile -->
@@ -157,9 +197,28 @@ export function renderHeader() {
             <span>📗</span> <span>${lang === 'bn' ? 'প্যারাডক্সিক্যাল সাজিদ ২ (PDF ও রিডার)' : 'Paradoxical Sajid 2 (PDF & Reader)'}</span>
           </a>
         </div>
-        <a href="#/${lang}/bookmarks" class="mobile-nav-link">
-          <span class="nav-link-icon-3d">${Icon3DBookmark}</span> <span>${lang === 'bn' ? 'সংরক্ষিত আয়াত ও দোয়া' : 'Saved Bookmarks'} (${bookmarksCount})</span>
-        </a>
+        <!-- Mobile Umrah Section -->
+        <div class="mobile-nav-group">
+          <div class="mobile-nav-heading">
+            <span class="nav-link-icon-3d" style="font-size:16px;">${Icon3DUmrah}</span>
+            <span>${lang === 'bn' ? 'উমরাহ পোর্টাল' : 'Umrah Portal'}</span>
+          </div>
+          <a href="#/${lang}/umrah" class="mobile-nav-sublink ${currentPath === `#/${lang}/umrah` || currentPath === `#/${lang}/umrah/` ? 'active' : ''}">
+            <span>🕋</span> <span>${lang === 'bn' ? 'উমরাহ মূল হাব' : 'Umrah Portal Hub'}</span>
+          </a>
+          <a href="#/${lang}/umrah/guide" class="mobile-nav-sublink ${currentPath.includes('/guide') ? 'active' : ''}">
+            <span>📖</span> <span>${lang === 'bn' ? 'ধাপে ধাপে গাইড' : 'Step-by-Step Guide'}</span>
+          </a>
+          <a href="#/${lang}/umrah/checklist" class="mobile-nav-sublink ${currentPath.includes('/checklist') ? 'active' : ''}">
+            <span>📋</span> <span>${lang === 'bn' ? 'প্রস্তুতি চেকলিস্ট' : 'Interactive Checklist'}</span>
+          </a>
+          <a href="#/${lang}/umrah/duas" class="mobile-nav-sublink ${currentPath.includes('/duas') ? 'active' : ''}">
+            <span>📿</span> <span>${lang === 'bn' ? 'সহীহ দোয়াসমূহ' : 'Authentic Duas'}</span>
+          </a>
+          <a href="#/${lang}/umrah/faq" class="mobile-nav-sublink ${currentPath.includes('/faq') ? 'active' : ''}">
+            <span>❓</span> <span>${lang === 'bn' ? 'উমরাহ প্রশ্নোত্তর (FAQ)' : 'Verified Umrah FAQ'}</span>
+          </a>
+        </div>
         <a href="#/${lang}/about" class="mobile-nav-link">
           <span class="nav-link-icon-3d">${Icon3DAbout}</span> <span>${t('navAbout')}</span>
         </a>
