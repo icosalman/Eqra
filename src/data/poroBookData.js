@@ -18,13 +18,16 @@ export const PORO_BOOK_METADATA = {
   publisher: 'সরোবর প্রকাশন (Shorobor Prokashon)',
   isbn: '978-984-92223-0-9',
   totalPages: 184,
-  pdfUrl: '/books/poro.pdf',
-  downloadUrl: '/books/poro.pdf',
+  rokomariUrl: 'https://www.rokomari.com/book/132514/poro',
+  shoroborUrl: 'https://shorobor.biz/',
+  shoroborFacebook: 'https://www.facebook.com/shorobor.org',
+  copyrightNoticeBangla: '‘পড়ো’ গ্রন্থটির সর্বস্বত্ব সংকলক ওমর আল জাবির ও সরোবর প্রকাশনের নিকট সংরক্ষিত। ইক্বরা (Eqra) প্ল্যাটফর্মটি একটি উন্মুক্ত কুরআন অধ্যয়ন সহায়িকা হিসেবে অধ্যায়গুলোর সারসংক্ষেপ ও শিক্ষণীয় পয়েন্ট পরিবেশন করেছে। পূর্ণাঙ্গ বই পড়ার জন্য অনুগ্রহ করে মূল মুদ্রিত কপি সংগ্রহ করুন।',
+  copyrightNoticeEnglish: 'All rights for "Poro" belong to Omar Al Zabir and Shorobor Prokashon. Eqra presents chapter reflections and study summaries as an educational dawah guide. Readers are encouraged to acquire the official printed book.',
   coreMission: 'এটি কোনো তাফসীর নয়। আধুনিক যুগের মানুষের জন্য কুরআনের আয়াতগুলোকে বৈজ্ঞানিক ও যৌক্তিক দৃষ্টিকোণ থেকে দেখা এবং সমসাময়িক প্রশ্ন, দ্বন্দ্ব ও ঘটনাগুলোর ওপর প্রাসঙ্গিক আলোচনা।'
 };
 
 export function getPoroPdfUrl(page) {
-  return page ? `/books/poro.pdf#page=${page}` : '/books/poro.pdf';
+  return 'https://www.rokomari.com/book/132514/poro';
 }
 
 export function getChapterStartPage(chapterOrId) {

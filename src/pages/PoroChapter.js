@@ -62,31 +62,28 @@ export function renderPoroChapterPage(params) {
           </div>
         </div>
 
-        <!-- Dual Mode Switcher Bar -->
-        <div class="card" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6); padding: 8px 14px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); flex-wrap: wrap; gap: 8px;">
-          <div class="reader-mode-tabs" role="tablist">
-            <button type="button" class="reader-mode-tab ${initialMode === 'digital' ? 'active' : ''}" id="poro-tab-digital">
-              <span>📖</span>
-              <span>${lang === 'bn' ? 'ডিজিটাল রিডার' : 'Digital Reader'}</span>
-            </button>
-            <button type="button" class="reader-mode-tab ${initialMode === 'pdf' ? 'active' : ''}" id="poro-tab-pdf">
-              <span>📄</span>
-              <span>${lang === 'bn' ? `মূল মুদ্রিত PDF (পৃষ্ঠা ${chapter.pages})` : `Original PDF (p. ${chapter.pages})`}</span>
-            </button>
+        <!-- Chapter Top Bar & Acquisition Link -->
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6); padding: 10px 16px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); flex-wrap: wrap; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px; font-size: var(--text-xs); color: var(--color-text-secondary); flex-wrap: wrap;">
+            <span style="background: rgba(2, 132, 199, 0.1); color: #0284C7; font-weight: 700; padding: 3px 8px; border-radius: var(--radius-full);">
+              ${lang === 'bn' ? `মূল বইয়ের পৃষ্ঠা: ${chapter.pages}` : `Book Pages: ${chapter.pages}`}
+            </span>
+            <span>•</span>
+            <span>${lang === 'bn' ? 'সরোবর প্রকাশন (সংকলন: ওমর আল জাবির)' : 'Shorobor Prokashon (Omar Al Zabir)'}</span>
           </div>
 
-          <div style="display: flex; gap: 6px; align-items: center;">
-            <a href="/books/poro.pdf#page=${startPage}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm" style="border: 1px solid var(--color-border); font-size: 11px; padding: 4px 10px;">
-              <span>↗️</span> <span>${lang === 'bn' ? 'নতুন ট্যাবে PDF' : 'New Tab'}</span>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <a href="${PORO_BOOK_METADATA.rokomariUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary" style="font-size: 11px; padding: 6px 14px; display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #059669 0%, #047857 100%); border: none; font-weight: 700;">
+              <span>🛒</span> <span>${lang === 'bn' ? 'রকমারি থেকে মূল বই সংগ্রহ' : 'Order Book on Rokomari'}</span> <span>↗️</span>
             </a>
-            <a href="/books/poro.pdf" download="poro.pdf" class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 4px 10px;">
-              <span>📥</span> <span>${lang === 'bn' ? 'ডাউনলোড' : 'Download'}</span>
+            <a href="#/${lang}/poro" class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 4px;">
+              <span>📑</span> <span>${lang === 'bn' ? 'সকল অধ্যায়' : 'All Chapters'}</span>
             </a>
           </div>
         </div>
 
-        <!-- MODE 1: DIGITAL CHAPTER ARTICLE -->
-        <div id="poro-digital-view" style="${initialMode === 'digital' ? 'display: block;' : 'display: none;'}">
+        <!-- DIGITAL CHAPTER ARTICLE -->
+        <div id="poro-digital-view">
           <article class="poro-reader-article" id="poro-article-content">
             <!-- Chapter Metadata Header -->
             <header class="poro-article-header">
@@ -188,79 +185,30 @@ export function renderPoroChapterPage(params) {
                 </a>
               ` : '<div style="flex:1;"></div>'}
             </nav>
+
+            <!-- Official Acquisition Banner at chapter end -->
+            <div class="card" style="margin-top: var(--space-8); padding: var(--space-5); background: rgba(2, 132, 199, 0.05); border: 1px solid rgba(2, 132, 199, 0.2); border-radius: var(--radius-xl); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-4);">
+              <div style="flex: 1; min-width: 250px;">
+                <div style="font-size: 11px; font-weight: 700; color: #0284C7; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                  <span>📘</span> <span>${lang === 'bn' ? 'সরোবর প্রকাশন • কপিরাইট ও স্বত্বাধিকার সুরক্ষিত' : 'Shorobor Prokashon • Copyright Protected'}</span>
+                </div>
+                <div style="font-size: var(--text-sm); font-weight: 700; color: var(--color-text-primary); margin-bottom: 2px;">
+                  ${lang === 'bn' ? `‘পড়ো’ মূল বইয়ের পৃষ্ঠা ${chapter.pages} এর সারসংক্ষেপ ও বিশ্লেষণ` : `Essence of Poro Original Pages ${chapter.pages}`}
+                </div>
+                <p style="font-size: var(--text-xs); color: var(--color-text-secondary); margin: 0; line-height: 1.5;">
+                  ${lang === 'bn' 
+                    ? '১৯টি প্রামাণ্য তাফসীরের বিশদ তথ্যসূত্র ও পূর্ণাঙ্গ পাঠের জন্য মূল মুদ্রিত কপি সংগ্রহ করার অনুরোধ করা হচ্ছে।' 
+                    : 'To read the complete text and citations from 19 authentic classical Tafsirs, please acquire the original printed book.'}
+                </p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <a href="${PORO_BOOK_METADATA.rokomariUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); border: none; font-weight: 700; padding: 8px 16px; display: inline-flex; align-items: center; gap: 6px;">
+                  <span>🛒</span> <span>${lang === 'bn' ? 'রকমারি থেকে অর্ডার করুন' : 'Order on Rokomari'}</span> <span>↗️</span>
+                </a>
+              </div>
+            </div>
           </article>
         </div>
-
-        <!-- MODE 2: ORIGINAL BOOK SCAN PDF EMBED -->
-        <div id="poro-pdf-view" style="${initialMode === 'pdf' ? 'display: block;' : 'display: none;'}">
-          <div class="card" style="padding: var(--space-4); margin-bottom: var(--space-6); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); flex-wrap: wrap; gap: 8px;">
-              <div>
-                <div style="font-size: var(--text-base); font-weight: 700; color: var(--color-text-primary); display: flex; align-items: center; gap: 8px;">
-                  <span>📄</span> <span>${chapter.titleBangla}</span>
-                  <span style="font-size: 11px; font-weight: 600; color: var(--color-quran); background: var(--color-quran-bg); padding: 2px 8px; border-radius: var(--radius-full);">
-                    পৃষ্ঠা ${chapter.pages}
-                  </span>
-                </div>
-                <div style="font-size: 11px; color: var(--color-text-muted); margin-top: 2px;">
-                  ১৮৪ পৃষ্ঠার মূল মুদ্রিত বই • সরোবর প্রকাশন (সংকলন: ওমর আল জাবির)
-                </div>
-              </div>
-
-              <div style="display: flex; gap: 6px;">
-                <a href="/books/poro.pdf#page=${startPage}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary">
-                  <span>↗️</span> <span>${lang === 'bn' ? 'নতুন ট্যাবে খুলুন' : 'Open in New Tab'}</span>
-                </a>
-                <a href="/books/poro.pdf" download="poro.pdf" class="btn btn-sm btn-primary">
-                  <span>📥</span> <span>${lang === 'bn' ? 'সম্পূর্ণ বই ডাউনলোড' : 'Download Book'}</span>
-                </a>
-              </div>
-            </div>
-
-            <!-- Responsive PDF Iframe Container -->
-            <div style="position: relative; width: 100%; border-radius: var(--radius-xl); overflow: hidden; background: #27272A; box-shadow: var(--shadow-lg);">
-              <iframe 
-                id="poro-chapter-iframe" 
-                src="/books/poro.pdf#page=${startPage}&toolbar=1&navpanes=1" 
-                class="pdf-viewer-frame" 
-                style="width: 100%; height: 85vh; border: none;" 
-                title="${chapter.titleBangla}">
-              </iframe>
-            </div>
-
-            <!-- Fallback note -->
-            <div style="margin-top: var(--space-3); font-size: 11px; color: var(--color-text-muted); text-align: center;">
-              ${lang === 'bn' 
-                ? 'যদি ব্রাউজারে ফ্রেম লোড হতে সমস্যা হয়, তবে ওপরের "নতুন ট্যাবে খুলুন" বাটনে ক্লিক করে সরাসরি PDF ওপেন করুন।' 
-                : 'If your browser does not embed PDF preview, click "Open in New Tab" above.'}
-            </div>
-
-            <!-- Chapter Navigation in PDF Mode -->
-            <nav class="poro-ch-nav-footer" style="margin-top: var(--space-6);">
-              ${prevChapter ? `
-                <a href="#/${lang}/poro/${prevChapter.id}?mode=pdf" class="poro-nav-prev-card">
-                  <span class="nav-dir">← ${lang === 'bn' ? 'পূর্ববর্তী অধ্যায় (PDF)' : 'Previous Chapter'}</span>
-                  <span class="nav-title">${lang === 'bn' ? prevChapter.titleBangla : prevChapter.titleEnglish}</span>
-                </a>
-              ` : '<div style="flex:1;"></div>'}
-
-              <div class="poro-nav-center">
-                <a href="#/${lang}/poro" class="btn btn-secondary btn-sm">
-                  <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DPoro}</span>
-                  <span>${lang === 'bn' ? 'সূচিপত্র' : 'All Chapters'}</span>
-                </a>
-              </div>
-
-              ${nextChapter ? `
-                <a href="#/${lang}/poro/${nextChapter.id}?mode=pdf" class="poro-nav-next-card">
-                  <span class="nav-dir">${lang === 'bn' ? 'পরবর্তী অধ্যায় (PDF)' : 'Next Chapter'} →</span>
-                  <span class="nav-title">${lang === 'bn' ? nextChapter.titleBangla : nextChapter.titleEnglish}</span>
-                </a>
-              ` : '<div style="flex:1;"></div>'}
-            </nav>
-          </div>
-        </div>
-
       </div>
     </div>
   `;
@@ -277,26 +225,6 @@ function formatContentParagraphs(text) {
 export function bindPoroChapterEvents() {
   const container = document.getElementById('poro-reader-container');
   const article = document.getElementById('poro-article-content');
-
-  // Dual Mode Switcher
-  const digitalTab = document.getElementById('poro-tab-digital');
-  const pdfTab = document.getElementById('poro-tab-pdf');
-  const digitalView = document.getElementById('poro-digital-view');
-  const pdfView = document.getElementById('poro-pdf-view');
-
-  digitalTab?.addEventListener('click', () => {
-    digitalTab.classList.add('active');
-    pdfTab?.classList.remove('active');
-    if (digitalView) digitalView.style.display = 'block';
-    if (pdfView) pdfView.style.display = 'none';
-  });
-
-  pdfTab?.addEventListener('click', () => {
-    pdfTab.classList.add('active');
-    digitalTab?.classList.remove('active');
-    if (digitalView) digitalView.style.display = 'none';
-    if (pdfView) pdfView.style.display = 'block';
-  });
 
   // Font Size Controls
   let currentFontSize = 18;

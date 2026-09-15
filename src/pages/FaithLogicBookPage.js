@@ -41,7 +41,7 @@ export function renderFaithLogicBookPage(params = {}) {
 
   // Check URL query for mode
   const hash = window.location.hash;
-  const initialMode = hash.includes('mode=pdf') ? 'pdf' : 'digital';
+  const initialMode = hash.includes('mode=info') ? 'info' : 'digital';
 
   const isSajid1 = book.id === 'sajid-1';
   const bookIcon = isSajid1 ? Icon3DBookSajid1 : Icon3DBookSajid2;
@@ -100,22 +100,23 @@ export function renderFaithLogicBookPage(params = {}) {
             <div><strong>${isBn ? 'অধ্যায়:' : 'Chapters:'}</strong> ${book.totalChapters}</div>
           </div>
 
-          <!-- Dual Mode Switcher & Download -->
+          <!-- Dual Mode Switcher & Official Acquisition -->
           <div style="display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap;">
             <div class="reader-mode-tabs" role="tablist">
               <button class="reader-mode-tab ${initialMode === 'digital' ? 'active' : ''}" id="tab-btn-digital" data-mode="digital">
                 <span>📖</span>
-                <span>${isBn ? 'ডিজিটাল রিডার' : 'Digital Reader'}</span>
+                <span>${isBn ? 'ডিজিটাল স্টাডি রিডার' : 'Digital Study Reader'}</span>
               </button>
-              <button class="reader-mode-tab ${initialMode === 'pdf' ? 'active' : ''}" id="tab-btn-pdf" data-mode="pdf">
-                <span>📄</span>
-                <span>${isBn ? 'অরিজিনাল PDF ভিউয়ার' : 'Original PDF'}</span>
+              <button class="reader-mode-tab ${initialMode === 'info' ? 'active' : ''}" id="tab-btn-info" data-mode="info">
+                <span>ℹ️</span>
+                <span>${isBn ? 'বই পরিচিতি ও স্বত্বাধিকার' : 'Book Info & Ethics'}</span>
               </button>
             </div>
 
-            <a href="${book.pdfUrl}" download="${book.id}.pdf" class="btn-ghost" style="font-size: var(--text-xs); padding: 6px 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--color-border);" title="${isBn ? 'সম্পূর্ণ বইয়ের PDF ডাউনলোড করুন' : 'Download Full Book PDF'}">
-              <span>📥</span>
-              <span>${isBn ? 'PDF ডাউনলোড' : 'Download PDF'}</span>
+            <a href="${book.rokomariUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary" style="font-size: var(--text-xs); padding: 7px 16px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #059669 0%, #047857 100%); border: none; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3); font-weight: 700;" title="${isBn ? 'রকমারি থেকে মূল বই সংগ্রহ করুন' : 'Order Official Book on Rokomari'}">
+              <span>🛒</span>
+              <span>${isBn ? 'রকমারি থেকে সংগ্রহ' : 'Order on Rokomari'}</span>
+              <span>↗️</span>
             </a>
           </div>
         </div>
@@ -249,8 +250,10 @@ export function renderFaithLogicBookPage(params = {}) {
                 </a>
               ` : `<div></div>`}
 
-              <a href="#/${lang}/faith-and-logic/${book.id}?mode=pdf" class="btn-ghost" style="font-size: var(--text-xs); text-decoration: none; border: 1px solid var(--color-border);">
-                📄 ${isBn ? 'এই অধ্যায়টি PDF-এ দেখুন' : 'View in PDF'}
+              <a href="${book.rokomariUrl}" target="_blank" rel="noopener noreferrer" class="btn-ghost" style="font-size: var(--text-xs); text-decoration: none; border: 1px solid var(--color-border); display: inline-flex; align-items: center; gap: 4px;">
+                <span>🛒</span>
+                <span>${isBn ? 'মূল হার্ডকপি সংগ্রহ করুন' : 'Get Official Hardcopy'}</span>
+                <span>↗️</span>
               </a>
 
               ${nextChapter ? `
@@ -264,47 +267,104 @@ export function renderFaithLogicBookPage(params = {}) {
         </div>
       </div>
 
-      <!-- MAIN CONTENT: ORIGINAL PDF VIEWER CONTAINER -->
-      <div id="view-pdf-mode" style="${initialMode === 'pdf' ? 'display: block;' : 'display: none;'}">
-        <div class="card" style="padding: var(--space-4); margin-bottom: var(--space-6);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); flex-wrap: wrap; gap: var(--space-2);">
+      <!-- MAIN CONTENT: OFFICIAL BOOK INFO & COPYRIGHT COMPLIANCE CONTAINER -->
+      <div id="view-info-mode" style="${initialMode === 'info' ? 'display: block;' : 'display: none;'}">
+        <div class="card" style="padding: var(--space-6); margin-bottom: var(--space-6); border: 1px solid var(--color-border);">
+          <!-- Header and Acquisition Alert -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-6); flex-wrap: wrap; gap: var(--space-4);">
             <div>
-              <h3 style="font-size: var(--text-base); font-weight: 700; color: var(--color-text-primary); display: flex; align-items: center; gap: 8px;">
-                <span>📄</span>
-                <span>${isBn ? `${book.titleBangla} — অরিজিনাল PDF ভিউয়ার` : `${book.titleEnglish} — Original PDF`}</span>
+              <div style="display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #059669; background: rgba(5, 150, 105, 0.1); padding: 4px 10px; border-radius: var(--radius-full); margin-bottom: 8px;">
+                <span>🛡️</span>
+                <span>${isBn ? 'অফিসিয়াল প্রকাশনা ও মেধাস্বত্ব স্বীকৃতি' : 'Official Publication & Copyright Compliance'}</span>
+              </div>
+              <h3 style="font-size: var(--text-xl); font-weight: 800; color: var(--color-text-primary); margin-bottom: 4px;">
+                ${isBn ? `${book.titleBangla} — মূল গ্রন্থ পরিচিতি ও সংগ্রহ` : `${book.titleEnglish} — Official Publication Overview`}
               </h3>
-              <p style="font-size: var(--text-xs); color: var(--color-text-muted);">
-                ${isBn ? 'বইটির সম্পূর্ণ মূল স্ক্যানকৃত বা মুদ্রিত পৃষ্ঠা এখানে ব্রাউজারেই সরাসরি পড়ুন' : 'Read the complete original publication directly inside your browser'}
+              <p style="font-size: var(--text-sm); color: var(--color-text-secondary); max-width: 650px;">
+                ${isBn ? book.descriptionBangla : book.descriptionEnglish}
               </p>
             </div>
 
-            <div style="display: flex; gap: var(--space-2);">
-              <a href="${book.pdfUrl}" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="font-size: var(--text-xs); padding: 8px 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+            <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+              <a href="${book.rokomariUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary" style="font-size: var(--text-sm); padding: 10px 20px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #059669 0%, #047857 100%); border: none; font-weight: 700; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);">
+                <span>🛒</span>
+                <span>${isBn ? 'রকমারি থেকে অর্ডার করুন' : 'Order on Rokomari'}</span>
                 <span>↗️</span>
-                <span>${isBn ? 'নতুন ট্যাবে খুলুন' : 'Open in New Tab'}</span>
               </a>
-              <a href="${book.pdfUrl}" download="${book.id}.pdf" class="btn-primary" style="font-size: var(--text-xs); padding: 8px 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
-                <span>📥</span>
-                <span>${isBn ? 'ডাউনলোড PDF' : 'Download PDF'}</span>
+              <a href="${book.publisherUrl}" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="font-size: var(--text-sm); padding: 10px 16px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                <span>🏢</span>
+                <span>${isBn ? 'প্রকাশনীর অফিসিয়াল পেজ' : 'Publisher Store'}</span>
+                <span>↗️</span>
               </a>
             </div>
           </div>
 
-          <!-- Embedded PDF Iframe -->
-          <div style="position: relative; width: 100%; border-radius: var(--radius-xl); overflow: hidden; background: #27272A;">
-            <iframe 
-              id="book-pdf-iframe" 
-              src="${book.pdfUrl}#toolbar=1&navpanes=1" 
-              class="pdf-viewer-frame" 
-              title="${book.titleBangla}">
-            </iframe>
+          <!-- Feature Grid -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-6);">
+            <!-- Book Specs Card -->
+            <div style="background: var(--color-bg-alt); padding: var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--color-border-light);">
+              <h4 style="font-size: var(--text-sm); font-weight: 700; color: var(--color-text-primary); margin-bottom: var(--space-3); display: flex; align-items: center; gap: 6px;">
+                <span>📋</span> <span>${isBn ? 'গ্রন্থের তথ্যাবলী' : 'Book Specifications'}</span>
+              </h4>
+              <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: var(--text-xs);">
+                <li style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border-light); padding-bottom: 4px;">
+                  <span style="color: var(--color-text-muted);">${isBn ? 'মূল লেখক:' : 'Author:'}</span>
+                  <span style="font-weight: 700; color: var(--color-text-primary);">${book.author}</span>
+                </li>
+                <li style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border-light); padding-bottom: 4px;">
+                  <span style="color: var(--color-text-muted);">${isBn ? 'প্রকাশক:' : 'Publisher:'}</span>
+                  <span style="font-weight: 700; color: var(--color-text-primary);">${book.publisher}</span>
+                </li>
+                <li style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border-light); padding-bottom: 4px;">
+                  <span style="color: var(--color-text-muted);">${isBn ? 'প্রকাশকাল:' : 'Year:'}</span>
+                  <span style="font-weight: 700; color: var(--color-text-primary);">${book.year}</span>
+                </li>
+                <li style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border-light); padding-bottom: 4px;">
+                  <span style="color: var(--color-text-muted);">${isBn ? 'মোট পৃষ্ঠা:' : 'Pages:'}</span>
+                  <span style="font-weight: 700; color: var(--color-text-primary);">${book.totalPages} ${isBn ? 'পৃষ্ঠা' : 'pages'}</span>
+                </li>
+                <li style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--color-text-muted);">${isBn ? 'মোট অধ্যায়:' : 'Chapters:'}</span>
+                  <span style="font-weight: 700; color: var(--color-text-primary);">${book.totalChapters} ${isBn ? 'টি অধ্যায়' : 'chapters'}</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Why Buy Physical Book Card -->
+            <div style="background: var(--color-bg-alt); padding: var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--color-border-light);">
+              <h4 style="font-size: var(--text-sm); font-weight: 700; color: var(--color-text-primary); margin-bottom: var(--space-3); display: flex; align-items: center; gap: 6px;">
+                <span>✨</span> <span>${isBn ? 'কেন মূল বইটি সংগ্রহ করবেন?' : 'Why Own the Hardcover?'}</span>
+              </h4>
+              <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: var(--text-xs); color: var(--color-text-secondary); line-height: 1.5;">
+                <li style="display: flex; gap: 6px;">
+                  <span style="color: #059669;">✔</span>
+                  <span>${isBn ? 'লেখক আরিফ আজাদের মূল প্রামাণ্য লেখনী ও পূর্ণাঙ্গ সংলাপের গভীর পাঠ।' : 'Full authentic text, footnotes, and dialogues by author Arif Azad.'}</span>
+                </li>
+                <li style="display: flex; gap: 6px;">
+                  <span style="color: #059669;">✔</span>
+                  <span>${isBn ? 'বই পড়ার অনন্য অনুভূতি এবং পারিবারিক ব্যক্তিগত বুকশেলফে সংরক্ষণের সুযোগ।' : 'Tactile reading satisfaction and building a proud Islamic home library.'}</span>
+                </li>
+                <li style="display: flex; gap: 6px;">
+                  <span style="color: #059669;">✔</span>
+                  <span>${isBn ? 'ইসলামিক বুদ্ধিবৃত্তিক গবেষণা ও প্রকাশনাকে অর্থনৈতিকভাবে সমর্থন ও উৎসাহ দান।' : 'Directly supporting Islamic scholarship, research, and independent publishing.'}</span>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          <!-- PDF Fallback Note -->
-          <div style="margin-top: var(--space-4); font-size: var(--text-xs); color: var(--color-text-muted); text-align: center;">
-            ${isBn 
-              ? 'যদি আপনার ব্রাউজারে PDF ফ্রেমটি সরাসরি লোড না হয়, তবে উপরের "নতুন ট্যাবে খুলুন" বা "ডাউনলোড PDF" বাটনে ক্লিক করুন।' 
-              : 'If your browser does not render PDF frames inline, click "Open in New Tab" or "Download PDF" above.'}
+          <!-- Intellectual Property & Islamic Ethics Disclaimer -->
+          <div style="background: rgba(5, 150, 105, 0.05); border: 1px solid rgba(5, 150, 105, 0.2); border-radius: var(--radius-lg); padding: var(--space-4) var(--space-5);">
+            <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--color-quran-dark); margin-bottom: 6px; font-size: var(--text-sm);">
+              <span>⚖️</span>
+              <span>${isBn ? 'কপিরাইট ও স্বত্বাধিকার নোটিশ (Copyright & Ethics Statement)' : 'Copyright & Publishing Ethics Statement'}</span>
+            </div>
+            <p style="font-size: var(--text-xs); color: var(--color-text-secondary); line-height: 1.7; margin: 0;">
+              ${isBn ? book.copyrightNoticeBangla : book.copyrightNoticeEnglish}
+              <br />
+              ${isBn 
+                ? 'ইক্বরা (Eqra) একটি অলাভজনক জ্ঞানচর্চা উদ্যোগ। আমরা লেখক ও প্রকাশকের কপিরাইট ও মেধাস্বত্বকে শ্রদ্ধার সাথে রক্ষা করি। তাই সম্পূর্ণ বইয়ের পাইরেটেড পিডিএফ আপলোড না করে—বইটির যুক্তি সারসংক্ষেপ, নাস্তিকতার বিরুদ্ধে সাজিদের যুক্তিধারা এবং শিক্ষণীয় নির্যাস পাঠ-সহায়িকা হিসেবে সাজিয়ে তুলেছি। পাঠকদের মূল মুদ্রিত গ্রন্থটি ক্রয় করার বিনীত অনুরোধ করা হচ্ছে।' 
+                : 'Eqra is a dedicated learning platform. We strictly respect copyright laws and Islamic ethics regarding intellectual property. Rather than distributing copyrighted digital PDFs, Eqra offers chapter logic matrices, argument breakdowns, and study summaries. Readers are encouraged to acquire the original printed books.'}
+            </p>
           </div>
         </div>
       </div>
@@ -314,27 +374,27 @@ export function renderFaithLogicBookPage(params = {}) {
 
 export function bindFaithLogicBookEvents() {
   const digitalView = document.getElementById('view-digital-mode');
-  const pdfView = document.getElementById('view-pdf-mode');
+  const infoView = document.getElementById('view-info-mode');
   const tabDigital = document.getElementById('tab-btn-digital');
-  const tabPdf = document.getElementById('tab-btn-pdf');
+  const tabInfo = document.getElementById('tab-btn-info');
 
   // Mode switching
   function setMode(mode) {
-    if (mode === 'pdf') {
+    if (mode === 'info') {
       if (digitalView) digitalView.style.display = 'none';
-      if (pdfView) pdfView.style.display = 'block';
+      if (infoView) infoView.style.display = 'block';
       tabDigital?.classList.remove('active');
-      tabPdf?.classList.add('active');
+      tabInfo?.classList.add('active');
     } else {
       if (digitalView) digitalView.style.display = 'block';
-      if (pdfView) pdfView.style.display = 'none';
-      tabPdf?.classList.remove('active');
+      if (infoView) infoView.style.display = 'none';
+      tabInfo?.classList.remove('active');
       tabDigital?.classList.add('active');
     }
   }
 
   tabDigital?.addEventListener('click', () => setMode('digital'));
-  tabPdf?.addEventListener('click', () => setMode('pdf'));
+  tabInfo?.addEventListener('click', () => setMode('info'));
 
   // Font Size Adjuster in Digital Reader
   let currentZoom = 100;
