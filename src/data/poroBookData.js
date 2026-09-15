@@ -18,7 +18,7 @@ export const PORO_BOOK_METADATA = {
   publisher: 'সরোবর প্রকাশন (Shorobor Prokashon)',
   isbn: '978-984-92223-0-9',
   totalPages: 184,
-  rokomariUrl: 'https://www.rokomari.com/book/154919/poro',
+  rokomariUrl: 'https://rkmri.co/eANeSATelpoR/',
   shoroborUrl: 'https://shorobor.biz/',
   shoroborFacebook: 'https://www.facebook.com/shorobor.org',
   copyrightNoticeBangla: '‘পড়ো’ গ্রন্থটির সর্বস্বত্ব সংকলক ওমর আল জাবির ও সরোবর প্রকাশনের নিকট সংরক্ষিত। ইক্বরা (Eqra) প্ল্যাটফর্মটি একটি উন্মুক্ত কুরআন অধ্যয়ন সহায়িকা হিসেবে অধ্যায়গুলোর সারসংক্ষেপ ও শিক্ষণীয় পয়েন্ট পরিবেশন করেছে। পূর্ণাঙ্গ বই পড়ার জন্য অনুগ্রহ করে মূল মুদ্রিত কপি সংগ্রহ করুন।',
@@ -27,7 +27,7 @@ export const PORO_BOOK_METADATA = {
 };
 
 export function getPoroPdfUrl(page) {
-  return 'https://www.rokomari.com/book/154919/poro';
+  return 'https://rkmri.co/eANeSATelpoR/';
 }
 
 export function getChapterStartPage(chapterOrId) {
