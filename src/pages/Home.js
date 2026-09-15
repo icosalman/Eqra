@@ -10,6 +10,7 @@ import { DUAS_DATA } from '../data/duas.js';
 import { HADITHS_DATA } from '../data/hadiths.js';
 import { audioPlayer } from '../components/AudioPlayer.js';
 import { formatColorCodedQuran, bindTajweedInteractions } from '../utils/quranColors.js';
+import { renderQuran3DBook, bindQuran3DBook } from '../components/Quran3DBook.js';
 import { 
   renderSurah3DBadge, 
   Icon3DQuran, 
@@ -78,6 +79,9 @@ export function renderHomePage() {
             </a>
           </div>
         </section>
+
+        <!-- Scroll Driven 3D Quran -->
+        ${renderQuran3DBook(lang)}
 
         <!-- Daily Featured Verse (আজকের আয়াত) -->
         <section class="section">
@@ -257,6 +261,9 @@ export function renderHomePage() {
 }
 
 export function bindHomeEvents() {
+  // Scroll driven 3D Quran book
+  bindQuran3DBook();
+
   // Hero search trigger
   const heroSearch = document.getElementById('hero-search-trigger');
   if (heroSearch) {

@@ -3,6 +3,8 @@
    A Quran Knowledge Platform
    ============================================ */
 
+@import './quran3d.css';
+
 /* ---------- Indo-Pak Quranic Web Fonts ---------- */
 @font-face {
   font-family: 'AlQuranIndoPak';
