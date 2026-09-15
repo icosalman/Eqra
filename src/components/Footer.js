@@ -50,10 +50,13 @@ export function renderFooter() {
               </a>
               <a href="#/${lang}/umrah/guide" class="footer-link">${lang === 'bn' ? 'উমরাহ পূর্ণাঙ্গ গাইড' : 'Step-by-Step Umrah'}</a>
               <a href="#/${lang}/umrah/checklist" class="footer-link">${lang === 'bn' ? 'প্রস্তুতি চেকলিস্ট' : 'Interactive Checklist'}</a>
-              <a href="#/${lang}/umrah/duas" class="footer-link">${lang === 'bn' ? 'উমরাহর সহীহ দোয়া' : 'Authentic Duas'}</a>
+              <a href="#/${lang}/understand-quran" class="footer-link" style="color: #0284C7; font-weight: 700;">
+                📊 ${lang === 'bn' ? 'কুরআন ৫০% ও ৬৫% শিক্ষা' : 'Understand 50% - 65% Quran'}
+              </a>
+              <a href="#/${lang}/understand-quran/book-1" class="footer-link">${lang === 'bn' ? '১ম খণ্ড: ৫০% কুরআন শিক্ষা' : 'Book 1: 50% Vocabulary'}</a>
+              <a href="#/${lang}/understand-quran/book-2" class="footer-link">${lang === 'bn' ? '২য় খণ্ড: ৬৫% শব্দভাণ্ডার' : 'Book 2: 65% Vocabulary'}</a>
               <a href="#/${lang}/hadith" class="footer-link">${lang === 'bn' ? 'সহীহ হাদিস সমগ্র' : 'Sahih Hadith'}</a>
               <a href="#/${lang}/dua" class="footer-link">${lang === 'bn' ? 'কুরআনের দোয়া সমগ্র' : 'Quranic Duas'}</a>
-              <a href="#/${lang}/bookmarks" class="footer-link">${lang === 'bn' ? 'সংরক্ষিত আয়াত ও দোয়া' : 'Saved Bookmarks'}</a>
               <a href="#/${lang}/about" class="footer-link">${t('navAbout')}</a>
             </div>
           </div>

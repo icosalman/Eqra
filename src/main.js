@@ -24,6 +24,8 @@ import { renderFaithLogicIndex, bindFaithLogicIndexEvents } from './pages/FaithL
 import { renderFaithLogicBookPage, bindFaithLogicBookEvents } from './pages/FaithLogicBookPage.js';
 import { renderUmrahIndexPage, bindUmrahIndexEvents } from './pages/UmrahIndex.js';
 import { renderUmrahSubPage, bindUmrahSubPageEvents } from './pages/UmrahPage.js';
+import { renderUnderstandQuranIndex, bindUnderstandQuranIndexEvents } from './pages/UnderstandQuranIndex.js';
+import { renderUnderstandQuranBookPage, bindUnderstandQuranBookEvents } from './pages/UnderstandQuranBookPage.js';
 
 // Initialize Theme
 const savedTheme = localStorage.getItem('eqra-theme') || 'light';
@@ -132,6 +134,12 @@ router
     params,
     query
   ))
+
+  // Understand Quran 50% & 65% (Arabic 101)
+  .on('/:lang/understand-quran', (params, query) => loadPage(renderUnderstandQuranIndex, bindUnderstandQuranIndexEvents, params, query))
+  .on('/:lang/understand-quran/', (params, query) => loadPage(renderUnderstandQuranIndex, bindUnderstandQuranIndexEvents, params, query))
+  .on('/:lang/understand-quran/:book', (params, query) => loadPage(renderUnderstandQuranBookPage, bindUnderstandQuranBookEvents, params, query))
+  .on('/:lang/understand-quran/:book/:list', (params, query) => loadPage(renderUnderstandQuranBookPage, bindUnderstandQuranBookEvents, params, query))
 
   // 404 Fallback
   .on('*', () => {

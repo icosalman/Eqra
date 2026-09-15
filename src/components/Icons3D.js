@@ -1046,3 +1046,63 @@ export const Icon3DSai = `
     <line x1="8" y1="38" x2="40" y2="38" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"/>
   </svg>
 `;
+
+/**
+ * 3D Vocabulary Flashcards Icon
+ */
+export const Icon3DVocab = `
+  <svg viewBox="0 0 48 48" width="22" height="22" class="icon-3d-svg">
+    <defs>
+      <linearGradient id="vocab-card1" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#38BDF8"/>
+        <stop offset="100%" stop-color="#0284C7"/>
+      </linearGradient>
+      <linearGradient id="vocab-card2" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#34D399"/>
+        <stop offset="100%" stop-color="#059669"/>
+      </linearGradient>
+      <filter id="vocab-shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2.5" stdDeviation="2" flood-color="#0284C7" flood-opacity="0.3"/>
+      </filter>
+    </defs>
+    <g filter="url(#vocab-shadow)">
+      <!-- Back Card -->
+      <rect x="14" y="6" width="26" height="34" rx="4" fill="url(#vocab-card2)" transform="rotate(8 27 23)" opacity="0.75"/>
+      <!-- Front Card -->
+      <rect x="8" y="8" width="26" height="34" rx="4" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+      <rect x="12" y="12" width="18" height="14" rx="2" fill="url(#vocab-card1)"/>
+      <text x="21" y="23" font-family="'Inter', sans-serif" font-size="10" font-weight="900" fill="#FFFFFF" text-anchor="middle">50%</text>
+      <line x1="12" y1="30" x2="28" y2="30" stroke="#0F172A" stroke-width="2" stroke-linecap="round"/>
+      <line x1="12" y1="35" x2="22" y2="35" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/>
+    </g>
+  </svg>
+`;
+
+/**
+ * 3D Percentage Pie Chart Icon
+ */
+export const Icon3DPercentPie = `
+  <svg viewBox="0 0 48 48" width="22" height="22" class="icon-3d-svg">
+    <defs>
+      <linearGradient id="pie-blue" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#38BDF8"/>
+        <stop offset="100%" stop-color="#0284C7"/>
+      </linearGradient>
+      <linearGradient id="pie-amber" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FBBF24"/>
+        <stop offset="100%" stop-color="#D97706"/>
+      </linearGradient>
+      <filter id="pie-shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2.5" stdDeviation="2" flood-color="#0284C7" flood-opacity="0.3"/>
+      </filter>
+    </defs>
+    <g filter="url(#pie-shadow)">
+      <circle cx="24" cy="24" r="17" fill="url(#pie-amber)"/>
+      <!-- 50% Slice (Blue) -->
+      <path d="M 24,7 A 17,17 0 0,1 24,41 L 24,24 Z" fill="url(#pie-blue)"/>
+      <circle cx="24" cy="24" r="6" fill="#0F172A"/>
+      <text x="24" y="27" font-family="'Inter', sans-serif" font-size="7" font-weight="900" fill="#FFFFFF" text-anchor="middle">%</text>
+    </g>
+  </svg>
+`;
+
