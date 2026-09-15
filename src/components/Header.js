@@ -17,7 +17,10 @@ import {
   Icon3DSearch, 
   Icon3DMoon, 
   Icon3DSun, 
-  Icon3DAbout 
+  Icon3DAbout,
+  Icon3DLogic,
+  Icon3DBookSajid1,
+  Icon3DBookSajid2
 } from './Icons3D.js';
 
 export function renderHeader() {
@@ -58,6 +61,38 @@ export function renderHeader() {
             <span>${t('navPoro')}</span>
             <span class="poro-nav-badge">NEW</span>
           </a>
+          <!-- Islam & Logic (Faith & Logic) Dropdown -->
+          <div class="nav-item-dropdown ${currentPath.includes('/faith-and-logic') ? 'active' : ''}">
+            <a href="#/${lang}/faith-and-logic" class="nav-link ${currentPath.includes('/faith-and-logic') ? 'active' : ''}">
+              <span class="nav-link-icon-3d">${Icon3DLogic}</span>
+              <span>${lang === 'bn' ? 'ইসলাম ও যুক্তি' : 'Faith & Logic'}</span>
+              <span class="dropdown-chevron">▾</span>
+            </a>
+            <div class="nav-dropdown-menu">
+              <a href="#/${lang}/faith-and-logic" class="dropdown-item ${currentPath === `#/${lang}/faith-and-logic` ? 'active' : ''}">
+                <span class="dropdown-item-icon">${Icon3DLogic}</span>
+                <div class="dropdown-item-text">
+                  <span class="dropdown-item-title">${lang === 'bn' ? 'ইসলাম ও যুক্তি হাব' : 'Faith & Logic Hub'}</span>
+                  <span class="dropdown-item-desc">${lang === 'bn' ? 'সকল বই ও যুক্তিশাস্ত্র' : 'Overview & Logic Matrix'}</span>
+                </div>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#/${lang}/faith-and-logic/sajid-1" class="dropdown-item ${currentPath.includes('/sajid-1') ? 'active' : ''}">
+                <span class="dropdown-item-icon">${Icon3DBookSajid1}</span>
+                <div class="dropdown-item-text">
+                  <span class="dropdown-item-title">${lang === 'bn' ? 'প্যারাডক্সিক্যাল সাজিদ ১' : 'Paradoxical Sajid 1'}</span>
+                  <span class="dropdown-item-desc">${lang === 'bn' ? 'আরিফ আজাদ • গার্ডিয়ান প্রকাশনী' : 'Arif Azad • Guardian Publications'}</span>
+                </div>
+              </a>
+              <a href="#/${lang}/faith-and-logic/sajid-2" class="dropdown-item ${currentPath.includes('/sajid-2') ? 'active' : ''}">
+                <span class="dropdown-item-icon">${Icon3DBookSajid2}</span>
+                <div class="dropdown-item-text">
+                  <span class="dropdown-item-title">${lang === 'bn' ? 'প্যারাডক্সিক্যাল সাজিদ ২' : 'Paradoxical Sajid 2'}</span>
+                  <span class="dropdown-item-desc">${lang === 'bn' ? 'আরিফ আজাদ • সমকালীন প্রকাশন' : 'Arif Azad • Somokalin Prokashon'}</span>
+                </div>
+              </a>
+            </div>
+          </div>
           <a href="#/${lang}/bookmarks" class="nav-link ${currentPath.includes('/bookmarks') ? 'active' : ''}">
             <span class="nav-link-icon-3d">${Icon3DBookmark}</span>
             <span>${lang === 'bn' ? 'সংরক্ষিত' : 'Saved'}</span>
@@ -106,6 +141,22 @@ export function renderHeader() {
         <a href="#/${lang}/poro" class="mobile-nav-link">
           <span class="nav-link-icon-3d">${Icon3DPoro}</span> <span>${t('navPoro')} (${lang === 'bn' ? 'বই' : 'Book'})</span>
         </a>
+        <!-- Mobile Islam & Logic Section -->
+        <div class="mobile-nav-group">
+          <div class="mobile-nav-heading">
+            <span class="nav-link-icon-3d" style="font-size:16px;">${Icon3DLogic}</span>
+            <span>${lang === 'bn' ? 'ইসলাম ও যুক্তি' : 'Faith & Logic'}</span>
+          </div>
+          <a href="#/${lang}/faith-and-logic" class="mobile-nav-sublink ${currentPath === `#/${lang}/faith-and-logic` ? 'active' : ''}">
+            <span>🏛️</span> <span>${lang === 'bn' ? 'মূল সূচিপত্র ও লজিক হাব' : 'Logic Hub & Overview'}</span>
+          </a>
+          <a href="#/${lang}/faith-and-logic/sajid-1" class="mobile-nav-sublink ${currentPath.includes('/sajid-1') ? 'active' : ''}">
+            <span>📕</span> <span>${lang === 'bn' ? 'প্যারাডক্সিক্যাল সাজিদ ১ (PDF ও রিডার)' : 'Paradoxical Sajid 1 (PDF & Reader)'}</span>
+          </a>
+          <a href="#/${lang}/faith-and-logic/sajid-2" class="mobile-nav-sublink ${currentPath.includes('/sajid-2') ? 'active' : ''}">
+            <span>📗</span> <span>${lang === 'bn' ? 'প্যারাডক্সিক্যাল সাজিদ ২ (PDF ও রিডার)' : 'Paradoxical Sajid 2 (PDF & Reader)'}</span>
+          </a>
+        </div>
         <a href="#/${lang}/bookmarks" class="mobile-nav-link">
           <span class="nav-link-icon-3d">${Icon3DBookmark}</span> <span>${lang === 'bn' ? 'সংরক্ষিত আয়াত ও দোয়া' : 'Saved Bookmarks'} (${bookmarksCount})</span>
         </a>

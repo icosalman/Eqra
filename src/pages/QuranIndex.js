@@ -93,7 +93,7 @@ function renderSurahCards(list, lang) {
         </div>
       </div>
       <div style="text-align: right; flex-shrink: 0;">
-        <div class="surah-name-arabic">${s.name}</div>
+        <div class="surah-name-arabic font-indopak">${s.name}</div>
         <div class="surah-ayah-count">${s.ayahs} ${t('ayahPlural')}</div>
       </div>
     </a>

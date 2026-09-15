@@ -834,3 +834,96 @@ export const Icon3DMetaphor = `
   </svg>
 `;
 
+/**
+ * 3D Faith & Logic Icon (Balance Scale of Wisdom & Light)
+ */
+export const Icon3DLogic = `
+  <svg viewBox="0 0 48 48" width="22" height="22" class="icon-3d-svg">
+    <defs>
+      <linearGradient id="scale-gold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FDE047"/>
+        <stop offset="60%" stop-color="#D97706"/>
+        <stop offset="100%" stop-color="#92400E"/>
+      </linearGradient>
+      <radialGradient id="logic-glow" cx="50%" cy="30%" r="50%">
+        <stop offset="0%" stop-color="#60A5FA"/>
+        <stop offset="100%" stop-color="#1D4ED8"/>
+      </radialGradient>
+      <filter id="scale-shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#78350F" flood-opacity="0.4"/>
+      </filter>
+    </defs>
+    <g filter="url(#scale-shadow)">
+      <!-- Center Pillar -->
+      <rect x="22" y="8" width="4" height="32" rx="2" fill="url(#scale-gold)"/>
+      <circle cx="24" cy="8" r="4.5" fill="url(#logic-glow)" stroke="#FEF08A" stroke-width="1"/>
+      <rect x="14" y="38" width="20" height="4" rx="2" fill="url(#scale-gold)"/>
+      <!-- Balance Beam -->
+      <path d="M8 15 L40 15" stroke="url(#scale-gold)" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Left Pan -->
+      <line x1="12" y1="15" x2="8" y2="25" stroke="#F59E0B" stroke-width="1.2"/>
+      <line x1="12" y1="15" x2="16" y2="25" stroke="#F59E0B" stroke-width="1.2"/>
+      <path d="M6 25 Q 12 31 18 25 Z" fill="url(#scale-gold)"/>
+      <!-- Right Pan -->
+      <line x1="36" y1="15" x2="32" y2="25" stroke="#F59E0B" stroke-width="1.2"/>
+      <line x1="36" y1="15" x2="40" y2="25" stroke="#F59E0B" stroke-width="1.2"/>
+      <path d="M30 25 Q 36 31 42 25 Z" fill="url(#scale-gold)"/>
+    </g>
+  </svg>
+`;
+
+/**
+ * 3D Paradoxical Sajid 1 Book Icon (Crimson / Night Shadow)
+ */
+export const Icon3DBookSajid1 = `
+  <svg viewBox="0 0 48 48" width="22" height="22" class="icon-3d-svg">
+    <defs>
+      <linearGradient id="sajid1-grad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#EF4444"/>
+        <stop offset="60%" stop-color="#991B1B"/>
+        <stop offset="100%" stop-color="#450A0A"/>
+      </linearGradient>
+      <filter id="sajid1-shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2.5" stdDeviation="2" flood-color="#7F1D1D" flood-opacity="0.4"/>
+      </filter>
+    </defs>
+    <g filter="url(#sajid1-shadow)">
+      <rect x="9" y="7" width="30" height="34" rx="3.5" fill="url(#sajid1-grad)"/>
+      <rect x="9" y="7" width="5" height="34" rx="2" fill="#7F1D1D"/>
+      <rect x="18" y="14" width="16" height="3.5" rx="1.5" fill="#FEF08A"/>
+      <rect x="18" y="21" width="12" height="2" rx="1" fill="#FCA5A5" opacity="0.8"/>
+      <!-- Gold Badge '1' -->
+      <circle cx="31" cy="31" r="5" fill="#F59E0B" stroke="#FEF08A" stroke-width="0.8"/>
+      <text x="31" y="34.5" font-family="'Inter', sans-serif" font-size="7.5" font-weight="900" fill="#78350F" text-anchor="middle">1</text>
+    </g>
+  </svg>
+`;
+
+/**
+ * 3D Paradoxical Sajid 2 Book Icon (Emerald Green)
+ */
+export const Icon3DBookSajid2 = `
+  <svg viewBox="0 0 48 48" width="22" height="22" class="icon-3d-svg">
+    <defs>
+      <linearGradient id="sajid2-grad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#10B981"/>
+        <stop offset="60%" stop-color="#047857"/>
+        <stop offset="100%" stop-color="#064E3B"/>
+      </linearGradient>
+      <filter id="sajid2-shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2.5" stdDeviation="2" flood-color="#064E3B" flood-opacity="0.4"/>
+      </filter>
+    </defs>
+    <g filter="url(#sajid2-shadow)">
+      <rect x="9" y="7" width="30" height="34" rx="3.5" fill="url(#sajid2-grad)"/>
+      <rect x="9" y="7" width="5" height="34" rx="2" fill="#064E3B"/>
+      <rect x="18" y="14" width="16" height="3.5" rx="1.5" fill="#FEF08A"/>
+      <rect x="18" y="21" width="12" height="2" rx="1" fill="#A7F3D0" opacity="0.8"/>
+      <!-- Gold Badge '2' -->
+      <circle cx="31" cy="31" r="5" fill="#F59E0B" stroke="#FEF08A" stroke-width="0.8"/>
+      <text x="31" y="34.5" font-family="'Inter', sans-serif" font-size="7.5" font-weight="900" fill="#78350F" text-anchor="middle">2</text>
+    </g>
+  </svg>
+`;
+
+

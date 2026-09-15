@@ -8,7 +8,9 @@ import {
   PORO_CHAPTERS, 
   PORO_LIFE_GUIDELINES, 
   PORO_SCIENCE_EXHIBITS, 
-  PORO_METAPHORS 
+  PORO_METAPHORS,
+  getPoroPdfUrl,
+  getChapterStartPage
 } from '../data/poroBookData.js';
 import { 
   Icon3DPoro, 
@@ -20,6 +22,7 @@ import {
   Icon3DTime, 
   Icon3DDocument 
 } from '../components/Icons3D.js';
+import { formatColorCodedQuran, bindTajweedInteractions } from '../utils/quranColors.js';
 
 export function renderPoroIndexPage() {
   const lang = getLang();
@@ -49,8 +52,8 @@ export function renderPoroIndexPage() {
             <span>${lang === 'bn' ? 'বিশেষ প্রদর্শনী ও অধ্যয়ন • সরোবর প্রকাশন (Shorobor Prokashon)' : 'Special Exhibition & Study • Shorobor Prokashon'}</span>
           </div>
 
-          <div class="poro-hero-arabic">
-            اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ
+          <div class="poro-hero-arabic font-indopak">
+            ${formatColorCodedQuran('اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ')}
           </div>
 
           <h1 class="poro-hero-title">
@@ -92,6 +95,14 @@ export function renderPoroIndexPage() {
               <span>📖</span>
               <span>${lang === 'bn' ? 'পড়া শুরু করুন' : 'Start Reading'}</span>
             </a>
+            <button type="button" class="poro-btn-white" id="btn-hero-open-pdf">
+              <span>📄</span>
+              <span>${lang === 'bn' ? 'অরিজিনাল PDF ভিউয়ার' : 'Original PDF'}</span>
+            </button>
+            <a href="/books/poro.pdf" download="poro.pdf" class="poro-btn-white" style="text-decoration: none;">
+              <span>📥</span>
+              <span>${lang === 'bn' ? 'PDF ডাউনলোড' : 'Download PDF'}</span>
+            </a>
             <button type="button" class="poro-btn-white" id="btn-poro-book-info">
               <span>ℹ️</span>
               <span>${lang === 'bn' ? 'বইয়ের পরিচিতি' : 'Book Info'}</span>
@@ -104,6 +115,9 @@ export function renderPoroIndexPage() {
           <div class="poro-tabs-nav" id="poro-tabs-nav">
             <button class="poro-tab-btn active" data-tab="chapters">
               <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DPoro}</span> <span>${lang === 'bn' ? 'সূচিপত্র ও অধ্যায়' : 'Chapters'}</span>
+            </button>
+            <button class="poro-tab-btn" data-tab="pdf">
+              <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DDocument}</span> <span>${lang === 'bn' ? 'অরিজিনাল PDF ভিউয়ার' : 'Original PDF'}</span>
             </button>
             <button class="poro-tab-btn" data-tab="lifecode">
               <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DSparkle}</span> <span>${lang === 'bn' ? 'কুরআনের জীবনবিধান' : 'Life Guidelines'}</span>
@@ -134,6 +148,51 @@ export function renderPoroIndexPage() {
 
           <div class="poro-chapters-grid" id="poro-chapters-container">
             ${renderChaptersCards(PORO_CHAPTERS, lang)}
+          </div>
+        </div>
+
+        <!-- TAB: Original Book PDF Viewer -->
+        <div class="poro-tab-pane" id="tab-pdf">
+          <div class="poro-pane-header">
+            <h2 class="section-title">${lang === 'bn' ? '‘পড়ো’ — সম্পূর্ণ মূল বইয়ের অরিজিনাল PDF ভিউয়ার' : '"Poro" — Complete Original Book PDF Viewer'}</h2>
+            <p class="section-subtitle">${lang === 'bn' ? '১৮৪ পৃষ্ঠার মূল মুদ্রিত বই সরাসরি ব্রাউজারে পড়ুন অথবা যেকোনো অধ্যায়ে এক ক্লিকে জাম্প করুন' : 'Read the complete 184-page original printed book directly in your browser or jump to any chapter.'}</p>
+          </div>
+
+          <!-- Quick Jump Bar to Chapters in PDF -->
+          <div class="card" style="padding: var(--space-4); margin-bottom: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); flex-wrap: wrap; gap: var(--space-2);">
+              <div style="font-weight: 700; font-size: var(--text-sm); display: flex; align-items: center; gap: 6px;">
+                <span>⚡</span> <span>${lang === 'bn' ? 'PDF-এর নির্দিষ্ট পৃষ্ঠায় সরাসরি জাম্প করুন:' : 'Jump to Chapter in PDF:'}</span>
+              </div>
+              <div style="display: flex; gap: var(--space-2);">
+                <a href="/books/poro.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary">
+                  <span>↗️</span> <span>${lang === 'bn' ? 'নতুন উইন্ডোতে খুলুন' : 'Open in New Window'}</span>
+                </a>
+                <a href="/books/poro.pdf" download="poro.pdf" class="btn btn-sm btn-primary">
+                  <span>📥</span> <span>${lang === 'bn' ? 'PDF ডাউনলোড (১৮৪ পৃষ্ঠা)' : 'Download PDF (184 Pages)'}</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Page Jump Chips for all chapters -->
+            <div style="display: flex; flex-wrap: wrap; gap: 6px;" id="pdf-jump-chips">
+              ${PORO_CHAPTERS.map(ch => `
+                <button type="button" class="btn btn-xs btn-ghost pdf-page-jump" data-page="${getChapterStartPage(ch)}" style="border: 1px solid var(--color-border); font-size: 11px; padding: 4px 8px;">
+                  ${ch.number === 0 ? (lang === 'bn' ? 'ভূমিকা (পৃ: ২)' : 'Intro (p. 2)') : (ch.number === 20 ? (lang === 'bn' ? 'উপসংহার (পৃ: ১৮৩)' : 'Outro (p. 183)') : `#${ch.number} ${ch.titleBangla.length > 20 ? ch.titleBangla.substring(0, 18) + '...' : ch.titleBangla} (পৃ: ${ch.pages.split('-')[0]})`)}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Embedded Responsive PDF Viewer Frame -->
+          <div style="position: relative; width: 100%; border-radius: var(--radius-xl); overflow: hidden; background: #27272A; box-shadow: var(--shadow-lg);">
+            <iframe 
+              id="poro-pdf-iframe" 
+              src="/books/poro.pdf#toolbar=1&navpanes=1" 
+              class="pdf-viewer-frame" 
+              style="width: 100%; height: 85vh; border: 1px solid var(--color-border); border-radius: var(--radius-xl);" 
+              title="পড়ো বইয়ের মূল PDF">
+            </iframe>
           </div>
         </div>
 
@@ -235,7 +294,7 @@ function renderChaptersCards(chapters, lang) {
     <a href="#/${lang}/poro/${ch.id}" class="poro-chapter-card" data-title="${ch.titleBangla} ${ch.titleEnglish}" style="text-decoration: none; color: inherit; display: flex;">
       <div class="poro-ch-top">
         <span class="poro-ch-badge">
-          ${ch.number === 0 ? (lang === 'bn' ? 'ভূমিকা' : 'Intro') : (ch.number === 19 ? (lang === 'bn' ? 'উপসংহার' : 'Outro') : `${lang === 'bn' ? 'অধ্যায়' : 'Chapter'} ${ch.number}`)}
+          ${ch.number === 0 ? (lang === 'bn' ? 'ভূমিকা' : 'Intro') : (ch.number === 20 ? (lang === 'bn' ? 'উপসংহার' : 'Outro') : `${lang === 'bn' ? 'অধ্যায়' : 'Chapter'} ${ch.number}`)}
         </span>
         <span class="poro-ch-time" style="display: inline-flex; align-items: center; gap: 4px;">
           <span class="icon-3d-wrap" style="width: 14px; height: 14px;">${Icon3DTime}</span>
@@ -260,10 +319,15 @@ function renderChaptersCards(chapters, lang) {
           <span class="icon-3d-wrap" style="width: 14px; height: 14px;">${Icon3DDocument}</span>
           <span>${lang === 'bn' ? `পৃষ্ঠা ${ch.pages}` : `Pages ${ch.pages}`}</span>
         </span>
-        <span class="btn btn-primary btn-sm">
-          <span>${lang === 'bn' ? 'অধ্যায় পড়ুন' : 'Read Chapter'}</span>
-          <span>→</span>
-        </span>
+        <div style="display: flex; gap: 6px; align-items: center;">
+          <button type="button" class="btn btn-ghost btn-sm btn-chapter-pdf-direct" data-ch-id="${ch.id}" data-page="${getChapterStartPage(ch)}" style="border: 1px solid var(--color-border); font-size: 11px; padding: 4px 8px;" title="PDF-এ এই অধ্যায় দেখুন">
+            📄 PDF
+          </button>
+          <span class="btn btn-primary btn-sm">
+            <span>${lang === 'bn' ? 'অধ্যায় পড়ুন' : 'Read'}</span>
+            <span>→</span>
+          </span>
+        </div>
       </div>
     </a>
   `).join('');
@@ -346,9 +410,57 @@ export function bindPoroIndexEvents() {
     });
   }
 
+  // Hero "Original PDF" button
+  const heroPdfBtn = document.getElementById('btn-hero-open-pdf');
+  if (heroPdfBtn) {
+    heroPdfBtn.addEventListener('click', () => {
+      const pdfTabBtn = document.querySelector('.poro-tab-btn[data-tab="pdf"]');
+      if (pdfTabBtn) {
+        pdfTabBtn.click();
+        const tabNav = document.getElementById('poro-tabs-nav');
+        if (tabNav) tabNav.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  }
+
+  // PDF Page Jump Chips
+  const pdfIframe = document.getElementById('poro-pdf-iframe');
+  const jumpButtons = document.querySelectorAll('.pdf-page-jump');
+  jumpButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      jumpButtons.forEach(b => {
+        b.classList.remove('active');
+        b.style.background = 'transparent';
+        b.style.color = 'inherit';
+      });
+      btn.classList.add('active');
+      btn.style.background = 'var(--color-quran)';
+      btn.style.color = '#FFFFFF';
+
+      const page = btn.getAttribute('data-page') || '1';
+      if (pdfIframe) {
+        pdfIframe.src = `/books/poro.pdf#page=${page}&toolbar=1&navpanes=1`;
+      }
+    });
+  });
+
+  // Direct Chapter Card PDF Button
+  document.querySelectorAll('.btn-chapter-pdf-direct').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      const chId = btn.getAttribute('data-ch-id');
+      const lang = getLang();
+      if (chId) {
+        window.location.hash = `#/${lang}/poro/${chId}?mode=pdf`;
+      }
+    });
+  });
+
   // Explicit Chapter Cards Click Navigation
   document.querySelectorAll('.poro-chapter-card').forEach(card => {
     card.addEventListener('click', (e) => {
+      if (e.target.closest('.btn-chapter-pdf-direct')) return;
       const href = card.getAttribute('href');
       if (href) {
         window.location.hash = href.replace(/^#/, '');
@@ -378,7 +490,8 @@ export function bindPoroIndexEvents() {
   // Book Info Modal
   const bookInfoBtn = document.getElementById('btn-poro-book-info');
   if (bookInfoBtn) {
-    bookInfoBtn.addEventListener('click', () => {
+    bookInfoBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       const existing = document.getElementById('poro-info-modal');
       if (existing) existing.remove();
 
@@ -387,38 +500,53 @@ export function bindPoroIndexEvents() {
       modal.id = 'poro-info-modal';
       modal.className = 'modal-backdrop active';
       modal.innerHTML = `
-        <div class="modal-card animate-scale-up" style="max-width: 540px;">
+        <div class="modal-card animate-scale-up" style="max-width: 620px;">
           <div class="modal-header">
             <div style="display: flex; align-items: center; gap: 10px;">
-              <span style="font-size: 1.5rem;">📘</span>
-              <h3 style="font-size: var(--text-lg); font-weight: 700; margin: 0; color: var(--color-text-primary);">
-                ${lang === 'bn' ? 'বই পরিচিতি — পড়ো' : 'About the Book — PORO'}
-              </h3>
+              <span style="font-size: 1.6rem;">📘</span>
+              <div>
+                <h3 style="font-size: var(--text-lg); font-weight: 800; margin: 0; color: var(--color-text-primary); line-height: 1.2;">
+                  ${lang === 'bn' ? 'বই পরিচিতি — পড়ো' : 'About the Book — PORO'}
+                </h3>
+                <div style="font-size: 11px; color: var(--color-text-muted);">
+                  ${lang === 'bn' ? 'সরোবর প্রকাশন • প্রথম প্রকাশ: ১৪৩৭ হিজরি' : 'Shorobor Prokashon • 1st Edition: 1437 AH'}
+                </div>
+              </div>
             </div>
             <button class="modal-close" id="close-poro-info-modal" aria-label="Close">✕</button>
           </div>
           <div class="modal-body" style="line-height: 1.7; font-size: var(--text-sm); color: var(--color-text-secondary);">
-            <div style="display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; margin-bottom: var(--space-4); background: var(--color-surface-hover); padding: var(--space-3); border-radius: var(--radius-md);">
-              <strong>${lang === 'bn' ? 'লেখক:' : 'Author:'}</strong> <span>${lang === 'bn' ? 'ওমর আল জাবির' : 'Omar Al Zabir'}</span>
-              <strong>${lang === 'bn' ? 'প্রকাশনী:' : 'Publisher:'}</strong> <span>${lang === 'bn' ? 'সরোবর প্রকাশন (Shorobor)' : 'Shorobor Prokashon'}</span>
-              <strong>${lang === 'bn' ? 'ধরন:' : 'Genre:'}</strong> <span>${lang === 'bn' ? 'কুরআন অনুধাবন, যুক্তি ও বিজ্ঞান' : 'Quranic Reflection, Logic & Science'}</span>
-              <strong>${lang === 'bn' ? 'কলেবর:' : 'Length:'}</strong> <span>${lang === 'bn' ? '১৮টি অধ্যায় • ১৮৪ পৃষ্ঠা' : '18 Chapters • 184 Pages'}</span>
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; margin-bottom: var(--space-4); background: var(--color-bg-alt); padding: var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--color-border-light); font-size: var(--text-xs);">
+              <strong>${lang === 'bn' ? 'সংকলন:' : 'Author:'}</strong> <span>${lang === 'bn' ? 'ওমর আল জাবির (Omar Al Zabir)' : 'Omar Al Zabir'}</span>
+              <strong>${lang === 'bn' ? 'সম্পাদনা:' : 'Editor:'}</strong> <span>${lang === 'bn' ? 'শরীফ আবু হায়াত অপু' : 'Sharif Abu Hayat Opu'}</span>
+              <strong>${lang === 'bn' ? 'শারঈ সম্পাদনা:' : 'Sharia Review:'}</strong> <span>${lang === 'bn' ? 'ড. আবু বকর মুহাম্মাদ যাকারিয়া (মদীনা বিশ্ববিদ্যালয়) ও সানাউল্লাহ নজির আহমদ (দারুল উলুম দেওবন্দ)' : 'Dr. Abu Bakr Muhammad Zakaria & Sanaullah Nazir Ahmad'}</span>
+              <strong>${lang === 'bn' ? 'প্রকাশক ও পরিবেশক:' : 'Publisher:'}</strong> <span>${lang === 'bn' ? 'সরোবর প্রকাশন (www.shorobor.org)' : 'Shorobor Prokashon'}</span>
+              <strong>${lang === 'bn' ? 'প্রচ্ছদ শিল্পী:' : 'Cover Artist:'}</strong> <span>${lang === 'bn' ? 'সানজিদা সিদ্দিকি কথা' : 'Sanjida Siddiqui Kotha'}</span>
+              <strong>${lang === 'bn' ? 'আইএসবিএন (ISBN):' : 'ISBN:'}</strong> <span style="font-family: monospace; font-weight: 700; color: var(--color-poro);">978-984-92223-0-9</span>
+              <strong>${lang === 'bn' ? 'বইয়ের কলেবর:' : 'Volume:'}</strong> <span>${lang === 'bn' ? '১৯টি অধ্যায় + ভূমিকা ও উপসংহার (১৮৪ পৃষ্ঠা)' : '19 Chapters + Preface & Epilogue (184 Pages)'}</span>
             </div>
+
+            <div style="background: rgba(2, 132, 199, 0.06); border-left: 4px solid var(--color-poro); padding: var(--space-3) var(--space-4); border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: var(--space-4); font-style: italic; color: var(--color-text-primary); font-size: var(--text-xs);">
+              ${lang === 'bn'
+                ? '“এটি কোনো তাফসীর নয়। আধুনিক যুগের মানুষের জন্য কুরআনের আয়াতগুলোকে বৈজ্ঞানিক এবং যৌক্তিক দৃষ্টিকোণ থেকে দেখা এবং সমসাময়িক প্রশ্ন, দ্বন্দ্ব এবং ঘটনাগুলোর ওপর প্রাসঙ্গিক আলোচনা।”'
+                : '"This is not a traditional Tafsir. It explores Quranic verses from contemporary scientific and rational perspectives, addressing modern dilemmas, questions, and realities."'}
+            </div>
+
             <p style="margin-bottom: var(--space-3);">
               ${lang === 'bn' 
-                ? '<strong>"পড়ো"</strong> কোনো প্রথাগত তাফসীর গ্রন্থ নয়। আধুনিক যুগের শিক্ষিত মুসলিম এবং তরুণ প্রজন্মের মানসিক দ্বন্দ্ব, বৈজ্ঞানিক জিজ্ঞাসা, এবং দৈনন্দিন জীবনের বাস্তবিক সমস্যার সাথে আল-কুরআনের চিরন্তন শিক্ষার অপূর্ব মেলবন্ধন ঘটিয়েছে এই বইটি।' 
-                : '<strong>"PORO"</strong> is not a traditional Tafsir. It bridges the modern intellectual mindset with eternal Quranic wisdom, offering scientific insights, psychological depth, and 44 daily life guidelines.'}
-            </p>
-            <p style="margin-bottom: 0;">
-              ${lang === 'bn'
-                ? 'বইটিতে সূরা ফাতিহার গভীর ভাষাতাত্ত্বিক রহস্য, মহাবিশ্বের ফাইন-টিউনিং, মানবদেহের বিস্ময় এবং ব্যক্তিগত জীবন পরিচালনার স্পষ্ট বিধান আলোচনা করা হয়েছে।'
-                : 'The book explores the linguistic miracles of Surah Al-Fatihah, fine-tuning of the universe, biological marvels, and practical guidance for contemporary challenges.'}
+                ? 'বইটিতে বাইয়িনাহ ইন্সটিটিউট (নোমান আলী খান), মুহাম্মাদ আসাদ, মাওলানা মওদূদী, মুফতী শাফী উসমানী, সাইয়্যেদ কুতুব এবং প্রাচীন মুফাসসিরীনদের মোট ১৯টি প্রামাণ্য তাফসীর গ্রন্থের আলোকে আধুনিক সংশয়, বিজ্ঞান ও জীবনবিধানের বিশ্লেষণ তুলে ধরা হয়েছে।' 
+                : 'The book synthesizes insights from 19 prominent classical and contemporary Tafsir sources to address modern skepticism, science, and life guidelines.'}
             </p>
           </div>
-          <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: var(--space-2); margin-top: var(--space-4);">
-            <a href="#/${lang}/poro/ch-1" class="btn btn-primary" id="btn-modal-read-now">
-              <span>📖</span>
-              <span>${lang === 'bn' ? 'পড়া শুরু করুন' : 'Start Reading'}</span>
+          <div class="modal-footer">
+            <a href="/books/poro.pdf" download="poro.pdf" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+              <span>📥</span> <span>${lang === 'bn' ? 'PDF ডাউনলোড' : 'Download PDF'}</span>
+            </a>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-modal-open-pdf" style="display: inline-flex; align-items: center; gap: 6px;">
+              <span>📄</span> <span>${lang === 'bn' ? 'মূল PDF ভিউয়ার' : 'Original PDF'}</span>
+            </button>
+            <a href="#/${lang}/poro/ch-1" class="btn btn-primary btn-sm" id="btn-modal-read-now" style="display: inline-flex; align-items: center; gap: 6px;">
+              <span>📖</span> <span>${lang === 'bn' ? 'ডিজিটাল অধ্যায় পড়া শুরু করুন' : 'Start Reading'}</span>
             </a>
           </div>
         </div>
@@ -426,13 +554,38 @@ export function bindPoroIndexEvents() {
 
       document.body.appendChild(modal);
 
-      const closeModal = () => modal.remove();
-      modal.querySelector('#close-poro-info-modal').addEventListener('click', closeModal);
-      const readNowBtn = modal.querySelector('#btn-modal-read-now');
-      if (readNowBtn) readNowBtn.addEventListener('click', closeModal);
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
+      const closeModal = () => {
+        modal.classList.remove('active');
+        setTimeout(() => modal.remove(), 250);
+      };
+
+      modal.querySelector('#close-poro-info-modal')?.addEventListener('click', closeModal);
+      modal.querySelector('#btn-modal-read-now')?.addEventListener('click', closeModal);
+
+      modal.querySelector('#btn-modal-open-pdf')?.addEventListener('click', () => {
+        closeModal();
+        const pdfTabBtn = document.querySelector('.poro-tab-btn[data-tab="pdf"]');
+        if (pdfTabBtn) {
+          pdfTabBtn.click();
+          const tabNav = document.getElementById('poro-tabs-nav');
+          if (tabNav) tabNav.scrollIntoView({ behavior: 'smooth' });
+        }
       });
+
+      modal.addEventListener('click', (ev) => {
+        if (ev.target === modal) closeModal();
+      });
+
+      const onKeyDown = (ev) => {
+        if (ev.key === 'Escape') {
+          closeModal();
+          document.removeEventListener('keydown', onKeyDown);
+        }
+      };
+      document.addEventListener('keydown', onKeyDown);
     });
   }
+
+  // Bind interactive Tajweed rule tooltips on Poro page
+  bindTajweedInteractions(document.getElementById('poro-page') || document);
 }

@@ -20,6 +20,8 @@ import { renderPoroIndexPage, bindPoroIndexEvents } from './pages/PoroIndex.js';
 import { renderPoroChapterPage, bindPoroChapterEvents } from './pages/PoroChapter.js';
 import { renderBookmarksPage, bindBookmarksEvents } from './pages/BookmarksPage.js';
 import { renderAboutPage } from './pages/About.js';
+import { renderFaithLogicIndex, bindFaithLogicIndexEvents } from './pages/FaithLogicIndex.js';
+import { renderFaithLogicBookPage, bindFaithLogicBookEvents } from './pages/FaithLogicBookPage.js';
 
 // Initialize Theme
 const savedTheme = localStorage.getItem('eqra-theme') || 'light';
@@ -113,6 +115,11 @@ router
 
   // About
   .on('/:lang/about', (params, query) => loadPage(renderAboutPage, null, params, query))
+
+  // Faith & Logic (ইসলাম ও যুক্তি)
+  .on('/:lang/faith-and-logic', (params, query) => loadPage(renderFaithLogicIndex, bindFaithLogicIndexEvents, params, query))
+  .on('/:lang/faith-and-logic/:book', (params, query) => loadPage(renderFaithLogicBookPage, bindFaithLogicBookEvents, params, query))
+  .on('/:lang/faith-and-logic/:book/:chapter', (params, query) => loadPage(renderFaithLogicBookPage, bindFaithLogicBookEvents, params, query))
 
   // 404 Fallback
   .on('*', () => {

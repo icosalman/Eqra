@@ -5,7 +5,7 @@
 import { t, getLang } from '../i18n.js';
 import { isBookmarked, toggleBookmark } from '../utils/storage.js';
 import { audioPlayer } from './AudioPlayer.js';
-import { formatColorCodedQuran } from '../utils/quranColors.js';
+import { formatColorCodedQuran, bindTajweedInteractions } from '../utils/quranColors.js';
 import { 
   renderAyah3DBadge, 
   Icon3DAudio, 
@@ -17,11 +17,12 @@ import {
 
 /**
  * Render a single Ayah card
- * @param {object} ayah - { numberInSurah, arabic, bangla, english, audio }
+ * @param {object} ayah - { numberInSurah, arabic, tajweed, indopak, bangla, english, audio }
  * @param {object} surah - { number, name, banglaName, englishName }
  * @param {string} displayMode - 'all' | 'arabic-bn' | 'arabic-en' | 'arabic-only'
+ * @param {object} options - { font: 'indopak' | 'nastaliq' | 'uthmani', tajweed: boolean }
  */
-export function renderAyahCard(ayah, surah, displayMode = 'all') {
+export function renderAyahCard(ayah, surah, displayMode = 'all', options = {}) {
   const lang = getLang();
   const bookmarkId = `ayah_${surah.number}_${ayah.numberInSurah}`;
   const bookmarked = isBookmarked(bookmarkId);
@@ -29,8 +30,22 @@ export function renderAyahCard(ayah, surah, displayMode = 'all') {
   const showBn = displayMode === 'all' || displayMode === 'arabic-bn';
   const showEn = displayMode === 'all' || displayMode === 'arabic-en';
 
+  const fontClass = options.font === 'uthmani' 
+    ? 'font-uthmani' 
+    : options.font === 'nastaliq' 
+      ? 'font-nastaliq' 
+      : 'font-indopak';
+
+  const tajweedActive = options.tajweed !== false;
+  const isIndoPak = (options.font || 'indopak') === 'indopak';
+  const rawArabic = (isIndoPak && ayah.indopak) ? ayah.indopak : (ayah.arabic || ayah.indopak || '');
+  const textToFormat = tajweedActive 
+    ? ((isIndoPak && ayah.indopak) ? ayah.indopak : (ayah.tajweed || rawArabic)) 
+    : rawArabic;
+  const formattedArabic = tajweedActive ? formatColorCodedQuran(textToFormat) : rawArabic;
+
   return `
-    <article class="ayah-card" id="ayah-${ayah.numberInSurah}">
+    <article class="ayah-card ${!tajweedActive ? 'tajweed-disabled' : ''}" id="ayah-${ayah.numberInSurah}">
       <div class="ayah-header">
         ${renderAyah3DBadge(ayah.numberInSurah)}
 
@@ -46,7 +61,7 @@ export function renderAyahCard(ayah, surah, displayMode = 'all') {
 
           <!-- Copy Verse -->
           <button class="ayah-action-btn copy-ayah-btn" 
-            data-copy="${ayah.arabic}\n\n${ayah.bangla}\n\n${ayah.english}\n— [${surah.englishName} ${surah.number}:${ayah.numberInSurah}]" 
+            data-copy="${rawArabic}\n\n${ayah.bangla}\n\n${ayah.english}\n— [${surah.englishName} ${surah.number}:${ayah.numberInSurah}]" 
             title="${t('copy')}" 
             aria-label="Copy Ayah">
             <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DCopy}</span>
@@ -59,7 +74,7 @@ export function renderAyahCard(ayah, surah, displayMode = 'all') {
             data-surah="${surah.number}"
             data-ayah="${ayah.numberInSurah}"
             data-title="${lang === 'bn' ? surah.banglaName : surah.englishName} (${surah.number}:${ayah.numberInSurah})"
-            data-arabic="${encodeURIComponent(ayah.arabic)}"
+            data-arabic="${encodeURIComponent(rawArabic)}"
             data-bangla="${encodeURIComponent(ayah.bangla)}"
             data-english="${encodeURIComponent(ayah.english)}"
             title="${t('bookmark')}" 
@@ -70,7 +85,7 @@ export function renderAyahCard(ayah, surah, displayMode = 'all') {
           <!-- Web Share -->
           <button class="ayah-action-btn share-ayah-btn" 
             data-title="${lang === 'bn' ? surah.banglaName : surah.englishName} (${surah.number}:${ayah.numberInSurah})" 
-            data-text="${ayah.arabic}\n\n${lang === 'bn' ? ayah.bangla : ayah.english}" 
+            data-text="${rawArabic}\n\n${lang === 'bn' ? ayah.bangla : ayah.english}" 
             title="${t('share')}" 
             aria-label="Share Ayah">
             <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DShare}</span>
@@ -78,9 +93,9 @@ export function renderAyahCard(ayah, surah, displayMode = 'all') {
         </div>
       </div>
 
-      <!-- Arabic Text (Color Coded Tajweed) -->
-      <div class="ayah-arabic">
-        ${formatColorCodedQuran(ayah.arabic)}
+      <!-- Arabic Text (Color Coded Tajweed with Indo-Pak Font) -->
+      <div class="ayah-arabic ${fontClass}">
+        ${formattedArabic}
       </div>
 
       <!-- Bangla Translation -->
@@ -185,5 +200,8 @@ export function bindAyahCardEvents(container) {
       }
     });
   });
+
+  // Bind interactive Tajweed rule popover tooltips
+  bindTajweedInteractions(container);
 }
 

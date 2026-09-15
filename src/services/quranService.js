@@ -62,26 +62,36 @@ export async function getSurah(surahNum) {
     console.warn('LocalStorage error:', e);
   }
 
-  // 4. Fetch live from AlQuran Cloud API with Arabic + Bangla + English + Audio
+  // 4. Fetch live from AlQuran Cloud API (Tajweed + Uthmani + Bangla + English + Audio) & Quran.com (IndoPak)
   try {
-    const url = `https://api.alquran.cloud/v1/surah/${num}/editions/quran-uthmani,bn.bengali,en.sahih,ar.alafasy`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Network response error: ${res.status}`);
-    const json = await res.json();
+    const alQuranUrl = `https://api.alquran.cloud/v1/surah/${num}/editions/quran-tajweed,quran-uthmani,bn.bengali,en.sahih,ar.alafasy`;
+    const quranComIndoPakUrl = `https://api.quran.com/api/v4/quran/verses/indopak?chapter_number=${num}`;
 
-    if (!json.data || json.data.length < 3) {
+    const [alQuranRes, indoPakRes] = await Promise.allSettled([
+      fetch(alQuranUrl).then(r => r.ok ? r.json() : null),
+      fetch(quranComIndoPakUrl).then(r => r.ok ? r.json() : null).catch(() => null)
+    ]);
+
+    const json = alQuranRes.status === 'fulfilled' ? alQuranRes.value : null;
+    if (!json || !json.data || json.data.length < 4) {
       throw new Error('Incomplete data received from API');
     }
 
-    const [arEdition, bnEdition, enEdition, audioEdition] = json.data;
+    const [tajweedEdition, arEdition, bnEdition, enEdition, audioEdition] = json.data;
+    const indoPakVerses = indoPakRes.status === 'fulfilled' && indoPakRes.value?.verses ? indoPakRes.value.verses : [];
+
     const ayahs = arEdition.ayahs.map((ayah, idx) => {
       const bnAyah = bnEdition?.ayahs?.[idx]?.text || '';
       const enAyah = enEdition?.ayahs?.[idx]?.text || '';
       const audioUrl = audioEdition?.ayahs?.[idx]?.audio || `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${ayah.number}.mp3`;
+      const tajweedText = tajweedEdition?.ayahs?.[idx]?.text || ayah.text;
+      const indopakText = indoPakVerses[idx]?.text_indopak || '';
 
       return {
         numberInSurah: ayah.numberInSurah,
         arabic: ayah.text,
+        tajweed: tajweedText,
+        indopak: indopakText,
         bangla: bnAyah,
         english: enAyah,
         audio: audioUrl

@@ -5,7 +5,7 @@
 import { t, getLang } from '../i18n.js';
 import { updateMeta } from '../utils/seo.js';
 import { getBookmarks, toggleBookmark } from '../utils/storage.js';
-import { formatColorCodedQuran } from '../utils/quranColors.js';
+import { formatColorCodedQuran, bindTajweedInteractions } from '../utils/quranColors.js';
 import { Icon3DBookmark } from '../components/Icons3D.js';
 
 export function renderBookmarksPage() {
@@ -69,7 +69,7 @@ export function renderBookmarksPage() {
               </div>
 
               ${item.arabic ? `
-                <div class="ayah-arabic" style="font-size: var(--quran-size-sm); margin-bottom: var(--space-3);">
+                <div class="ayah-arabic font-indopak" style="font-size: var(--quran-size-sm); margin-bottom: var(--space-3);">
                   ${formatColorCodedQuran(item.arabic)}
                 </div>
               ` : ''}
@@ -102,4 +102,7 @@ export function bindBookmarksEvents() {
       window.location.reload();
     });
   });
+
+  // Bind interactive Tajweed rule tooltips on saved bookmarks
+  bindTajweedInteractions(document.getElementById('bookmarks-page') || document);
 }

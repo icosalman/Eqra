@@ -9,7 +9,7 @@ import { KEY_AYAHS } from '../data/popularSurahs.js';
 import { DUAS_DATA } from '../data/duas.js';
 import { HADITHS_DATA } from '../data/hadiths.js';
 import { audioPlayer } from '../components/AudioPlayer.js';
-import { formatColorCodedQuran } from '../utils/quranColors.js';
+import { formatColorCodedQuran, bindTajweedInteractions } from '../utils/quranColors.js';
 import { 
   renderSurah3DBadge, 
   Icon3DQuran, 
@@ -53,8 +53,8 @@ export function renderHomePage() {
           <div class="hero-badge">
             ${t('heroBadge')}
           </div>
-          <div class="hero-title-arabic">
-            ${t('heroArabic')}
+          <div class="hero-title-arabic font-indopak">
+            ${formatColorCodedQuran(t('heroArabic'))}
           </div>
           <h1 class="hero-title">
             ${t('heroTitle')}
@@ -102,9 +102,9 @@ export function renderHomePage() {
               </button>
             </div>
 
-            <!-- Arabic Calligraphy (Color Coded Tajweed) -->
-            <div class="ayah-arabic" style="font-size: var(--quran-size-lg); border-bottom: 1px dashed var(--color-border); padding-bottom: var(--space-4);">
-              ${formatColorCodedQuran(featuredAyah.arabic)}
+            <!-- Arabic Calligraphy (Color Coded Tajweed with Indo-Pak Font) -->
+            <div class="ayah-arabic font-indopak" style="font-size: var(--quran-size-lg); border-bottom: 1px dashed var(--color-border); padding-bottom: var(--space-4);">
+              ${formatColorCodedQuran(featuredAyah.indopak || featuredAyah.tajweed || featuredAyah.arabic)}
             </div>
 
             <!-- Bangla & English -->
@@ -149,7 +149,7 @@ export function renderHomePage() {
                   <div class="surah-name-local">${lang === 'bn' ? s.banglaName : s.englishName}</div>
                   <div class="surah-meta">${lang === 'bn' ? s.banglaMeaning : s.englishMeaning} • ${s.ayahs} ${t('ayahPlural')}</div>
                 </div>
-                <div class="surah-name-arabic">${s.name}</div>
+                <div class="surah-name-arabic font-indopak">${s.name}</div>
               </a>
             `).join('')}
           </div>
@@ -172,8 +172,8 @@ export function renderHomePage() {
               <h3 style="font-size: var(--text-lg); font-weight: 700; margin-bottom: var(--space-2);">
                 ${lang === 'bn' ? featuredDua.titleBangla : featuredDua.titleEnglish}
               </h3>
-              <div class="dua-card-arabic">
-                ${featuredDua.arabic}
+              <div class="dua-card-arabic font-indopak">
+                ${formatColorCodedQuran(featuredDua.arabic)}
               </div>
               <p style="font-size: var(--text-sm); color: var(--color-text-secondary); margin-bottom: var(--space-3); line-height: 1.7;">
                 ${lang === 'bn' ? featuredDua.bangla : featuredDua.english}
@@ -202,7 +202,7 @@ export function renderHomePage() {
                 <span class="icon-3d-wrap" style="width: 16px; height: 16px;">${Icon3DQuran}</span>
                 <span>${featuredHadith.reference} • ${lang === 'bn' ? featuredHadith.gradeBangla : featuredHadith.grade}</span>
               </div>
-              <div style="font-family: var(--font-arabic); font-size: var(--text-base); color: var(--color-arabic); direction: rtl; text-align: right; line-height: 1.8; margin-bottom: var(--space-3);">
+              <div class="font-indopak" style="font-family: var(--font-indopak); font-size: var(--text-lg); color: var(--color-arabic); direction: rtl; text-align: right; line-height: 2.2; margin-bottom: var(--space-3);">
                 ${featuredHadith.arabic}
               </div>
               <p style="font-size: var(--text-sm); color: var(--color-text-secondary); line-height: 1.7; margin-bottom: var(--space-4);">
@@ -294,4 +294,7 @@ export function bindHomeEvents() {
       }
     });
   });
+
+  // Bind interactive Tajweed rule tooltips on homepage
+  bindTajweedInteractions(document.getElementById('home-page') || document);
 }

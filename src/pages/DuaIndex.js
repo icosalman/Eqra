@@ -16,6 +16,7 @@ import {
   Icon3DStarFilled, 
   Icon3DStarOutline 
 } from '../components/Icons3D.js';
+import { formatColorCodedQuran, bindTajweedInteractions } from '../utils/quranColors.js';
 
 export function renderDuaIndexPage() {
   const lang = getLang();
@@ -146,9 +147,9 @@ function renderDuaCards(list, lang) {
           </div>
         </div>
 
-        <!-- Arabic -->
-        <div class="dua-card-arabic" style="font-size: var(--text-2xl); padding: var(--space-3) 0;">
-          ${d.arabic}
+        <!-- Arabic (Color Coded Tajweed in Indo-Pak Font) -->
+        <div class="dua-card-arabic font-indopak" style="font-size: var(--text-2xl); padding: var(--space-3) 0;">
+          ${formatColorCodedQuran(d.arabic)}
         </div>
 
         <!-- Transliteration -->
@@ -292,6 +293,8 @@ export function bindDuaIndexEvents() {
         countEl.textContent = display;
       });
     });
+    // Bind interactive Tajweed rule tooltips on Dua cards
+    bindTajweedInteractions(document.getElementById('duas-cards-list') || document);
   }
 
   function toBanglaNumber(num) {

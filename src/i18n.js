@@ -15,6 +15,18 @@ const translations = {
     navHadith: 'হাদিস',
     navDua: 'দোয়া',
     navPoro: 'পড়ো',
+    navFaithLogic: 'ইসলাম ও যুক্তি',
+    navSajid1: 'প্যারাডক্সিক্যাল সাজিদ ১',
+    navSajid2: 'প্যারাডক্সিক্যাল সাজিদ ২',
+    faithLogicTitle: 'ইসলাম ও যুক্তি',
+    faithLogicSubtitle: 'সংশয় নিরসন, আধুনিক বিজ্ঞান ও বুদ্ধিবৃত্তিক যুক্তি সমগ্র',
+    digitalReader: 'ডিজিটাল রিডার',
+    pdfReader: 'অরিজিনাল PDF ভিউয়ার',
+    downloadPdf: 'বইয়ের PDF ডাউনলোড',
+    logicMatrix: 'যুক্তির সারসংক্ষেপ',
+    allegation: 'উত্থাপিত অভিযোগ / প্রশ্ন',
+    sajidAnswer: 'সাজিদের যৌক্তিক জবাব',
+    evidence: 'কুরআন, হাদিস ও বিজ্ঞানের দলিল',
     navSearch: 'খুঁজুন',
     navAbout: 'সম্পর্কে',
     
@@ -42,6 +54,14 @@ const translations = {
     displayArabicBn: 'আরবি + বাংলা',
     displayArabicEn: 'আরবি + ইংরেজি',
     displayAll: 'সব',
+
+    // Fonts & Tajweed
+    fontIndoPak: 'ইন্ডো-পাক (নূরানী)',
+    fontNastaliq: 'নাসতালীক',
+    fontUthmani: 'উসমানী',
+    tajweedColor: 'তাজবীদ কালার',
+    tajweedRules: 'তাজবীদ নির্দেশিকা',
+    fontFamilyLabel: 'ফন্ট',
     
     // Audio
     audioPlay: 'শুনুন',
@@ -116,6 +136,18 @@ const translations = {
     navHadith: 'Hadith',
     navDua: 'Dua',
     navPoro: 'Poro',
+    navFaithLogic: 'Faith & Logic',
+    navSajid1: 'Paradoxical Sajid 1',
+    navSajid2: 'Paradoxical Sajid 2',
+    faithLogicTitle: 'Faith & Logic',
+    faithLogicSubtitle: 'Intellectual Answers, Modern Science & Rational Reflections',
+    digitalReader: 'Digital Reader',
+    pdfReader: 'Original PDF Viewer',
+    downloadPdf: 'Download Book PDF',
+    logicMatrix: 'Logic Breakdown',
+    allegation: 'The Allegation / Doubt',
+    sajidAnswer: 'Sajid\'s Rational Rebuttal',
+    evidence: 'Evidence from Quran, Hadith & Science',
     navSearch: 'Search',
     navAbout: 'About',
     
@@ -143,6 +175,14 @@ const translations = {
     displayArabicBn: 'Arabic + Bangla',
     displayArabicEn: 'Arabic + English',
     displayAll: 'All',
+
+    // Fonts & Tajweed
+    fontIndoPak: 'Indo-Pak',
+    fontNastaliq: 'Nastaliq',
+    fontUthmani: 'Uthmani',
+    tajweedColor: 'Tajweed Colors',
+    tajweedRules: 'Tajweed Guide',
+    fontFamilyLabel: 'Font',
     
     // Audio
     audioPlay: 'Play',

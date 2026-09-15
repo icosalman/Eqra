@@ -6,6 +6,7 @@
 import { t, getLang } from '../i18n.js';
 import { updateMeta } from '../utils/seo.js';
 import { Icon3DHadith, Icon3DFeedback } from '../components/Icons3D.js';
+import { formatColorCodedQuran, bindTajweedInteractions } from '../utils/quranColors.js';
 
 export function renderAboutPage() {
   const lang = getLang();
@@ -27,7 +28,9 @@ export function renderAboutPage() {
         </nav>
 
         <header class="card animate-fade-in" style="text-align: center; padding: var(--space-8); margin-bottom: var(--space-8);">
-          <div class="loader-arabic" style="margin-bottom: var(--space-2); color: var(--color-quran);">ٱقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ</div>
+          <div class="loader-arabic font-indopak" style="margin-bottom: var(--space-2); color: var(--color-quran); font-size: var(--text-3xl);">
+            ${formatColorCodedQuran('اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ')}
+          </div>
           <h1 style="font-size: var(--text-3xl); font-weight: 800; color: var(--color-text-primary); margin-bottom: var(--space-3);">
             ${lang === 'bn' ? 'EQRA — কুরআন পড়ুন, বুঝুন, চিন্তা করুন' : 'EQRA — Read. Understand. Reflect.'}
           </h1>
@@ -123,4 +126,8 @@ export function renderAboutPage() {
       </div>
     </div>
   `;
+}
+
+export function bindAboutEvents() {
+  bindTajweedInteractions(document.getElementById('content-root') || document);
 }
