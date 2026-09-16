@@ -24,6 +24,8 @@ import {
   Icon3DMoon,
   Icon3DSparkle
 } from '../components/Icons3D.js';
+import { openGlobalSearch } from '../components/SearchModal.js';
+
 
 function renderDailyAyahArabic(featuredAyah) {
   if (featuredAyah.verses && featuredAyah.verses.length > 0) {
@@ -475,6 +477,15 @@ export function bindHomeEvents() {
     });
   });
 
+  // Bind hero search button to open intelligent search modal
+  const heroSearchTrigger = document.getElementById('hero-search-trigger');
+  if (heroSearchTrigger) {
+    heroSearchTrigger.addEventListener('click', () => {
+      openGlobalSearch();
+    });
+  }
+
   // Bind interactive Tajweed rule tooltips on homepage
   bindTajweedInteractions(document.getElementById('home-page') || document);
 }
+

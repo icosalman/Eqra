@@ -4403,5 +4403,1259 @@ header .hero-title-arabic,
   color: #dc2626 !important;
 }
 
+/* ======================================================
+   EQRA INTELLIGENT SEARCH MODAL & THEMATIC STYLES
+   ====================================================== */
+
+.eqra-search-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 12, 16, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: var(--space-4);
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.eqra-search-modal-backdrop.hidden {
+  display: none !important;
+}
+
+.eqra-search-dialog {
+  width: 100%;
+  max-width: 780px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(5, 150, 105, 0.15);
+  overflow: hidden;
+  position: relative;
+}
+
+[data-theme="dark"] .eqra-search-dialog {
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7), 0 0 24px rgba(16, 185, 129, 0.12);
+}
+
+.eqra-search-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.eqra-search-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.eqra-search-header-icon {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.eqra-search-title {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.eqra-search-subtitle {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin: 2px 0 0;
+}
+
+.eqra-search-close-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--color-text-secondary);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.eqra-search-close-btn:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+/* Search input bar */
+.eqra-search-input-box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-surface-hover);
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+}
+
+.eqra-search-input-icon {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.eqra-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 1.05rem;
+  color: var(--color-text-primary);
+  padding: var(--space-2) 0;
+  font-family: inherit;
+}
+
+.eqra-search-input::placeholder {
+  color: var(--color-text-light);
+  font-size: var(--text-sm);
+}
+
+.eqra-search-clear-btn {
+  background: var(--color-border);
+  color: var(--color-text-secondary);
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.eqra-search-clear-btn:hover {
+  background: var(--color-text-secondary);
+  color: var(--color-surface);
+}
+
+.eqra-search-kbd-hint kbd {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* Filter tabs */
+.eqra-search-filter-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+.eqra-search-filter-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.eqra-filter-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background: var(--color-surface-hover);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.eqra-filter-tab:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+.eqra-filter-tab.active {
+  background: rgba(5, 150, 105, 0.12);
+  color: var(--color-quran);
+  border-color: rgba(5, 150, 105, 0.35);
+  font-weight: 700;
+}
+
+[data-theme="dark"] .eqra-filter-tab.active {
+  background: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+/* Results body */
+.eqra-search-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-5) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-height: calc(88vh - 190px);
+}
+
+.eqra-results-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.eqra-section-header-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.eqra-section-header-pill .section-icon {
+  font-size: 1rem;
+}
+
+.eqra-section-header-pill .section-count {
+  color: var(--color-text-muted);
+}
+
+.eqra-section-header-pill .section-badge-live {
+  background: rgba(5, 150, 105, 0.12);
+  color: var(--color-quran);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* Popular Tags (Empty Search State) */
+.eqra-search-empty-state {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-2) 0;
+}
+
+.eqra-popular-title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.eqra-popular-tags-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.eqra-popular-tag-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+}
+
+.eqra-popular-tag-btn:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-quran);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15);
+  color: var(--color-quran);
+}
+
+.eqra-search-tips-box {
+  background: var(--color-surface-hover);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.eqra-tips-title {
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.eqra-tips-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.eqra-tips-list code {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: var(--color-quran);
+  font-weight: 600;
+}
+
+/* Featured Direct Ayah Card */
+.eqra-featured-ayah-card {
+  padding: var(--space-5);
+  background: linear-gradient(135deg, var(--color-surface), var(--color-quran-bg));
+  border: 2px solid rgba(5, 150, 105, 0.35);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.12);
+}
+
+.eqra-ayah-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.eqra-ayah-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: var(--color-surface);
+  border: 1px solid rgba(5, 150, 105, 0.3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-quran);
+}
+
+.eqra-ayah-badge .badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-quran);
+}
+
+.eqra-ayah-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.eqra-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.eqra-action-btn:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-quran);
+  color: var(--color-quran);
+}
+
+.eqra-action-btn.playing {
+  background: var(--color-quran) !important;
+  color: white !important;
+  border-color: var(--color-quran) !important;
+}
+
+.eqra-ayah-arabic {
+  font-size: 1.65rem;
+  line-height: 2.2;
+  color: var(--color-text-primary);
+  text-align: right;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.eqra-ayah-bangla {
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  margin-bottom: var(--space-3);
+}
+
+.eqra-ayah-english {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin-bottom: var(--space-4);
+}
+
+.eqra-ayah-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--space-2);
+}
+
+/* Thematic Topics Cards */
+.eqra-thematic-topics-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.eqra-thematic-card {
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  transition: all var(--transition-base);
+}
+
+.eqra-thematic-card:hover {
+  border-color: var(--color-quran);
+  box-shadow: var(--shadow-md);
+}
+
+.eqra-thematic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.eqra-thematic-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.eqra-thematic-icon {
+  font-size: 1.75rem;
+}
+
+.eqra-thematic-title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.eqra-category-pill {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.eqra-thematic-summary {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.eqra-thematic-snippet {
+  background: var(--color-surface-hover);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.eqra-snippet-quran {
+  border-left: 3px solid var(--color-quran);
+}
+
+.eqra-snippet-hadith {
+  border-left: 3px solid var(--color-hadith);
+}
+
+.eqra-snippet-dua {
+  border-left: 3px solid var(--color-dua);
+}
+
+.snippet-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.eqra-mini-action {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  transition: all 0.15s;
+}
+
+.eqra-mini-action:hover {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+.snippet-narrator {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-hadith);
+}
+
+.snippet-arabic {
+  font-size: 1.25rem;
+  line-height: 2;
+  text-align: right;
+  color: var(--color-text-primary);
+}
+
+.snippet-translit {
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+.snippet-bangla {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.snippet-ref {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+}
+
+.snippet-action-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2px;
+}
+
+.snippet-link {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-quran);
+  text-decoration: none;
+}
+
+.snippet-link:hover {
+  text-decoration: underline;
+}
+
+.eqra-thematic-advice {
+  background: rgba(5, 150, 105, 0.08);
+  border: 1px dashed rgba(5, 150, 105, 0.3);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+/* Surahs Grid */
+.eqra-surahs-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Hadiths List */
+.eqra-hadith-books-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: var(--space-3);
+}
+
+.eqra-hadith-book-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--color-surface-hover);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-hadith);
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.eqra-hadith-book-pill:hover {
+  border-color: var(--color-hadith);
+  background: var(--color-hadith-bg);
+}
+
+.eqra-hadiths-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.eqra-hadith-card {
+  padding: var(--space-4);
+  border-left: 3px solid var(--color-hadith);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.eqra-hadith-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hadith-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hadith-col-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-hadith);
+}
+
+.hadith-grade-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: rgba(234, 88, 12, 0.12);
+  color: #ea580c;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.eqra-hadith-narrator {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.eqra-hadith-arabic {
+  font-size: 1.25rem;
+  line-height: 2;
+  text-align: right;
+  color: var(--color-text-primary);
+}
+
+.eqra-hadith-bangla {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.eqra-hadith-footer {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-border-light);
+  padding-top: var(--space-2);
+}
+
+/* Duas List */
+.eqra-duas-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.eqra-dua-card {
+  padding: var(--space-4);
+  border-left: 3px solid var(--color-dua);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.eqra-dua-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dua-title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.eqra-dua-arabic {
+  font-size: 1.25rem;
+  line-height: 2;
+  text-align: right;
+  color: var(--color-text-primary);
+}
+
+.eqra-dua-translit {
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+.eqra-dua-bangla {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.eqra-dua-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-border-light);
+  padding-top: var(--space-2);
+}
+
+.dua-nav-link {
+  color: var(--color-dua);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Poro Book List */
+.eqra-poro-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.eqra-poro-card {
+  padding: var(--space-3);
+  border-left: 3px solid var(--color-poro);
+  text-decoration: none;
+}
+
+.eqra-poro-title {
+  font-weight: 700;
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+}
+
+.eqra-poro-summary {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+/* Online Quran Search Indicator & Cards */
+.eqra-online-searching-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  padding: var(--space-3);
+  background: var(--color-surface-hover);
+  border-radius: var(--radius-lg);
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-quran);
+  animation: pulse 1.5s infinite;
+}
+
+.eqra-online-ayahs-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.eqra-online-ayah-card {
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.online-ayah-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.online-surah-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-quran);
+}
+
+.online-ayah-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.online-ayah-text {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.online-ayah-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Search Footer */
+.eqra-search-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px var(--space-6);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.eqra-search-footer-shortcuts {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.eqra-search-footer-shortcuts kbd {
+  background: var(--color-surface-hover);
+  border: 1px solid var(--color-border);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.68rem;
+}
+
+.eqra-search-count-badge {
+  font-weight: 600;
+  color: var(--color-quran);
+}
+
+/* Toast Notification */
+.eqra-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #059669;
+  color: white;
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4);
+  z-index: 100000;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.eqra-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.eqra-toast.hidden {
+  display: none;
+}
+
+/* Loading skeleton in search */
+.eqra-loading-snippet {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  justify-content: center;
+}
+
+.skeleton-pulse {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-quran);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+  .eqra-search-dialog {
+    max-height: 94vh;
+    border-radius: var(--radius-xl);
+  }
+  .eqra-search-header {
+    padding: var(--space-3) var(--space-4);
+  }
+  .eqra-search-input-box {
+    padding: var(--space-2) var(--space-4);
+  }
+  .eqra-search-filter-tabs {
+    padding: 8px var(--space-4);
+  }
+  .eqra-search-body {
+    padding: var(--space-4);
+    max-height: calc(94vh - 175px);
+  }
+  .eqra-search-footer {
+    padding: 8px var(--space-4);
+  }
+  .eqra-search-footer-shortcuts {
+    display: none;
+  }
+}
+
+/* ============================================
+   EQRA Direct Islamic Answer Hero Card
+   ============================================ */
+
+.eqra-direct-answer-hero {
+  position: relative;
+  padding: var(--space-6);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.07) 0%, rgba(2, 132, 199, 0.04) 50%, rgba(217, 119, 6, 0.03) 100%);
+  border: 1.5px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(16, 185, 129, 0.1);
+  margin-bottom: var(--space-6);
+  transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .eqra-direct-answer-hero {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(2, 132, 199, 0.07) 50%, rgba(15, 23, 42, 0.8) 100%);
+  border-color: rgba(52, 211, 153, 0.35);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35), 0 0 20px rgba(16, 185, 129, 0.12);
+}
+
+.direct-hero-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.direct-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="dark"] .direct-hero-badge {
+  background: rgba(16, 185, 129, 0.25);
+  color: #34d399;
+  border-color: rgba(52, 211, 153, 0.4);
+}
+
+.direct-hero-category {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  background: var(--color-surface-hover);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+}
+
+.direct-hero-copy-btn {
+  margin-left: auto;
+}
+
+.direct-hero-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.direct-hero-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+  flex-shrink: 0;
+}
+
+.direct-hero-title-group {
+  flex: 1;
+}
+
+.direct-hero-title {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--color-text);
+  margin: 0 0 var(--space-2) 0;
+  line-height: 1.35;
+}
+
+.direct-hero-summary {
+  font-size: var(--text-sm);
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Proof Boxes */
+.direct-proof-box {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.direct-quran-box {
+  border-left: 4px solid var(--color-quran);
+  background: rgba(16, 185, 129, 0.03);
+}
+
+[data-theme="dark"] .direct-quran-box {
+  background: rgba(16, 185, 129, 0.06);
+}
+
+.direct-hadith-box {
+  border-left: 4px solid var(--color-hadith);
+  background: rgba(99, 102, 241, 0.03);
+}
+
+[data-theme="dark"] .direct-hadith-box {
+  background: rgba(99, 102, 241, 0.06);
+}
+
+.direct-proof-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--space-3);
+  font-size: var(--text-xs);
+  flex-wrap: wrap;
+}
+
+.proof-tag-icon {
+  font-size: 1.1rem;
+}
+
+.proof-tag-text {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.proof-citation {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.direct-proof-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+}
+
+.direct-proof-arabic {
+  font-size: 1.6rem;
+  line-height: 2.3;
+  color: var(--color-text);
+  margin-bottom: var(--space-3);
+  text-align: right;
+}
+
+.direct-proof-bangla {
+  font-size: var(--text-sm);
+  line-height: 1.7;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+}
+
+.direct-proof-english {
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-bottom: var(--space-3);
+}
+
+.direct-proof-footer {
+  margin-top: var(--space-3);
+  padding-top: var(--space-2);
+  border-top: 1px dashed var(--color-border);
+}
+
+.direct-hadith-narrator {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.direct-hadith-ref {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-3);
+  font-style: italic;
+}
+
+/* Guidance & Dua Box */
+.direct-guidance-box {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.guidance-text {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  background: rgba(217, 119, 6, 0.08);
+  border: 1px solid rgba(217, 119, 6, 0.25);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .guidance-text {
+  background: rgba(217, 119, 6, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.guidance-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.guidance-body p {
+  margin: var(--space-1) 0 0 0;
+  color: var(--color-text-secondary);
+}
+
+.guidance-dua-snippet {
+  background: rgba(14, 165, 233, 0.06);
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+[data-theme="dark"] .guidance-dua-snippet {
+  background: rgba(14, 165, 233, 0.1);
+}
+
+.dua-snippet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-dua, #0284c7);
+  margin-bottom: var(--space-2);
+}
+
+.dua-snippet-arabic {
+  font-size: 1.4rem;
+  line-height: 2;
+  text-align: right;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+}
+
+.dua-snippet-translit {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-bottom: var(--space-1);
+}
+
+.dua-snippet-bangla {
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+}
+
+.dua-snippet-ref {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+
 
 

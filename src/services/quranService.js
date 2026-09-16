@@ -198,70 +198,32 @@ export async function getSurahRecitation(surahNum) {
 }
 
 
+import { searchAllIslamic, parseAyahQuery, fetchSpecificAyah, searchThematicTopics, searchOnlineQuranAyahs } from './islamicSearchService.js';
+
 /**
- * Universal Search across Surahs, Hadith, and Duas
+ * Universal Search across Surahs, Hadith, Duas, Thematic Topics & Verses
  * @param {string} query 
  * @param {string} lang 
  */
 export function searchAll(query, lang = 'bn') {
-  if (!query || query.trim().length < 2) {
-    return { surahs: [], hadiths: [], duas: [] };
-  }
-
-  const q = query.toLowerCase().trim();
-
-  // Search Surahs (by number, Bangla name, English name, Arabic name, meaning)
-  const surahs = SURAHS_METADATA.filter(s => {
-    return (
-      String(s.number) === q ||
-      s.banglaName.toLowerCase().includes(q) ||
-      s.englishName.toLowerCase().includes(q) ||
-      s.name.includes(q) ||
-      s.banglaMeaning.toLowerCase().includes(q) ||
-      s.englishMeaning.toLowerCase().includes(q)
-    );
-  }).slice(0, 10);
-
-  // Search Hadith
-  const hadiths = HADITHS_DATA.filter(h => {
-    return (
-      h.bangla.toLowerCase().includes(q) ||
-      h.english.toLowerCase().includes(q) ||
-      h.arabic.includes(q) ||
-      h.narratorBangla.toLowerCase().includes(q) ||
-      h.reference.toLowerCase().includes(q) ||
-      h.tags.some(t => t.toLowerCase().includes(q))
-    );
-  }).slice(0, 8);
-
-  // Search Duas
-  const duas = DUAS_DATA.filter(d => {
-    return (
-      d.titleBangla.toLowerCase().includes(q) ||
-      d.titleEnglish.toLowerCase().includes(q) ||
-      d.bangla.toLowerCase().includes(q) ||
-      d.english.toLowerCase().includes(q) ||
-      d.transliteration.toLowerCase().includes(q) ||
-      d.reference.toLowerCase().includes(q)
-    );
-  }).slice(0, 8);
-
-  // Search Poro Book Chapters
-  const poroChapters = PORO_CHAPTERS.filter(c => {
-    return (
-      c.titleBangla.toLowerCase().includes(q) ||
-      c.titleEnglish.toLowerCase().includes(q) ||
-      c.summary.toLowerCase().includes(q) ||
-      c.keyQuote.toLowerCase().includes(q)
-    );
-  }).slice(0, 6);
-
-  return { surahs, hadiths, duas, poroChapters };
+  return searchAllIslamic(query, lang);
 }
+
+export {
+  parseAyahQuery,
+  fetchSpecificAyah,
+  searchThematicTopics,
+  searchOnlineQuranAyahs
+};
 
 export default {
   getAllSurahs,
   getSurahMeta,
   getSurah,
-  searchAll
+  searchAll,
+  parseAyahQuery,
+  fetchSpecificAyah,
+  searchThematicTopics,
+  searchOnlineQuranAyahs
 };
+

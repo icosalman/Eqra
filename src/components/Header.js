@@ -6,6 +6,12 @@ import { t, getLang, setLang } from '../i18n.js';
 import { router } from '../router.js';
 import { searchAll } from '../services/quranService.js';
 import { 
+  renderSearchModal, 
+  bindSearchModalEvents, 
+  openGlobalSearch, 
+  closeGlobalSearch 
+} from './SearchModal.js';
+import { 
   renderSurah3DBadge,
   Icon3DHome, 
   Icon3DQuran, 
@@ -403,28 +409,8 @@ export function renderHeader() {
       </aside>
     </header>
 
-    <!-- Global Search Modal -->
-    <div id="search-modal" class="app-loader hidden" style="background: rgba(0,0,0,0.65); backdrop-filter: blur(10px); z-index: 9998;">
-      <div class="card search-modal-card" style="width: 92%; max-width: 640px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; padding: var(--space-6); background: var(--color-surface); box-shadow: var(--shadow-xl); border: 1px solid var(--color-border); border-radius: var(--radius-xl);">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4);">
-          <div style="font-weight: 700; font-size: var(--text-lg); color: var(--color-text-primary); display: flex; align-items: center; gap: var(--space-2);">
-            <span class="icon-3d-wrap">${Icon3DSearch}</span> <span>${lang === 'bn' ? 'কুরআন ও হাদিস অনুসন্ধান' : 'Search Quran & Hadith'}</span>
-          </div>
-          <button id="close-search-btn" class="btn-ghost" style="font-size: 1.25rem; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-full);" aria-label="Close search">✕</button>
-        </div>
-
-        <div class="search-bar" style="max-width: 100%; margin-bottom: var(--space-4);">
-          <span class="search-icon">${Icon3DSearch}</span>
-          <input type="text" id="modal-search-input" class="search-input" placeholder="${t('searchPlaceholder')}" autofocus autocomplete="off" />
-        </div>
-
-        <div id="search-results-box" style="flex: 1; overflow-y: auto; max-height: 50vh; display: flex; flex-direction: column; gap: var(--space-3);">
-          <div style="text-align: center; color: var(--color-text-muted); padding: var(--space-8);">
-            ${lang === 'bn' ? 'সূরা, আয়াত, হাদিস অথবা দোয়া অনুসন্ধান করুন...' : 'Type a Surah, Ayah, Hadith or Dua to search...'}
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Global Intelligent Search Modal -->
+    ${renderSearchModal()}
   `;
 }
 
@@ -536,155 +522,26 @@ export function bindHeaderEvents() {
     });
   });
 
-  // Search Modal
+  // Bind Global Intelligent Search Modal
+  bindSearchModalEvents();
+
   const openSearchBtn = document.getElementById('open-search-btn');
   const mobileSearchTrigger = document.getElementById('mobile-search-trigger');
-  const closeSearchBtn = document.getElementById('close-search-btn');
-  const searchModal = document.getElementById('search-modal');
-  const searchInput = document.getElementById('modal-search-input');
-  const searchResultsBox = document.getElementById('search-results-box');
 
-  const openSearch = () => {
-    closeDrawer();
-    if (searchModal && searchInput) {
-      searchModal.classList.remove('hidden');
-      setTimeout(() => searchInput.focus(), 80);
-    }
-  };
-
-  const closeSearch = () => {
-    if (searchModal) {
-      searchModal.classList.add('hidden');
-    }
-  };
-
-  if (openSearchBtn) openSearchBtn.addEventListener('click', openSearch);
-  if (mobileSearchTrigger) mobileSearchTrigger.addEventListener('click', openSearch);
-  if (closeSearchBtn) closeSearchBtn.addEventListener('click', closeSearch);
-
-  if (searchModal) {
-    searchModal.addEventListener('click', (e) => {
-      if (e.target === searchModal) {
-        closeSearch();
-      }
-    });
-  }
-
-  // Keyboard Shortcuts (Cmd/Ctrl+K to search, Esc to close)
-  window.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-      e.preventDefault();
-      openSearch();
-    } else if (e.key === 'Escape') {
-      closeSearch();
+  if (openSearchBtn) {
+    openSearchBtn.addEventListener('click', () => {
       closeDrawer();
-    }
-  });
+      openGlobalSearch();
+    });
+  }
 
-  // Dynamic Live Search Query
-  if (searchInput && searchResultsBox) {
-    let debounceTimer;
-    searchInput.addEventListener('input', (e) => {
-      clearTimeout(debounceTimer);
-      const val = e.target.value.trim();
-      debounceTimer = setTimeout(async () => {
-        if (!val || val.length < 2) {
-          searchResultsBox.innerHTML = `
-            <div style="text-align: center; color: var(--color-text-muted); padding: var(--space-8);">
-              ${getLang() === 'bn' ? 'সূরা, আয়াত, হাদিস অথবা দোয়া অনুসন্ধান করুন...' : 'Type a Surah, Ayah, Hadith or Dua to search...'}
-            </div>
-          `;
-          return;
-        }
-
-        const results = searchAll(val, getLang());
-        renderSearchResults(results, searchResultsBox, searchModal);
-      }, 200);
+  if (mobileSearchTrigger) {
+    mobileSearchTrigger.addEventListener('click', () => {
+      closeDrawer();
+      openGlobalSearch();
     });
   }
 }
 
-function renderSearchResults(results, container, modal) {
-  const lang = getLang();
-  const total = results.surahs.length + results.hadiths.length + results.duas.length + (results.poroChapters ? results.poroChapters.length : 0);
+export { openGlobalSearch, closeGlobalSearch };
 
-  if (total === 0) {
-    container.innerHTML = `
-      <div style="text-align: center; color: var(--color-text-muted); padding: var(--space-8);">
-        ${t('searchNoResults')}
-      </div>
-    `;
-    return;
-  }
-
-  let html = '';
-
-  // Surahs
-  if (results.surahs.length > 0) {
-    html += `<div style="font-size: var(--text-xs); font-weight: 700; color: var(--color-quran); text-transform: uppercase; margin-top: var(--space-2);">${t('navQuran')} (${results.surahs.length})</div>`;
-    results.surahs.forEach(s => {
-      html += `
-        <a href="#/${lang}/quran/${s.number}" class="surah-card search-item-link" style="padding: var(--space-2) var(--space-3);">
-          ${renderSurah3DBadge(s.number, 36)}
-          <div class="surah-info">
-            <div style="font-weight: 600; color: var(--color-text-primary); font-size: var(--text-sm);">
-              ${lang === 'bn' ? s.banglaName : s.englishName}
-            </div>
-            <div class="surah-meta">${lang === 'bn' ? s.banglaMeaning : s.englishMeaning} • ${s.ayahs} ${t('ayahPlural')}</div>
-          </div>
-          <div class="surah-name-arabic" style="font-size: var(--text-base);">${s.name}</div>
-        </a>
-      `;
-    });
-  }
-
-  // Poro Book Chapters
-  if (results.poroChapters && results.poroChapters.length > 0) {
-    html += `<div style="font-size: var(--text-xs); font-weight: 700; color: var(--color-poro); text-transform: uppercase; margin-top: var(--space-2); display: flex; align-items: center; gap: 6px;"><span class="icon-3d-wrap" style="width: 16px; height: 16px;">${Icon3DPoro}</span> <span>${lang === 'bn' ? 'পড়ো বইয়ের অধ্যায়' : 'Poro Chapters'} (${results.poroChapters.length})</span></div>`;
-    results.poroChapters.forEach(c => {
-      html += `
-        <a href="#/${lang}/poro/${c.id}" class="card search-item-link" style="padding: var(--space-3); border-left: 3px solid var(--color-poro);">
-          <div style="font-weight: 600; font-size: var(--text-sm); color: var(--color-text-primary);">${lang === 'bn' ? c.titleBangla : c.titleEnglish}</div>
-          <div style="font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.4;">${c.summary}</div>
-        </a>
-      `;
-    });
-  }
-
-  // Duas
-  if (results.duas.length > 0) {
-    html += `<div style="font-size: var(--text-xs); font-weight: 700; color: var(--color-dua); text-transform: uppercase; margin-top: var(--space-2);">${t('navDua')} (${results.duas.length})</div>`;
-    results.duas.forEach(d => {
-      html += `
-        <a href="#/${lang}/dua" class="card search-item-link section-card-dua" style="padding: var(--space-3);">
-          <div style="font-weight: 600; font-size: var(--text-sm);">${lang === 'bn' ? d.titleBangla : d.titleEnglish}</div>
-          <div style="font-size: var(--text-xs); color: var(--color-text-muted);">${d.reference}</div>
-        </a>
-      `;
-    });
-  }
-
-  // Hadiths
-  if (results.hadiths.length > 0) {
-    html += `<div style="font-size: var(--text-xs); font-weight: 700; color: var(--color-hadith); text-transform: uppercase; margin-top: var(--space-2);">${t('navHadith')} (${results.hadiths.length})</div>`;
-    results.hadiths.forEach(h => {
-      html += `
-        <a href="#/${lang}/hadith" class="card search-item-link section-card-hadith" style="padding: var(--space-3);">
-          <div style="font-weight: 600; font-size: var(--text-sm);">${h.reference}</div>
-          <div style="font-size: var(--text-xs); color: var(--color-text-secondary); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-            ${lang === 'bn' ? h.bangla : h.english}
-          </div>
-        </a>
-      `;
-    });
-  }
-
-
-  container.innerHTML = html;
-
-  container.querySelectorAll('.search-item-link').forEach(link => {
-    link.addEventListener('click', () => {
-      modal.classList.add('hidden');
-    });
-  });
-}
