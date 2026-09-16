@@ -20,6 +20,7 @@ class AudioPlayerManager {
     this.totalAyahs = 0;
     this.recitationTimestamps = null; // Array of { ayahNumber, from, to, duration, segments }
     this.activeAyahNumber = null;
+    this.endAyahNumber = null; // Optional boundary stop for passage recitation
     this.activeWordIndex = null;
     this.animFrameId = null;
 
@@ -38,6 +39,12 @@ class AudioPlayerManager {
       this.isPlaying = true;
       this.updatePlayState();
       this.startSyncLoop();
+      window.dispatchEvent(new CustomEvent('eqra:audio-play', {
+        detail: {
+          surah: this.currentSurahNumber,
+          ayah: this.activeAyahNumber
+        }
+      }));
     });
 
     this.audio.addEventListener('pause', () => {
@@ -45,6 +52,7 @@ class AudioPlayerManager {
       this.updatePlayState();
       this.stopSyncLoop();
       this.clearActiveWord();
+      window.dispatchEvent(new CustomEvent('eqra:audio-stopped'));
     });
 
     this.audio.addEventListener('error', (e) => {
@@ -141,13 +149,14 @@ class AudioPlayerManager {
   }
 
   /**
-   * Play full Surah with sub-second timestamps & word synchronization
+   * Play full Surah or selected Ayah range with sub-second timestamps & word synchronization
    */
-  playSurahWithSync({ surahNumber, surahName, audioUrl, timestamps, startAyah = 1, totalAyahs = 0 }) {
+  playSurahWithSync({ surahNumber, surahName, audioUrl, timestamps, startAyah = 1, endAyah = null, totalAyahs = 0 }) {
     this.currentSurahNumber = parseInt(surahNumber, 10);
     this.currentSurahName = surahName || `সূরা ${surahNumber}`;
     this.totalAyahs = totalAyahs || (timestamps ? timestamps.length : 0);
     this.recitationTimestamps = timestamps || null;
+    this.endAyahNumber = endAyah ? parseInt(endAyah, 10) : null;
     this.playlist = [];
     this.currentIndex = 0;
 
@@ -235,6 +244,20 @@ class AudioPlayerManager {
     const currentMs = Math.round(this.audio.currentTime * 1000);
     const surahNum = this.currentSurahNumber;
 
+    // Check if endAyah was reached (for passage recitations like Daily Ayah 94:5-6)
+    if (this.endAyahNumber && this.recitationTimestamps) {
+      const endTarget = this.recitationTimestamps.find(t => t.ayahNumber === this.endAyahNumber);
+      if (endTarget && currentMs >= endTarget.to) {
+        this.audio.pause();
+        this.isPlaying = false;
+        this.updatePlayState();
+        this.stopSyncLoop();
+        this.clearActiveWord();
+        window.dispatchEvent(new CustomEvent('eqra:audio-stopped'));
+        return;
+      }
+    }
+
     // Find active verse
     const activeVerse = this.recitationTimestamps.find(t => currentMs >= t.from && currentMs <= t.to);
 
@@ -307,6 +330,7 @@ class AudioPlayerManager {
     if (!track || !track.audio) return;
     this.currentTrack = track;
     this.recitationTimestamps = null; // Single track mode
+    this.endAyahNumber = null;
     this.currentSurahNumber = track.surah || null;
     this.activeAyahNumber = track.ayah || null;
 
@@ -423,6 +447,7 @@ class AudioPlayerManager {
   close() {
     this.audio.pause();
     this.isPlaying = false;
+    this.endAyahNumber = null;
     this.stopSyncLoop();
     this.clearActiveWord();
     window.dispatchEvent(new CustomEvent('eqra:audio-stopped'));

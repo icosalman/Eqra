@@ -471,6 +471,29 @@ export const Icon3DPlay = `
 `;
 
 /**
+ * 3D Pause Button
+ */
+export const Icon3DPause = `
+  <svg viewBox="0 0 48 48" width="24" height="24" class="icon-3d-svg">
+    <defs>
+      <radialGradient id="pause-sphere" cx="35%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="#34D399"/>
+        <stop offset="60%" stop-color="#059669"/>
+        <stop offset="100%" stop-color="#064E3B"/>
+      </radialGradient>
+      <filter id="pause-shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="2" flood-color="#064E3B" flood-opacity="0.45"/>
+      </filter>
+    </defs>
+    <g filter="url(#pause-shadow)">
+      <circle cx="24" cy="24" r="18" fill="url(#pause-sphere)" stroke="#A7F3D0" stroke-width="1.5"/>
+      <rect x="18" y="16" width="4" height="16" rx="1.5" fill="#FFFFFF" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));"/>
+      <rect x="26" y="16" width="4" height="16" rx="1.5" fill="#FFFFFF" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));"/>
+    </g>
+  </svg>
+`;
+
+/**
  * 3D Speaker / Audio Wave Icon
  */
 /**

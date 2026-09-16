@@ -9,7 +9,8 @@ import { KEY_AYAHS } from '../data/popularSurahs.js';
 import { DUAS_DATA } from '../data/duas.js';
 import { HADITHS_DATA } from '../data/hadiths.js';
 import { audioPlayer } from '../components/AudioPlayer.js';
-import { formatColorCodedQuran, bindTajweedInteractions } from '../utils/quranColors.js';
+import { formatColorCodedQuran, wrapQuranWords, bindTajweedInteractions } from '../utils/quranColors.js';
+import { getSurahRecitation } from '../services/quranService.js';
 import { renderQuran3DBook, bindQuran3DBook } from '../components/Quran3DBook.js';
 import { 
   renderSurah3DBadge, 
@@ -18,10 +19,26 @@ import {
   Icon3DDua, 
   Icon3DSearch, 
   Icon3DPlay, 
+  Icon3DPause,
   Icon3DAudio, 
   Icon3DMoon,
   Icon3DSparkle
 } from '../components/Icons3D.js';
+
+function renderDailyAyahArabic(featuredAyah) {
+  if (featuredAyah.verses && featuredAyah.verses.length > 0) {
+    return featuredAyah.verses.map(v => {
+      const rawText = v.indopak || v.tajweed || v.arabic;
+      const formatted = formatColorCodedQuran(rawText);
+      const wrapped = wrapQuranWords(formatted);
+      return `<span class="daily-verse-segment" data-surah="${featuredAyah.surahNumber}" data-ayah="${v.numberInSurah}">${wrapped}</span>`;
+    }).join(' ');
+  }
+  const rawText = featuredAyah.indopak || featuredAyah.tajweed || featuredAyah.arabic;
+  const formatted = formatColorCodedQuran(rawText);
+  const wrapped = wrapQuranWords(formatted);
+  return `<span class="daily-verse-segment" data-surah="${featuredAyah.surahNumber}" data-ayah="${featuredAyah.ayahNumber}">${wrapped}</span>`;
+}
 
 export function renderHomePage() {
   const lang = getLang();
@@ -96,7 +113,7 @@ export function renderHomePage() {
                   ${lang === 'bn' ? featuredAyah.titleBangla : featuredAyah.titleEnglish}
                 </h2>
                 <div class="section-subtitle">
-                  ${lang === 'bn' ? featuredAyah.surahNameBangla : featuredAyah.surahNameEnglish} (${featuredAyah.surahNumber}:${featuredAyah.ayahNumber})
+                  ${lang === 'bn' ? featuredAyah.surahNameBangla : featuredAyah.surahNameEnglish} (${featuredAyah.surahNumber}:${featuredAyah.endAyahNumber && featuredAyah.endAyahNumber !== featuredAyah.ayahNumber ? `${featuredAyah.ayahNumber}-${featuredAyah.endAyahNumber}` : featuredAyah.ayahNumber})
                 </div>
               </div>
 
@@ -106,9 +123,9 @@ export function renderHomePage() {
               </button>
             </div>
 
-            <!-- Arabic Calligraphy (Color Coded Tajweed with Indo-Pak Font) -->
-            <div class="ayah-arabic font-indopak" style="font-size: var(--quran-size-lg); border-bottom: 1px dashed var(--color-border); padding-bottom: var(--space-4);">
-              ${formatColorCodedQuran(featuredAyah.indopak || featuredAyah.tajweed || featuredAyah.arabic)}
+            <!-- Arabic Calligraphy (Color Coded Tajweed with Indo-Pak Font & Word Highlighting) -->
+            <div class="ayah-arabic font-indopak" id="daily-ayah-arabic-container" dir="rtl" lang="ar" style="font-size: var(--quran-size-lg); border-bottom: 1px dashed var(--color-border); padding-bottom: var(--space-4); line-height: 2.2;">
+              ${renderDailyAyahArabic(featuredAyah)}
             </div>
 
             <!-- Bangla & English -->
@@ -273,20 +290,176 @@ export function bindHomeEvents() {
     });
   }
 
-  // Play daily ayah audio
+  // Play daily ayah audio with full passage support & word-by-word synchronization
+  const dayIndex = new Date().getDate() % KEY_AYAHS.length;
+  const featuredAyah = KEY_AYAHS[dayIndex];
   const playDailyBtn = document.getElementById('play-daily-ayah');
+  const dailyContainer = document.getElementById('daily-ayah-arabic-container');
+
+  function setDailyBtnState(isPlaying) {
+    if (!playDailyBtn) return;
+    const iconWrap = playDailyBtn.querySelector('.icon-3d-wrap');
+    const textSpan = playDailyBtn.querySelector('span:last-child');
+    if (isPlaying) {
+      if (iconWrap) iconWrap.innerHTML = Icon3DPause;
+      if (textSpan) textSpan.textContent = getLang() === 'bn' ? 'বিরতি' : 'Pause';
+      playDailyBtn.classList.add('is-playing');
+    } else {
+      if (iconWrap) iconWrap.innerHTML = Icon3DPlay;
+      if (textSpan) textSpan.textContent = t('audioPlay');
+      playDailyBtn.classList.remove('is-playing');
+    }
+  }
+
+  // Initialize button state
+  if (audioPlayer.isPlaying && audioPlayer.currentSurahNumber === featuredAyah.surahNumber) {
+    setDailyBtnState(true);
+  }
+
   if (playDailyBtn) {
-    playDailyBtn.addEventListener('click', () => {
-      const audioUrl = playDailyBtn.getAttribute('data-audio');
-      if (audioUrl) {
+    playDailyBtn.addEventListener('click', async () => {
+      // If already playing this passage, pause
+      if (audioPlayer.isPlaying && audioPlayer.currentSurahNumber === featuredAyah.surahNumber) {
+        audioPlayer.togglePlay();
+        return;
+      }
+
+      // If paused on this passage, resume
+      if (!audioPlayer.isPlaying && audioPlayer.currentSurahNumber === featuredAyah.surahNumber && audioPlayer.audio.src) {
+        audioPlayer.togglePlay();
+        return;
+      }
+
+      // Fetch Quran.com chapter recitation with high-precision word timestamps
+      let recitationData = null;
+      try {
+        recitationData = await getSurahRecitation(featuredAyah.surahNumber);
+      } catch (err) {
+        console.warn('Failed to fetch recitation timestamps:', err);
+      }
+
+      if (recitationData && recitationData.timestamps) {
+        audioPlayer.playSurahWithSync({
+          surahNumber: featuredAyah.surahNumber,
+          surahName: getLang() === 'bn' ? featuredAyah.surahNameBangla : featuredAyah.surahNameEnglish,
+          audioUrl: recitationData.audioUrl,
+          timestamps: recitationData.timestamps,
+          startAyah: featuredAyah.ayahNumber,
+          endAyah: featuredAyah.endAyahNumber || featuredAyah.ayahNumber,
+          totalAyahs: recitationData.timestamps.length
+        });
+        setDailyBtnState(true);
+      } else if (featuredAyah.playlist && featuredAyah.playlist.length > 0) {
+        // Multi-verse fallback playlist
+        audioPlayer.playPlaylist(featuredAyah.playlist, 0);
+        setDailyBtnState(true);
+      } else if (featuredAyah.audio) {
+        // Single verse fallback
         audioPlayer.playTrack({
-          audio: audioUrl,
-          title: getLang() === 'bn' ? 'আজকের নির্বাচিত আয়াত' : 'Featured Daily Ayah',
+          audio: featuredAyah.audio,
+          surah: featuredAyah.surahNumber,
+          ayah: featuredAyah.ayahNumber,
+          title: getLang() === 'bn' ? featuredAyah.titleBangla : featuredAyah.titleEnglish,
           subtitle: 'মিশারি রাশিদ আল-আফাসী (Mishary Rashid Al-Afasy)'
         });
+        setDailyBtnState(true);
       }
     });
   }
+
+  // Interactive Word Clicking: jump audio directly to that word in the recitation
+  if (dailyContainer) {
+    dailyContainer.querySelectorAll('.quran-word').forEach(wordEl => {
+      wordEl.addEventListener('click', async () => {
+        const verseSeg = wordEl.closest('.daily-verse-segment');
+        const ayahNum = verseSeg ? parseInt(verseSeg.getAttribute('data-ayah'), 10) : featuredAyah.ayahNumber;
+        const wordIdx = parseInt(wordEl.getAttribute('data-word-idx'), 10);
+
+        if (ayahNum && wordIdx) {
+          if (!audioPlayer.recitationTimestamps || audioPlayer.currentSurahNumber !== featuredAyah.surahNumber) {
+            let recitationData = null;
+            try {
+              recitationData = await getSurahRecitation(featuredAyah.surahNumber);
+            } catch (e) {
+              console.warn(e);
+            }
+            if (recitationData && recitationData.timestamps) {
+              audioPlayer.playSurahWithSync({
+                surahNumber: featuredAyah.surahNumber,
+                surahName: getLang() === 'bn' ? featuredAyah.surahNameBangla : featuredAyah.surahNameEnglish,
+                audioUrl: recitationData.audioUrl,
+                timestamps: recitationData.timestamps,
+                startAyah: ayahNum,
+                endAyah: featuredAyah.endAyahNumber || featuredAyah.ayahNumber,
+                totalAyahs: recitationData.timestamps.length
+              });
+              setDailyBtnState(true);
+            }
+          }
+          audioPlayer.seekToWord(ayahNum, wordIdx);
+        }
+      });
+    });
+  }
+
+  // Word synchronization & playback status listeners
+  const handleActiveWordChange = (e) => {
+    if (!dailyContainer) return;
+    const { surah, ayah, wordIdx } = e.detail || {};
+    if (parseInt(surah, 10) !== featuredAyah.surahNumber) return;
+
+    // Clear previous active words in daily container
+    dailyContainer.querySelectorAll('.quran-word.active-word').forEach(el => {
+      el.classList.remove('active-word');
+    });
+
+    if (ayah && wordIdx) {
+      const verseSeg = dailyContainer.querySelector(`.daily-verse-segment[data-ayah="${ayah}"]`);
+      if (verseSeg) {
+        const targetWord = verseSeg.querySelector(`.quran-word[data-word-idx="${wordIdx}"]`);
+        if (targetWord) {
+          targetWord.classList.add('active-word');
+        }
+      }
+    }
+  };
+
+  const handleAudioPlay = (e) => {
+    const { surah } = e.detail || {};
+    if (parseInt(surah, 10) === featuredAyah.surahNumber) {
+      setDailyBtnState(true);
+    } else {
+      setDailyBtnState(false);
+    }
+  };
+
+  const handleAudioStopped = () => {
+    if (dailyContainer) {
+      dailyContainer.querySelectorAll('.quran-word.active-word').forEach(el => {
+        el.classList.remove('active-word');
+      });
+    }
+    setDailyBtnState(false);
+  };
+
+  // Clean up any existing listeners on window
+  if (window.__eqraDailyWordHandler) {
+    window.removeEventListener('eqra:active-word-change', window.__eqraDailyWordHandler);
+  }
+  if (window.__eqraDailyPlayHandler) {
+    window.removeEventListener('eqra:audio-play', window.__eqraDailyPlayHandler);
+  }
+  if (window.__eqraDailyStopHandler) {
+    window.removeEventListener('eqra:audio-stopped', window.__eqraDailyStopHandler);
+  }
+
+  window.__eqraDailyWordHandler = handleActiveWordChange;
+  window.__eqraDailyPlayHandler = handleAudioPlay;
+  window.__eqraDailyStopHandler = handleAudioStopped;
+
+  window.addEventListener('eqra:active-word-change', handleActiveWordChange);
+  window.addEventListener('eqra:audio-play', handleAudioPlay);
+  window.addEventListener('eqra:audio-stopped', handleAudioStopped);
 
   // Play dua audio
   document.querySelectorAll('.play-dua-btn').forEach(btn => {
