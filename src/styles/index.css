@@ -556,6 +556,11 @@ input, textarea, select {
   color: var(--color-quran);
   margin-bottom: var(--space-4);
   line-height: 1.4;
+  text-align: center !important;
+  direction: rtl;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 }
 
 .hero-title {
@@ -999,11 +1004,29 @@ input, textarea, select {
   line-height: 2.5;
   word-spacing: 4px;
   direction: rtl !important;
-  text-align: right !important;
   unicode-bidi: isolate !important;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ayah card verses MUST be right-aligned with proper RTL layout */
+.ayah-card .ayah-arabic {
+  text-align: right !important;
+  direction: rtl !important;
+  unicode-bidi: isolate !important;
+}
+
+/* Headings, Hero titles & Bismillah MUST be centered */
+.hero-title-arabic,
+.card .hero-title-arabic,
+header .hero-title-arabic,
+#bismillah-heading,
+.bismillah-heading {
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: block;
 }
 
 .surah-name-arabic {

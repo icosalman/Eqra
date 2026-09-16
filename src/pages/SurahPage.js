@@ -84,7 +84,7 @@ export function renderSurahPage(params) {
           <span class="section-badge badge-quran" style="margin-bottom: var(--space-3);">
             ${lang === 'bn' ? meta.banglaType : meta.type} • ${meta.ayahs} ${t('ayahPlural')} • ${t('juzWord')} ${meta.juz}
           </span>
-          <h1 class="hero-title-arabic ${fontClass}" style="margin-bottom: var(--space-1); font-size: var(--text-4xl);">
+          <h1 class="hero-title-arabic ${fontClass}" style="margin: 0 auto var(--space-1); font-size: var(--text-4xl); text-align: center; width: 100%;">
             ${meta.name}
           </h1>
           <div style="font-size: var(--text-2xl); font-weight: 700; color: var(--color-text-primary); margin-bottom: var(--space-1);">
@@ -190,7 +190,7 @@ export function renderSurahPage(params) {
         <!-- Bismillah Header (except Surah 9 At-Tawbah) -->
         ${meta.number !== 9 ? `
           <div style="text-align: center; padding: var(--space-6) 0 var(--space-8); border-bottom: 1px solid var(--color-border-light);">
-            <div id="bismillah-heading" class="ayah-arabic ${fontClass}" dir="rtl" lang="ar" style="font-size: var(--text-3xl); line-height: 2; margin-bottom: 0; padding: 0;">
+            <div id="bismillah-heading" class="ayah-arabic ${fontClass}" dir="rtl" lang="ar" style="font-size: var(--text-3xl); line-height: 2; margin-bottom: 0; padding: 0; text-align: center;">
               ${tajweedEnabled 
                 ? formatColorCodedQuran(quranFont === 'indopak' ? 'بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِ' : 'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ') 
                 : (quranFont === 'indopak' ? 'بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِ' : 'بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ')}

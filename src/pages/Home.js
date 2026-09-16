@@ -54,7 +54,7 @@ export function renderHomePage() {
           <div class="hero-badge">
             ${t('heroBadge')}
           </div>
-          <div class="hero-title-arabic font-indopak">
+          <div class="hero-title-arabic font-indopak" style="text-align: center; margin: 0 auto var(--space-4);">
             ${formatColorCodedQuran(t('heroArabic'))}
           </div>
           <h1 class="hero-title">
