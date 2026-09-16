@@ -1,14 +1,14 @@
 // ============================================
 // EQRA — Surah Reader Page
-// Full Surah Reading, Audio Recitation, Translations
-// Color-Coded Tajweed with Indo-Pak Font Support
+// Full Surah Reading, Word-by-Word Audio Recitation, Translations
+// Color-Coded Tajweed with Indo-Pak Font Support & Reading Progress Bookmark
 // ============================================
 
 import { t, getLang } from '../i18n.js';
 import { updateMeta, breadcrumbSchema, setStructuredData } from '../utils/seo.js';
-import { getSurah, getSurahMeta } from '../services/quranService.js';
+import { getSurah, getSurahMeta, getSurahRecitation } from '../services/quranService.js';
 import { renderAyahCard, bindAyahCardEvents } from '../components/AyahCard.js';
-import { getSettings, saveSettings } from '../utils/storage.js';
+import { getSettings, saveSettings, getSurahProgress } from '../utils/storage.js';
 import { audioPlayer } from '../components/AudioPlayer.js';
 import { formatColorCodedQuran, renderTajweedLegend, renderTajweedModal } from '../utils/quranColors.js';
 import { 
@@ -48,8 +48,8 @@ export function renderSurahPage(params) {
 
   const settings = getSettings();
   const displayMode = settings.displayMode || 'all';
-  const quranFont = settings.quranFont || 'indopak'; // Default to Indo-Pak font
-  const tajweedEnabled = settings.tajweedEnabled !== false; // Default to true
+  const quranFont = settings.quranFont || 'indopak';
+  const tajweedEnabled = settings.tajweedEnabled !== false;
 
   const fontClass = quranFont === 'uthmani' 
     ? 'font-uthmani' 
@@ -60,6 +60,9 @@ export function renderSurahPage(params) {
   // Surah navigation prev/next
   const prevNum = meta.number > 1 ? meta.number - 1 : null;
   const nextNum = meta.number < 114 ? meta.number + 1 : null;
+
+  // Retrieve existing reading progress
+  const progress = getSurahProgress(meta.number);
 
   return `
     <div class="page" id="surah-reader-page" data-surah="${meta.number}">
@@ -103,6 +106,29 @@ export function renderSurahPage(params) {
             </a>
           </div>
         </header>
+
+        <!-- Reading Progress Banner -->
+        <div class="surah-reading-progress-card card" id="surah-progress-banner" style="display: flex; align-items: center; justify-content: space-between; padding: var(--space-3) var(--space-5); margin-bottom: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); flex-wrap: wrap; gap: var(--space-3);">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 1.3rem;">🔖</span>
+            <div>
+              <div style="font-size: var(--text-xs); color: var(--color-text-muted); font-weight: 600; text-transform: uppercase;">
+                ${lang === 'bn' ? 'পড়ার অগ্রগতি' : 'Reading Progress'}
+              </div>
+              <div id="toolbar-progress-text" style="font-size: var(--text-sm); font-weight: 700; color: var(--color-quran);">
+                ${progress 
+                  ? (lang === 'bn' ? `আয়াত ${progress.ayah} / ${meta.ayahs} (${progress.percent}%)` : `Ayah ${progress.ayah} / ${meta.ayahs} (${progress.percent}%)`)
+                  : (lang === 'bn' ? `আয়াত ১ / ${meta.ayahs} (০%)` : `Ayah 1 / ${meta.ayahs} (0%)`)}
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button class="btn btn-sm btn-ghost" id="jump-to-saved-ayah-btn" data-ayah="${progress ? progress.ayah : 1}" style="color: var(--color-quran); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+              <span>📍</span>
+              <span>${progress ? (lang === 'bn' ? `আয়াত ${progress.ayah}-এ যান` : `Jump to Ayah ${progress.ayah}`) : (lang === 'bn' ? 'শুরু থেকে পড়ুন' : 'Read from Start')}</span>
+            </button>
+          </div>
+        </div>
 
         <!-- Reading Controls Toolbar -->
         <div style="position: sticky; top: var(--header-height); z-index: var(--z-sticky); background: var(--color-surface); padding: var(--space-3) var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--color-border); margin-bottom: var(--space-6); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); box-shadow: var(--shadow-sm);">
@@ -164,7 +190,7 @@ export function renderSurahPage(params) {
         <!-- Bismillah Header (except Surah 9 At-Tawbah) -->
         ${meta.number !== 9 ? `
           <div style="text-align: center; padding: var(--space-6) 0 var(--space-8); border-bottom: 1px solid var(--color-border-light);">
-            <div id="bismillah-heading" class="ayah-arabic ${fontClass}" style="font-size: var(--text-3xl); line-height: 2; margin-bottom: 0; padding: 0;">
+            <div id="bismillah-heading" class="ayah-arabic ${fontClass}" dir="rtl" lang="ar" style="font-size: var(--text-3xl); line-height: 2; margin-bottom: 0; padding: 0;">
               ${tajweedEnabled 
                 ? formatColorCodedQuran(quranFont === 'indopak' ? 'بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِ' : 'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ') 
                 : (quranFont === 'indopak' ? 'بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِ' : 'بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ')}
@@ -216,12 +242,33 @@ export function renderSurahPage(params) {
 export async function bindSurahPageEvents(params) {
   const surahIdentifier = params.surah || 1;
   const container = document.getElementById('ayahs-list-container');
-  const surahData = await getSurah(surahIdentifier);
+  
+  // Parallel fetch: Surah verses + Quran.com chapter recitation with word timestamps
+  const [surahData, recitationData] = await Promise.all([
+    getSurah(surahIdentifier),
+    getSurahRecitation(surahIdentifier)
+  ]);
 
   const settings = getSettings();
   let currentDisplayMode = settings.displayMode || 'all';
   let currentFont = settings.quranFont || 'indopak';
   let isTajweedEnabled = settings.tajweedEnabled !== false;
+
+  // Arabic Quran Font Scale — Default is large and comfortable
+  const fontSizes = ['2.0rem', '2.45rem', '2.95rem', '3.5rem'];
+  let currentFontSizeLevel = typeof settings.quranFontSizeLevel === 'number' ? settings.quranFontSizeLevel : 1;
+
+  function applyFontSize() {
+    const arabicElements = document.querySelectorAll('.ayah-arabic');
+    const baseSize = fontSizes[currentFontSizeLevel] || '2.45rem';
+    arabicElements.forEach(el => {
+      if (el.classList.contains('font-nastaliq')) {
+        el.style.fontSize = `calc(${baseSize} * 1.08)`;
+      } else {
+        el.style.fontSize = baseSize;
+      }
+    });
+  }
 
   function renderList() {
     if (!surahData || !surahData.ayahs || surahData.ayahs.length === 0) {
@@ -235,31 +282,160 @@ export async function bindSurahPageEvents(params) {
     };
 
     container.innerHTML = surahData.ayahs.map(a => renderAyahCard(a, surahData, currentDisplayMode, options)).join('');
-    bindAyahCardEvents(container);
+    bindAyahCardEvents(container, recitationData);
 
     // Update Bismillah font & tajweed
     const bismillahEl = document.getElementById('bismillah-heading');
     if (bismillahEl) {
       bismillahEl.className = `ayah-arabic font-${currentFont}`;
+      bismillahEl.setAttribute('dir', 'rtl');
+      bismillahEl.setAttribute('lang', 'ar');
       const bismText = currentFont === 'indopak' ? 'بِسۡمِ اللهِ الرَّحۡمٰنِ الرَّحِيۡمِ' : 'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ';
       bismillahEl.innerHTML = isTajweedEnabled 
         ? formatColorCodedQuran(bismText) 
         : bismText;
     }
+
+    // Always apply the large font size to all newly rendered Ayahs
+    applyFontSize();
   }
 
   renderList();
 
-  // Play full Surah continuous audio
+  // Play full Surah with word-by-word timestamps & auto-advancement
   const playFullBtn = document.getElementById('play-full-surah-btn');
   if (playFullBtn && surahData?.ayahs?.length > 0) {
     playFullBtn.addEventListener('click', () => {
-      const playlist = surahData.ayahs.map(a => ({
-        audio: a.audio,
-        title: `${getLang() === 'bn' ? surahData.banglaName : surahData.englishName} : ${t('ayahWord')} ${a.numberInSurah}`,
-        subtitle: 'মিশারি রাশিদ আল-আফাসী (Mishary Rashid Al-Afasy)'
-      }));
-      audioPlayer.playPlaylist(playlist, 0);
+      if (recitationData && recitationData.timestamps) {
+        audioPlayer.playSurahWithSync({
+          surahNumber: surahData.number,
+          surahName: getLang() === 'bn' ? surahData.banglaName : surahData.englishName,
+          audioUrl: recitationData.audioUrl,
+          timestamps: recitationData.timestamps,
+          startAyah: 1,
+          totalAyahs: surahData.ayahs.length
+        });
+      } else {
+        // Fallback playlist
+        const playlist = surahData.ayahs.map(a => ({
+          surah: surahData.number,
+          ayah: a.numberInSurah,
+          audio: a.audio,
+          title: `${getLang() === 'bn' ? surahData.banglaName : surahData.englishName} : ${t('ayahWord')} ${a.numberInSurah}`,
+          subtitle: 'মিশারি রাশিদ আল-আফাসী (Mishary Rashid Al-Afasy)'
+        }));
+        audioPlayer.playPlaylist(playlist, 0);
+      }
+    });
+  }
+
+  // ============================================
+  // Audio Synchronization: Word Highlight & Auto-scroll
+  // ============================================
+
+  let lastActiveAyah = null;
+
+  const handleActiveAyahChange = (e) => {
+    const { surah, ayah } = e.detail;
+    if (parseInt(surah, 10) !== surahData.number) return;
+
+    if (lastActiveAyah !== ayah) {
+      lastActiveAyah = ayah;
+
+      // 1. Remove previous card highlight
+      container.querySelectorAll('.ayah-card.active-reciting').forEach(c => {
+        c.classList.remove('active-reciting');
+      });
+
+      // 2. Add to active ayah card
+      const activeCard = document.getElementById(`ayah-${ayah}`);
+      if (activeCard) {
+        activeCard.classList.add('active-reciting');
+
+        // 3. Smooth Auto-scroll to center the reciting Ayah
+        activeCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  };
+
+  const handleActiveWordChange = (e) => {
+    const { surah, ayah, wordIdx } = e.detail;
+    if (parseInt(surah, 10) !== surahData.number) return;
+
+    // Clear previous active word highlights in the container
+    container.querySelectorAll('.quran-word.active-word').forEach(el => {
+      el.classList.remove('active-word');
+    });
+
+    if (ayah && wordIdx) {
+      const card = document.getElementById(`ayah-${ayah}`);
+      if (card) {
+        const wordEl = card.querySelector(`.quran-word[data-word-idx="${wordIdx}"]`);
+        if (wordEl) {
+          wordEl.classList.add('active-word');
+        }
+      }
+    }
+  };
+
+  const handleAudioStopped = () => {
+    container.querySelectorAll('.quran-word.active-word').forEach(el => el.classList.remove('active-word'));
+    container.querySelectorAll('.ayah-card.active-reciting').forEach(el => el.classList.remove('active-reciting'));
+    lastActiveAyah = null;
+  };
+
+  // Remove existing listeners if any
+  window.removeEventListener('eqra:active-ayah-change', window.__eqraAyahHandler);
+  window.removeEventListener('eqra:active-word-change', window.__eqraWordHandler);
+  window.removeEventListener('eqra:audio-stopped', window.__eqraAudioStopHandler);
+
+  window.__eqraAyahHandler = handleActiveAyahChange;
+  window.__eqraWordHandler = handleActiveWordChange;
+  window.__eqraAudioStopHandler = handleAudioStopped;
+
+  window.addEventListener('eqra:active-ayah-change', handleActiveAyahChange);
+  window.addEventListener('eqra:active-word-change', handleActiveWordChange);
+  window.addEventListener('eqra:audio-stopped', handleAudioStopped);
+
+  // ============================================
+  // Reading Progress & Bookmark Listeners
+  // ============================================
+
+  const handleProgressUpdated = (e) => {
+    const prog = e.detail;
+    if (prog && prog.surah === surahData.number) {
+      const textEl = document.getElementById('toolbar-progress-text');
+      if (textEl) {
+        textEl.textContent = getLang() === 'bn'
+          ? `আয়াত ${prog.ayah} / ${surahData.ayahs.length} (${prog.percent}%)`
+          : `Ayah ${prog.ayah} / ${surahData.ayahs.length} (${prog.percent}%)`;
+      }
+      const jumpBtn = document.getElementById('jump-to-saved-ayah-btn');
+      if (jumpBtn) {
+        jumpBtn.setAttribute('data-ayah', prog.ayah);
+        const span = jumpBtn.querySelector('span:last-child');
+        if (span) {
+          span.textContent = getLang() === 'bn' ? `আয়াত ${prog.ayah}-এ যান` : `Jump to Ayah ${prog.ayah}`;
+        }
+      }
+    }
+  };
+
+  window.removeEventListener('eqra:progress-updated', window.__eqraProgressHandler);
+  window.__eqraProgressHandler = handleProgressUpdated;
+  window.addEventListener('eqra:progress-updated', handleProgressUpdated);
+
+  // Jump to saved Ayah button
+  const jumpBtn = document.getElementById('jump-to-saved-ayah-btn');
+  if (jumpBtn) {
+    jumpBtn.addEventListener('click', () => {
+      const targetAyah = jumpBtn.getAttribute('data-ayah') || 1;
+      const targetCard = document.getElementById(`ayah-${targetAyah}`);
+      if (targetCard) {
+        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        targetCard.classList.add('active-reciting');
+        setTimeout(() => targetCard.classList.remove('active-reciting'), 2500);
+      }
     });
   }
 
@@ -301,13 +477,11 @@ export async function bindSurahPageEvents(params) {
   const fontResetBtn = document.getElementById('font-reset-btn');
   const fontIncBtn = document.getElementById('font-inc-btn');
 
-  let currentFontSizeLevel = 1; // 0, 1, 2, 3
-  const fontSizes = ['1.5rem', '1.875rem', '2.25rem', '2.75rem'];
-
   if (fontIncBtn) {
     fontIncBtn.addEventListener('click', () => {
       if (currentFontSizeLevel < fontSizes.length - 1) {
         currentFontSizeLevel++;
+        saveSettings({ quranFontSizeLevel: currentFontSizeLevel });
         applyFontSize();
       }
     });
@@ -317,6 +491,7 @@ export async function bindSurahPageEvents(params) {
     fontDecBtn.addEventListener('click', () => {
       if (currentFontSizeLevel > 0) {
         currentFontSizeLevel--;
+        saveSettings({ quranFontSizeLevel: currentFontSizeLevel });
         applyFontSize();
       }
     });
@@ -325,14 +500,8 @@ export async function bindSurahPageEvents(params) {
   if (fontResetBtn) {
     fontResetBtn.addEventListener('click', () => {
       currentFontSizeLevel = 1;
+      saveSettings({ quranFontSizeLevel: currentFontSizeLevel });
       applyFontSize();
-    });
-  }
-
-  function applyFontSize() {
-    const arabicElements = document.querySelectorAll('.ayah-arabic');
-    arabicElements.forEach(el => {
-      el.style.fontSize = fontSizes[currentFontSizeLevel];
     });
   }
 
@@ -341,7 +510,6 @@ export async function bindSurahPageEvents(params) {
   const legendDropdown = document.getElementById('tajweed-legend-dropdown');
   if (legendToggle && legendDropdown) {
     legendToggle.addEventListener('click', (e) => {
-      // Don't toggle dropdown if guide button was clicked
       if (e.target.closest('#open-tajweed-guide-btn')) return;
 
       const isVisible = legendDropdown.style.display !== 'none';
@@ -355,7 +523,7 @@ export async function bindSurahPageEvents(params) {
     });
   }
 
-  // Interactive Legend Pills — click a pill to briefly highlight matching rules in the text
+  // Interactive Legend Pills
   document.querySelectorAll('.tajweed-pill').forEach(pill => {
     pill.addEventListener('click', () => {
       const rule = pill.getAttribute('data-rule');
@@ -376,7 +544,7 @@ export async function bindSurahPageEvents(params) {
     });
   });
 
-  // Tajweed Educational Modal opening & closing
+  // Tajweed Educational Modal
   const guideBtn = document.getElementById('open-tajweed-guide-btn');
   const modalOverlay = document.getElementById('tajweed-guide-modal');
   const closeModalBtn = document.getElementById('close-tajweed-modal-btn');

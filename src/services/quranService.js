@@ -129,6 +129,75 @@ export async function getSurah(surahNum) {
   }
 }
 
+const recitationCache = new Map();
+
+/**
+ * Fetch Quran.com chapter recitation with sub-second timestamps & word-by-word segments
+ * Reciter 7: Mishary Rashid Al-Afasy
+ * @param {number|string} surahNum 
+ * @returns {Promise<{ audioUrl: string, timestamps: Array }|null>}
+ */
+export async function getSurahRecitation(surahNum) {
+  const num = parseInt(surahNum, 10);
+  if (isNaN(num) || num < 1 || num > 114) return null;
+
+  if (recitationCache.has(num)) {
+    return recitationCache.get(num);
+  }
+
+  const storageKey = `eqra_recitation_v4_${num}`;
+  try {
+    const cached = localStorage.getItem(storageKey);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      recitationCache.set(num, parsed);
+      return parsed;
+    }
+  } catch (e) {
+    // ignore
+  }
+
+  try {
+    const url = `https://api.quran.com/api/v4/chapter_recitations/7/${num}?segments=true`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    if (!data?.audio_file?.audio_url || !data?.audio_file?.timestamps) {
+      throw new Error('Invalid recitation payload');
+    }
+
+    const normalized = {
+      surahNumber: num,
+      audioUrl: data.audio_file.audio_url,
+      timestamps: data.audio_file.timestamps.map(t => {
+        const parts = (t.verse_key || '').split(':');
+        return {
+          verseKey: t.verse_key,
+          ayahNumber: parts.length > 1 ? parseInt(parts[1], 10) : 1,
+          from: t.timestamp_from,
+          to: t.timestamp_to,
+          duration: t.duration,
+          segments: t.segments || []
+        };
+      })
+    };
+
+    recitationCache.set(num, normalized);
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(normalized));
+    } catch {
+      // Storage quota
+    }
+
+    return normalized;
+  } catch (err) {
+    console.warn(`[QuranService] Recitation timestamps unavailable for Surah ${num}:`, err);
+    return null;
+  }
+}
+
+
 /**
  * Universal Search across Surahs, Hadith, and Duas
  * @param {string} query 

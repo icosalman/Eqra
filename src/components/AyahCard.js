@@ -1,11 +1,12 @@
 // ============================================
 // EQRA — Ayah Card Component
+// Word-by-word highlights, reading progress ribbon, Tajweed support
 // ============================================
 
 import { t, getLang } from '../i18n.js';
-import { isBookmarked, toggleBookmark } from '../utils/storage.js';
+import { isBookmarked, toggleBookmark, getSurahProgress, saveSurahProgress } from '../utils/storage.js';
 import { audioPlayer } from './AudioPlayer.js';
-import { formatColorCodedQuran, bindTajweedInteractions } from '../utils/quranColors.js';
+import { formatColorCodedQuran, wrapQuranWords, bindTajweedInteractions } from '../utils/quranColors.js';
 import { 
   renderAyah3DBadge, 
   Icon3DAudio, 
@@ -18,7 +19,7 @@ import {
 /**
  * Render a single Ayah card
  * @param {object} ayah - { numberInSurah, arabic, tajweed, indopak, bangla, english, audio }
- * @param {object} surah - { number, name, banglaName, englishName }
+ * @param {object} surah - { number, name, banglaName, englishName, ayahs }
  * @param {string} displayMode - 'all' | 'arabic-bn' | 'arabic-en' | 'arabic-only'
  * @param {object} options - { font: 'indopak' | 'nastaliq' | 'uthmani', tajweed: boolean }
  */
@@ -26,6 +27,9 @@ export function renderAyahCard(ayah, surah, displayMode = 'all', options = {}) {
   const lang = getLang();
   const bookmarkId = `ayah_${surah.number}_${ayah.numberInSurah}`;
   const bookmarked = isBookmarked(bookmarkId);
+
+  const progress = getSurahProgress(surah.number);
+  const isProgressMarked = progress && progress.ayah === ayah.numberInSurah;
 
   const showBn = displayMode === 'all' || displayMode === 'arabic-bn';
   const showEn = displayMode === 'all' || displayMode === 'arabic-en';
@@ -43,22 +47,45 @@ export function renderAyahCard(ayah, surah, displayMode = 'all', options = {}) {
     ? ((isIndoPak && ayah.indopak) ? ayah.indopak : (ayah.tajweed || rawArabic)) 
     : rawArabic;
   const formattedArabic = tajweedActive ? formatColorCodedQuran(textToFormat) : rawArabic;
+  const wordWrappedArabic = wrapQuranWords(formattedArabic);
+
+  const totalVerses = surah.ayahs || surah.numberOfAyahs || 1;
 
   return `
-    <article class="ayah-card ${!tajweedActive ? 'tajweed-disabled' : ''}" id="ayah-${ayah.numberInSurah}">
+    <article class="ayah-card ${!tajweedActive ? 'tajweed-disabled' : ''} ${isProgressMarked ? 'has-progress-bookmark' : ''}" 
+      id="ayah-${ayah.numberInSurah}" 
+      data-surah="${surah.number}" 
+      data-ayah="${ayah.numberInSurah}">
+      
       <div class="ayah-header">
-        ${renderAyah3DBadge(ayah.numberInSurah)}
+        <div class="ayah-header-left" style="display: flex; align-items: center; gap: 8px;">
+          <span class="verse-reference-label" style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-secondary); letter-spacing: 0.5px;">
+            ${surah.number}:${ayah.numberInSurah}
+          </span>
 
-        <div class="ayah-actions">
-          <!-- Play Audio -->
+          <!-- Play Audio Button -->
           <button class="ayah-action-btn play-ayah-btn" 
+            data-surah="${surah.number}"
+            data-ayah="${ayah.numberInSurah}"
             data-audio="${ayah.audio}" 
             data-title="${lang === 'bn' ? surah.banglaName : surah.englishName} : ${t('ayahWord')} ${ayah.numberInSurah}" 
             title="${t('audioPlay')}" 
             aria-label="Play recitation">
-            <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DAudio}</span>
+            <span class="icon-3d-wrap" style="width: 17px; height: 17px;">${Icon3DAudio}</span>
           </button>
 
+          <!-- Reading Progress Bookmark Ribbon -->
+          <button class="ayah-action-btn progress-ribbon-btn ${isProgressMarked ? 'active' : ''}" 
+            data-surah="${surah.number}" 
+            data-ayah="${ayah.numberInSurah}"
+            data-total="${totalVerses}"
+            title="${isProgressMarked ? (lang === 'bn' ? 'সর্বশেষ পড়ার স্থান চিহ্নিত করা আছে' : 'Current reading progress bookmark') : (lang === 'bn' ? 'সর্বশেষ পড়ার স্থান হিসেবে চিহ্নিত করুন' : 'Bookmark as reading progress')}" 
+            aria-label="Reading progress bookmark">
+            <span class="ribbon-icon" style="font-size: 16px; display: inline-block; transition: transform 0.2s ease;">🔖</span>
+          </button>
+        </div>
+
+        <div class="ayah-actions">
           <!-- Copy Verse -->
           <button class="ayah-action-btn copy-ayah-btn" 
             data-copy="${rawArabic}\n\n${ayah.bangla}\n\n${ayah.english}\n— [${surah.englishName} ${surah.number}:${ayah.numberInSurah}]" 
@@ -67,7 +94,7 @@ export function renderAyahCard(ayah, surah, displayMode = 'all', options = {}) {
             <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DCopy}</span>
           </button>
 
-          <!-- Bookmark Verse -->
+          <!-- Favorite / Star Bookmark Verse -->
           <button class="ayah-action-btn bookmark-ayah-btn ${bookmarked ? 'active' : ''}" 
             data-id="${bookmarkId}" 
             data-type="ayah"
@@ -93,9 +120,9 @@ export function renderAyahCard(ayah, surah, displayMode = 'all', options = {}) {
         </div>
       </div>
 
-      <!-- Arabic Text (Color Coded Tajweed with Indo-Pak Font) -->
-      <div class="ayah-arabic ${fontClass}">
-        ${formattedArabic}
+      <!-- Arabic Text with Word Spans (Color Coded Tajweed with Indo-Pak Font) -->
+      <div class="ayah-arabic ${fontClass}" dir="rtl" lang="ar">
+        ${wordWrappedArabic}
       </div>
 
       <!-- Bangla Translation -->
@@ -124,19 +151,74 @@ export function renderAyahCard(ayah, surah, displayMode = 'all', options = {}) {
 /**
  * Bind interactive events for Ayah cards within a container
  * @param {HTMLElement} container 
+ * @param {object} [recitationData] - Optional preloaded chapter recitation with timestamps
  */
-export function bindAyahCardEvents(container) {
-  // Audio playback
+export function bindAyahCardEvents(container, recitationData = null) {
+  // Audio playback (Play single Ayah or jump chapter audio to this Ayah)
   container.querySelectorAll('.play-ayah-btn').forEach(btn => {
     btn.addEventListener('click', () => {
+      const surahNum = parseInt(btn.getAttribute('data-surah'), 10);
+      const ayahNum = parseInt(btn.getAttribute('data-ayah'), 10);
       const audioUrl = btn.getAttribute('data-audio');
       const title = btn.getAttribute('data-title');
-      if (audioUrl) {
+
+      if (recitationData && recitationData.timestamps) {
+        // Play with word sync starting at this Ayah
+        audioPlayer.playSurahWithSync({
+          surahNumber: surahNum,
+          surahName: title ? title.split(':')[0].trim() : `সূরা ${surahNum}`,
+          audioUrl: recitationData.audioUrl,
+          timestamps: recitationData.timestamps,
+          startAyah: ayahNum
+        });
+      } else if (audioUrl) {
+        // Fallback single ayah track
         audioPlayer.playTrack({
+          surah: surahNum,
+          ayah: ayahNum,
           audio: audioUrl,
           title: title,
           subtitle: 'মিশারি রাশিদ আল-আফাসী (Mishary Rashid Al-Afasy)'
         });
+      }
+    });
+  });
+
+  // Reading Progress Bookmark Ribbon click
+  container.querySelectorAll('.progress-ribbon-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const surah = btn.getAttribute('data-surah');
+      const ayah = btn.getAttribute('data-ayah');
+      const total = btn.getAttribute('data-total');
+
+      saveSurahProgress(surah, ayah, total);
+
+      // Update all ribbon buttons in this container
+      container.querySelectorAll('.progress-ribbon-btn').forEach(b => {
+        const isTarget = b.getAttribute('data-ayah') === ayah;
+        b.classList.toggle('active', isTarget);
+      });
+
+      container.querySelectorAll('.ayah-card').forEach(card => {
+        const isTarget = card.getAttribute('data-ayah') === ayah;
+        card.classList.toggle('has-progress-bookmark', isTarget);
+      });
+
+      // Show temporary toast feedback
+      showBookmarkToast(ayah);
+    });
+  });
+
+  // Word click: jump audio directly to that word if recitation is loaded
+  container.querySelectorAll('.quran-word').forEach(wordEl => {
+    wordEl.addEventListener('click', (e) => {
+      const card = wordEl.closest('.ayah-card');
+      if (!card) return;
+      const ayahNum = parseInt(card.getAttribute('data-ayah'), 10);
+      const wordIdx = parseInt(wordEl.getAttribute('data-word-idx'), 10);
+      if (ayahNum && wordIdx) {
+        audioPlayer.seekToWord(ayahNum, wordIdx);
       }
     });
   });
@@ -158,7 +240,7 @@ export function bindAyahCardEvents(container) {
     });
   });
 
-  // Bookmark Ayah
+  // Bookmark Verse (Favorite list)
   container.querySelectorAll('.bookmark-ayah-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-id');
@@ -205,3 +287,21 @@ export function bindAyahCardEvents(container) {
   bindTajweedInteractions(container);
 }
 
+function showBookmarkToast(ayahNum) {
+  const existing = document.getElementById('progress-toast');
+  if (existing) existing.remove();
+
+  const toast = document.createElement('div');
+  toast.id = 'progress-toast';
+  toast.className = 'progress-toast animate-slide-up';
+  toast.innerHTML = `
+    <span>🔖</span>
+    <span>আয়াত <strong>${ayahNum}</strong> পড়ার অগ্রগতি হিসেবে সংরক্ষিত হয়েছে</span>
+  `;
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('fade-out');
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}

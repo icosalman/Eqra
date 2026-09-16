@@ -55,3 +55,70 @@ export function saveSettings(settings) {
     return settings;
   }
 }
+
+// ============================================
+// Surah Reading & Listening Progress Bookmarks
+// ============================================
+
+const PROGRESS_KEY = 'eqra_reading_progress';
+const LAST_READ_KEY = 'eqra_last_read';
+
+export function getAllProgress() {
+  try {
+    const raw = localStorage.getItem(PROGRESS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+export function getSurahProgress(surahNum) {
+  if (!surahNum) return null;
+  const all = getAllProgress();
+  return all[String(surahNum)] || null;
+}
+
+export function saveSurahProgress(surahNum, ayahNum, totalAyahs = 0) {
+  if (!surahNum || !ayahNum) return null;
+  try {
+    const all = getAllProgress();
+    const num = String(surahNum);
+    const aNum = parseInt(ayahNum, 10);
+    const total = parseInt(totalAyahs, 10) || 1;
+    const percent = Math.min(100, Math.round((aNum / total) * 100));
+
+    const progressItem = {
+      surah: parseInt(surahNum, 10),
+      ayah: aNum,
+      totalAyahs: total,
+      percent,
+      updatedAt: new Date().toISOString()
+    };
+
+    all[num] = progressItem;
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(all));
+    localStorage.setItem(LAST_READ_KEY, JSON.stringify(progressItem));
+
+    // Dispatch event so active components can update in real-time
+    window.dispatchEvent(new CustomEvent('eqra:progress-updated', { detail: progressItem }));
+    return progressItem;
+  } catch (e) {
+    console.warn('Failed to save reading progress:', e);
+    return null;
+  }
+}
+
+export function getLastRead() {
+  try {
+    const raw = localStorage.getItem(LAST_READ_KEY);
+    if (raw) return JSON.parse(raw);
+    const all = getAllProgress();
+    const keys = Object.keys(all);
+    if (keys.length === 0) return null;
+    // Return the one with the latest updatedAt
+    return keys.map(k => all[k]).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))[0] || null;
+  } catch {
+    return null;
+  }
+}
+

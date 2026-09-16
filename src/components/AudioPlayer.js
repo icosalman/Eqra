@@ -1,7 +1,9 @@
 // ============================================
-// EQRA — Sticky Bottom Audio Player
-// Stream per-Ayah / Surah audio from Islamic Network CDN
+// EQRA — Sticky Bottom Audio Player & Synchronizer
+// Sub-second word-by-word highlight & verse auto-advancement
 // ============================================
+
+import { saveSurahProgress } from '../utils/storage.js';
 
 class AudioPlayerManager {
   constructor() {
@@ -12,25 +14,64 @@ class AudioPlayerManager {
     this.isPlaying = false;
     this.container = null;
 
+    // Recitation & Synchronizer state
+    this.currentSurahNumber = null;
+    this.currentSurahName = '';
+    this.totalAyahs = 0;
+    this.recitationTimestamps = null; // Array of { ayahNumber, from, to, duration, segments }
+    this.activeAyahNumber = null;
+    this.activeWordIndex = null;
+    this.animFrameId = null;
+
     this.initAudioListeners();
   }
 
   initAudioListeners() {
-    this.audio.addEventListener('timeupdate', () => this.updateProgress());
+    this.audio.addEventListener('timeupdate', () => {
+      this.updateProgress();
+      this.syncWordTimestamps();
+    });
+
     this.audio.addEventListener('ended', () => this.handleTrackEnd());
+
     this.audio.addEventListener('play', () => {
       this.isPlaying = true;
       this.updatePlayState();
+      this.startSyncLoop();
     });
+
     this.audio.addEventListener('pause', () => {
       this.isPlaying = false;
       this.updatePlayState();
+      this.stopSyncLoop();
+      this.clearActiveWord();
     });
+
     this.audio.addEventListener('error', (e) => {
       console.warn('Audio playback error:', e);
       this.isPlaying = false;
       this.updatePlayState();
+      this.stopSyncLoop();
+      this.clearActiveWord();
     });
+  }
+
+  startSyncLoop() {
+    if (this.animFrameId) cancelAnimationFrame(this.animFrameId);
+    const loop = () => {
+      if (this.isPlaying) {
+        this.syncWordTimestamps();
+        this.animFrameId = requestAnimationFrame(loop);
+      }
+    };
+    this.animFrameId = requestAnimationFrame(loop);
+  }
+
+  stopSyncLoop() {
+    if (this.animFrameId) {
+      cancelAnimationFrame(this.animFrameId);
+      this.animFrameId = null;
+    }
   }
 
   mount(containerEl) {
@@ -57,7 +98,7 @@ class AudioPlayerManager {
           </div>
 
           <div class="audio-info">
-            <div class="audio-info-title" id="player-title">তিলাওয়াত নির্বাচন করুন</div>
+            <div class="audio-info-title" id="player-title">আল-কুরআন তিলাওয়াত</div>
             <div class="audio-info-subtitle" id="player-reciter">মিশারি রাশিদ আল-আফাসী (Mishary Rashid Al-Afasy)</div>
           </div>
 
@@ -99,9 +140,176 @@ class AudioPlayerManager {
     }
   }
 
+  /**
+   * Play full Surah with sub-second timestamps & word synchronization
+   */
+  playSurahWithSync({ surahNumber, surahName, audioUrl, timestamps, startAyah = 1, totalAyahs = 0 }) {
+    this.currentSurahNumber = parseInt(surahNumber, 10);
+    this.currentSurahName = surahName || `সূরা ${surahNumber}`;
+    this.totalAyahs = totalAyahs || (timestamps ? timestamps.length : 0);
+    this.recitationTimestamps = timestamps || null;
+    this.playlist = [];
+    this.currentIndex = 0;
+
+    const bar = document.getElementById('global-audio-bar');
+    if (bar) bar.classList.add('active');
+
+    const titleEl = document.getElementById('player-title');
+    if (titleEl) {
+      titleEl.textContent = `${this.currentSurahName} (তিলাওয়াত)`;
+    }
+
+    const reciterEl = document.getElementById('player-reciter');
+    if (reciterEl) {
+      reciterEl.textContent = 'মিশারি রাশিদ আল-আফাসী (Mishary Rashid Al-Afasy)';
+    }
+
+    if (this.audio.src !== audioUrl) {
+      this.audio.src = audioUrl;
+    }
+
+    // Determine initial seek time based on startAyah
+    let seekSec = 0;
+    if (startAyah && this.recitationTimestamps) {
+      const target = this.recitationTimestamps.find(t => t.ayahNumber === parseInt(startAyah, 10));
+      if (target) {
+        seekSec = target.from / 1000;
+      }
+    }
+
+    const onCanPlay = () => {
+      if (seekSec > 0) {
+        this.audio.currentTime = seekSec;
+      }
+      this.audio.play().catch(e => console.warn('Play error:', e));
+      this.audio.removeEventListener('canplay', onCanPlay);
+    };
+
+    if (this.audio.readyState >= 2) {
+      if (seekSec > 0) {
+        this.audio.currentTime = seekSec;
+      }
+      this.audio.play().catch(e => console.warn('Play error:', e));
+    } else {
+      this.audio.addEventListener('canplay', onCanPlay);
+    }
+  }
+
+  /**
+   * Jump playback to a specific Ayah within the timestamped recitation
+   */
+  seekToAyah(ayahNumber) {
+    if (!this.recitationTimestamps) return;
+    const target = this.recitationTimestamps.find(t => t.ayahNumber === parseInt(ayahNumber, 10));
+    if (target) {
+      this.audio.currentTime = target.from / 1000;
+      if (!this.isPlaying) {
+        this.audio.play().catch(e => console.warn('Seek play error:', e));
+      }
+    }
+  }
+
+  /**
+   * Jump playback to a specific word inside an Ayah
+   */
+  seekToWord(ayahNumber, wordIdx) {
+    if (!this.recitationTimestamps) return;
+    const target = this.recitationTimestamps.find(t => t.ayahNumber === parseInt(ayahNumber, 10));
+    if (target && target.segments) {
+      const seg = target.segments.find(s => s[0] === parseInt(wordIdx, 10));
+      if (seg) {
+        this.audio.currentTime = seg[1] / 1000;
+        if (!this.isPlaying) {
+          this.audio.play().catch(e => console.warn('Seek word error:', e));
+        }
+      }
+    }
+  }
+
+  /**
+   * Real-time synchronizer: matches current audio time against segments
+   */
+  syncWordTimestamps() {
+    if (!this.recitationTimestamps || !this.isPlaying) return;
+
+    const currentMs = Math.round(this.audio.currentTime * 1000);
+    const surahNum = this.currentSurahNumber;
+
+    // Find active verse
+    const activeVerse = this.recitationTimestamps.find(t => currentMs >= t.from && currentMs <= t.to);
+
+    if (activeVerse) {
+      const ayahNum = activeVerse.ayahNumber;
+
+      // Check if Ayah changed
+      if (this.activeAyahNumber !== ayahNum) {
+        this.activeAyahNumber = ayahNum;
+
+        // Auto-save reading progress
+        if (surahNum && this.totalAyahs) {
+          saveSurahProgress(surahNum, ayahNum, this.totalAyahs);
+        }
+
+        // Update player title with active verse
+        const titleEl = document.getElementById('player-title');
+        if (titleEl) {
+          titleEl.textContent = `${this.currentSurahName} : আয়াত ${ayahNum}`;
+        }
+
+        // Dispatch Ayah change event
+        window.dispatchEvent(new CustomEvent('eqra:active-ayah-change', {
+          detail: {
+            surah: surahNum,
+            ayah: ayahNum
+          }
+        }));
+      }
+
+      // Check active word segment within this verse
+      let foundWordIdx = null;
+      if (activeVerse.segments && activeVerse.segments.length > 0) {
+        for (const seg of activeVerse.segments) {
+          if (seg.length >= 3) {
+            const [wIdx, startMs, endMs] = seg;
+            if (currentMs >= startMs && currentMs <= endMs) {
+              foundWordIdx = wIdx;
+              break;
+            }
+          }
+        }
+      }
+
+      if (this.activeWordIndex !== foundWordIdx) {
+        this.activeWordIndex = foundWordIdx;
+        window.dispatchEvent(new CustomEvent('eqra:active-word-change', {
+          detail: {
+            surah: surahNum,
+            ayah: ayahNum,
+            wordIdx: foundWordIdx
+          }
+        }));
+      }
+    }
+  }
+
+  clearActiveWord() {
+    this.activeWordIndex = null;
+    window.dispatchEvent(new CustomEvent('eqra:active-word-change', {
+      detail: {
+        surah: this.currentSurahNumber,
+        ayah: this.activeAyahNumber,
+        wordIdx: null
+      }
+    }));
+  }
+
   playTrack(track) {
     if (!track || !track.audio) return;
     this.currentTrack = track;
+    this.recitationTimestamps = null; // Single track mode
+    this.currentSurahNumber = track.surah || null;
+    this.activeAyahNumber = track.ayah || null;
+
     this.audio.src = track.audio;
     this.audio.play().catch(e => console.warn('Autoplay prevented:', e));
 
@@ -116,6 +324,12 @@ class AudioPlayerManager {
     const reciterEl = document.getElementById('player-reciter');
     if (reciterEl && track.subtitle) {
       reciterEl.textContent = track.subtitle;
+    }
+
+    if (track.surah && track.ayah) {
+      window.dispatchEvent(new CustomEvent('eqra:active-ayah-change', {
+        detail: { surah: track.surah, ayah: track.ayah }
+      }));
     }
   }
 
@@ -136,7 +350,16 @@ class AudioPlayerManager {
   }
 
   prevTrack() {
-    if (this.playlist.length > 0 && this.currentIndex > 0) {
+    if (this.recitationTimestamps && this.recitationTimestamps.length > 0) {
+      // Find current or previous ayah
+      const currentMs = this.audio.currentTime * 1000;
+      const idx = this.recitationTimestamps.findIndex(t => currentMs >= t.from && currentMs <= t.to);
+      if (idx > 0) {
+        this.seekToAyah(this.recitationTimestamps[idx - 1].ayahNumber);
+      } else if (idx === 0) {
+        this.seekToAyah(this.recitationTimestamps[0].ayahNumber);
+      }
+    } else if (this.playlist.length > 0 && this.currentIndex > 0) {
       this.currentIndex--;
       this.playTrack(this.playlist[this.currentIndex]);
     } else if (this.audio.currentTime > 3) {
@@ -145,7 +368,13 @@ class AudioPlayerManager {
   }
 
   nextTrack() {
-    if (this.playlist.length > 0 && this.currentIndex < this.playlist.length - 1) {
+    if (this.recitationTimestamps && this.recitationTimestamps.length > 0) {
+      const currentMs = this.audio.currentTime * 1000;
+      const idx = this.recitationTimestamps.findIndex(t => currentMs >= t.from && currentMs <= t.to);
+      if (idx >= 0 && idx < this.recitationTimestamps.length - 1) {
+        this.seekToAyah(this.recitationTimestamps[idx + 1].ayahNumber);
+      }
+    } else if (this.playlist.length > 0 && this.currentIndex < this.playlist.length - 1) {
       this.currentIndex++;
       this.playTrack(this.playlist[this.currentIndex]);
     }
@@ -158,6 +387,9 @@ class AudioPlayerManager {
     } else {
       this.isPlaying = false;
       this.updatePlayState();
+      this.stopSyncLoop();
+      this.clearActiveWord();
+      window.dispatchEvent(new CustomEvent('eqra:audio-stopped'));
     }
   }
 
@@ -191,6 +423,9 @@ class AudioPlayerManager {
   close() {
     this.audio.pause();
     this.isPlaying = false;
+    this.stopSyncLoop();
+    this.clearActiveWord();
+    window.dispatchEvent(new CustomEvent('eqra:audio-stopped'));
     const bar = document.getElementById('global-audio-bar');
     if (bar) bar.classList.remove('active');
   }

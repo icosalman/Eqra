@@ -585,3 +585,91 @@ export function bindTajweedInteractions(container) {
     }
   });
 }
+
+/**
+ * Wrap words in Arabic HTML / text with <span class="quran-word" data-word-idx="N">...</span>
+ * Preserves inner Tajweed markup and HTML spans while indexing reciting words.
+ * @param {string} html 
+ * @returns {string}
+ */
+export function wrapQuranWords(html) {
+  if (!html) return '';
+
+  // 1. Clean font-specific Private Use Area codes (PUA) & stray RLM markers that distort BiDi order
+  const cleaned = html.replace(/[\uE000-\uF8FF]/g, '').replace(/\u200F/g, '');
+
+  // 2. Tokenize HTML tags vs text content
+  const tokens = [];
+  let i = 0;
+  while (i < cleaned.length) {
+    if (cleaned[i] === '<') {
+      const closeIdx = cleaned.indexOf('>', i);
+      if (closeIdx !== -1) {
+        tokens.push({ type: 'tag', val: cleaned.substring(i, closeIdx + 1) });
+        i = closeIdx + 1;
+        continue;
+      }
+    }
+    let nextTag = cleaned.indexOf('<', i);
+    if (nextTag === -1) nextTag = cleaned.length;
+    tokens.push({ type: 'text', val: cleaned.substring(i, nextTag) });
+    i = nextTag;
+  }
+
+  // 3. Group tokens into chunks delimited by whitespace
+  const rawChunks = [];
+  let currentTokens = [];
+
+  for (const token of tokens) {
+    if (token.type === 'tag') {
+      currentTokens.push(token.val);
+    } else {
+      const parts = token.val.split(/(\s+)/);
+      for (const part of parts) {
+        if (!part) continue;
+        if (/^\s+$/.test(part)) {
+          if (currentTokens.length > 0) {
+            rawChunks.push(currentTokens.join(''));
+            currentTokens = [];
+          }
+        } else {
+          currentTokens.push(part);
+        }
+      }
+    }
+  }
+  if (currentTokens.length > 0) {
+    rawChunks.push(currentTokens.join(''));
+  }
+
+  // Helper: check if chunk is purely a waqf/stop marker or ayah-end sign
+  const isWaqfOrStopSign = (chunk) => {
+    const t = chunk.trim();
+    if (/^<span class="(?:tajweed-ayah-end|tajweed-waqf)">.*?<\/span>$/.test(t)) return true;
+    const plain = t.replace(/<[^>]+>/g, '').trim();
+    return /^[\u06D6-\u06ED\u0615\u06DD۝\u200F]+$/.test(plain);
+  };
+
+  // 4. Merge any standalone waqf/stop mark directly into the preceding word
+  // This guarantees that pause markers do NOT become phantom words or disrupt Arabic BiDi flow
+  const words = [];
+  for (const chunk of rawChunks) {
+    const trimmed = chunk.trim();
+    if (!trimmed) continue;
+    if (isWaqfOrStopSign(trimmed) && words.length > 0) {
+      words[words.length - 1] += ' ' + trimmed;
+    } else {
+      words.push(trimmed);
+    }
+  }
+
+  // 5. Wrap each genuine recited word in <span class="quran-word" data-word-idx="N">...</span>
+  let wordIdx = 1;
+  return words.map(w => {
+    const res = `<span class="quran-word" data-word-idx="${wordIdx}">${w}</span>`;
+    wordIdx++;
+    return res;
+  }).join(' ');
+}
+
+

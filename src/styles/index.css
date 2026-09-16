@@ -85,12 +85,12 @@
   --text-5xl:  3rem;
   --text-6xl:  3.75rem;
 
-  /* Arabic Quran sizes */
-  --quran-size-sm:  1.5rem;
-  --quran-size-md:  1.875rem;
-  --quran-size-lg:  2.25rem;
-  --quran-size-xl:  2.75rem;
-  --quran-line-height: 2.4;
+  /* Arabic Quran sizes — Large default sizes for optimal readability */
+  --quran-size-sm:  1.85rem;
+  --quran-size-md:  2.35rem;
+  --quran-size-lg:  2.85rem;
+  --quran-size-xl:  3.35rem;
+  --quran-line-height: 2.5;
 
   /* === Spacing === */
   --space-1:  0.25rem;
@@ -853,6 +853,132 @@ input, textarea, select {
   color: var(--color-quran);
 }
 
+/* ---------- Word-by-Word Recitation Highlight (Quran.com style) ---------- */
+.quran-word {
+  display: inline;
+  direction: rtl;
+  unicode-bidi: isolate;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.quran-word:hover {
+  background-color: rgba(2, 132, 199, 0.08);
+}
+
+/* Active Reciting Word Indicator (Quran.com Cyan/Teal Indicator) */
+.quran-word.active-word {
+  color: #0284c7 !important;
+  background-color: rgba(2, 132, 199, 0.15) !important;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.35);
+  font-weight: 700;
+}
+
+.quran-word.active-word * {
+  color: #0284c7 !important;
+}
+
+[data-theme="dark"] .quran-word.active-word {
+  color: #38bdf8 !important;
+  background-color: rgba(56, 189, 248, 0.22) !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+}
+
+[data-theme="dark"] .quran-word.active-word * {
+  color: #38bdf8 !important;
+}
+
+/* Active Reciting Verse Card */
+.ayah-card.active-reciting {
+  background: rgba(2, 132, 199, 0.04) !important;
+  border-left: 4px solid #0284c7 !important;
+  box-shadow: 0 4px 24px rgba(2, 132, 199, 0.12);
+  border-radius: var(--radius-md);
+  transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .ayah-card.active-reciting {
+  background: rgba(56, 189, 248, 0.06) !important;
+  border-left: 4px solid #38bdf8 !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Saved Reading Progress Ribbon Bookmark */
+.ayah-card.has-progress-bookmark {
+  position: relative;
+  background: rgba(217, 119, 6, 0.03);
+}
+
+.ayah-card.has-progress-bookmark::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--color-warning, #d97706);
+  border-top-left-radius: var(--radius-md);
+  border-bottom-left-radius: var(--radius-md);
+}
+
+.progress-ribbon-btn {
+  color: var(--color-text-light);
+  transition: all 0.2s ease;
+}
+
+.progress-ribbon-btn:hover {
+  transform: scale(1.15);
+  color: var(--color-warning, #d97706);
+}
+
+.progress-ribbon-btn.active {
+  color: var(--color-warning, #d97706);
+  background: rgba(217, 119, 6, 0.12);
+  filter: drop-shadow(0 0 6px rgba(217, 119, 6, 0.4));
+}
+
+.progress-ribbon-btn.active .ribbon-icon {
+  transform: scale(1.2);
+}
+
+/* Progress Bookmark Toast Notification */
+.progress-toast {
+  position: fixed;
+  bottom: 84px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-surface, #ffffff);
+  color: var(--color-text-primary, #1e293b);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-left: 4px solid var(--color-quran, #0d9488);
+  padding: 10px 20px;
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--text-sm, 14px);
+  font-weight: 600;
+  pointer-events: none;
+  animation: slideUpToast 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUpToast {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.progress-toast.fade-out {
+  opacity: 0;
+  transform: translate(-50%, 10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+
 /* ============================================
    COLOR-CODED QURAN & TAJWEED TYPOGRAPHY
    ============================================ */
@@ -869,8 +995,12 @@ input, textarea, select {
 .font-indopak,
 [lang="ar"] {
   font-family: var(--font-indopak) !important;
+  font-size: var(--quran-size-md, 2.35rem);
   line-height: 2.5;
   word-spacing: 4px;
+  direction: rtl !important;
+  text-align: right !important;
+  unicode-bidi: isolate !important;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -884,6 +1014,7 @@ input, textarea, select {
 .ayah-arabic.font-indopak,
 .font-indopak {
   font-family: var(--font-indopak) !important;
+  font-size: var(--quran-size-md, 2.35rem);
   line-height: 2.5;
   word-spacing: 4px;
 }
@@ -891,6 +1022,7 @@ input, textarea, select {
 .ayah-arabic.font-nastaliq,
 .font-nastaliq {
   font-family: var(--font-nastaliq) !important;
+  font-size: calc(var(--quran-size-md, 2.35rem) * 1.08);
   line-height: 2.7;
   word-spacing: 6px;
 }
@@ -898,7 +1030,8 @@ input, textarea, select {
 .ayah-arabic.font-uthmani,
 .font-uthmani {
   font-family: var(--font-uthmani) !important;
-  line-height: 2.2;
+  font-size: var(--quran-size-md, 2.35rem);
+  line-height: 2.3;
   word-spacing: 3px;
 }
 
