@@ -2684,7 +2684,19 @@ header .hero-title-arabic,
   .nav { display: none; }
   .mobile-menu-btn { display: flex; }
 
-  .hero { padding: var(--space-10) 0 var(--space-8); }
+  /* Mobile Header actions adjustments: hide redundant lang switch from top bar */
+  .header-actions { gap: 6px; }
+  .header-actions .lang-switch { display: none; }
+  .streak-header-btn {
+    display: inline-flex !important;
+    padding: 3px 8px;
+    height: 34px;
+    gap: 4px;
+  }
+  .streak-btn-flame { width: 18px; height: 18px; }
+  .streak-btn-count { font-size: 13px; }
+
+  .hero { padding: var(--space-8) 0 var(--space-6); }
   .hero-title-arabic { font-size: var(--text-3xl); }
   .hero-title { font-size: var(--text-2xl); }
   .hero-subtitle { font-size: var(--text-base); }
@@ -2694,11 +2706,43 @@ header .hero-title-arabic,
 
   .footer-grid { grid-template-columns: 1fr; }
 
-  .section { padding: var(--space-8) 0; }
+  .section { padding: var(--space-6) 0; }
   .section-title { font-size: var(--text-xl); }
 
   .audio-player-inner { flex-wrap: wrap; }
   .audio-progress { order: -1; width: 100%; flex: unset; }
+
+  /* Home goal card on mobile */
+  .home-goal-card {
+    padding: var(--space-4) !important;
+  }
+  .home-goal-card > div:first-child {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  .home-goal-card > div:first-child > div:last-child {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .home-goal-card .home-quick-log-btn {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
+  #home-open-goal-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Goal Modal Dialog on mobile */
+  .goal-modal-wrapper { padding: var(--space-2); }
+  .goal-modal-dialog { max-height: 96vh; border-radius: var(--radius-xl); }
+  .goal-modal-body { padding: var(--space-4); gap: var(--space-4); }
+  .goal-today-card { flex-direction: column; padding: var(--space-4); text-align: center; }
+  .today-tag-wrap { justify-content: center; }
+  .quick-log-actions { justify-content: center; }
+  .goal-circle-wrapper { margin: 0 auto; }
+  .presets-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 480px) {
@@ -2707,9 +2751,9 @@ header .hero-title-arabic,
   .hero-cta { flex-direction: column; }
   .hero-cta .btn { width: 100%; }
 
-  .header-actions .lang-switch { display: none; }
+  .header-actions .theme-toggle-btn { display: none; }
   .header-inner { padding: 0 var(--space-3); gap: var(--space-2); }
-  .header-logo-text { font-size: 1.2rem; }
+  .header-logo-text { font-size: 1.15rem; }
   .header-logo-arabic { display: none; }
 
   .ayah-arabic { font-size: var(--quran-size-sm); }

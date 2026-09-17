@@ -106,15 +106,12 @@ export function renderHomePage() {
           </div>
         </section>
 
-        <!-- Scroll Driven 3D Quran -->
-        ${renderQuran3DBook(lang)}
-
         <!-- Daily Quran Reading Goal & Streak Widget -->
-        <section class="section animate-fade-in-up" style="margin-bottom: var(--space-8);">
+        <section class="section animate-fade-in-up" style="margin-bottom: var(--space-6);">
           <div class="card home-goal-card ${goalSummary.isCompleted ? 'goal-completed-glow' : ''}" style="background: linear-gradient(135deg, var(--color-surface), rgba(16, 185, 129, 0.08)); border: 1px solid var(--color-border); padding: var(--space-6); border-radius: var(--radius-xl); box-shadow: var(--shadow-sm);">
             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4);">
               <div style="display: flex; align-items: center; gap: var(--space-4);">
-                <div class="home-goal-flame-wrap ${goalSummary.isCompleted ? 'flame-ignited' : ''}" style="width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; background: rgba(245, 158, 11, 0.12); border-radius: 50%; border: 1.5px solid rgba(245, 158, 11, 0.3);">
+                <div class="home-goal-flame-wrap ${goalSummary.isCompleted ? 'flame-ignited' : ''}" style="width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; background: rgba(245, 158, 11, 0.12); border-radius: 50%; border: 1.5px solid rgba(245, 158, 11, 0.3); flex-shrink: 0;">
                   <span class="icon-3d-wrap" style="width: 32px; height: 32px;">${Icon3DFlame}</span>
                 </div>
                 <div>
@@ -164,6 +161,9 @@ export function renderHomePage() {
             </div>
           </div>
         </section>
+
+        <!-- Scroll Driven 3D Quran -->
+        ${renderQuran3DBook(lang)}
 
         <!-- Daily Featured Verse (আজকের আয়াত) -->
         <section class="section">
