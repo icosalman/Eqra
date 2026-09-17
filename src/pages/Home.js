@@ -22,9 +22,13 @@ import {
   Icon3DPause,
   Icon3DAudio, 
   Icon3DMoon,
-  Icon3DSparkle
+  Icon3DSparkle,
+  Icon3DFlame,
+  Icon3DTarget
 } from '../components/Icons3D.js';
 import { openGlobalSearch } from '../components/SearchModal.js';
+import { getGoalProgressSummary, logManualProgress } from '../services/quranGoalService.js';
+import { openReadingGoalModal } from '../components/ReadingGoalModal.js';
 
 
 function renderDailyAyahArabic(featuredAyah) {
@@ -57,6 +61,9 @@ export function renderHomePage() {
   const popularSurahIds = [1, 2, 18, 36, 55, 67, 112, 114];
   const popularSurahs = SURAHS_METADATA.filter(s => popularSurahIds.includes(s.number));
 
+  // Retrieve today's reading goal & streak summary
+  const goalSummary = getGoalProgressSummary();
+
   updateMeta({
     title: lang === 'bn' ? 'EQRA — কুরআন পড়ুন, বুঝুন, চিন্তা করুন' : 'EQRA — Read. Understand. Reflect.',
     description: lang === 'bn' 
@@ -66,7 +73,7 @@ export function renderHomePage() {
   });
 
   return `
-    <div class="page">
+    <div class="page" id="home-page">
       <div class="container">
         <!-- Hero Section -->
         <section class="hero animate-fade-in-up">
@@ -101,6 +108,62 @@ export function renderHomePage() {
 
         <!-- Scroll Driven 3D Quran -->
         ${renderQuran3DBook(lang)}
+
+        <!-- Daily Quran Reading Goal & Streak Widget -->
+        <section class="section animate-fade-in-up" style="margin-bottom: var(--space-8);">
+          <div class="card home-goal-card ${goalSummary.isCompleted ? 'goal-completed-glow' : ''}" style="background: linear-gradient(135deg, var(--color-surface), rgba(16, 185, 129, 0.08)); border: 1px solid var(--color-border); padding: var(--space-6); border-radius: var(--radius-xl); box-shadow: var(--shadow-sm);">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4);">
+              <div style="display: flex; align-items: center; gap: var(--space-4);">
+                <div class="home-goal-flame-wrap ${goalSummary.isCompleted ? 'flame-ignited' : ''}" style="width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; background: rgba(245, 158, 11, 0.12); border-radius: 50%; border: 1.5px solid rgba(245, 158, 11, 0.3);">
+                  <span class="icon-3d-wrap" style="width: 32px; height: 32px;">${Icon3DFlame}</span>
+                </div>
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <span class="section-badge badge-quran" style="margin: 0; font-size: 11px;">
+                      ${lang === 'bn' ? 'কুরআন তিলাওয়াত ট্র্যাকার' : 'Quran Recitation Tracker'}
+                    </span>
+                    <span style="font-size: 13px; font-weight: 800; color: #EA580C; display: inline-flex; align-items: center; gap: 4px;">
+                      🔥 <span>${goalSummary.currentStreak} ${lang === 'bn' ? 'দিনের স্ট্রিক' : 'Day Streak'}</span>
+                    </span>
+                  </div>
+                  <h3 style="font-size: var(--text-xl); font-weight: 800; color: var(--color-text-primary); margin: var(--space-1) 0;">
+                    ${lang === 'bn' ? goalSummary.titleBn : goalSummary.titleEn}
+                  </h3>
+                  <p id="home-goal-status-text" style="font-size: var(--text-sm); color: var(--color-text-secondary); margin: 0;">
+                    ${goalSummary.isCompleted 
+                      ? (lang === 'bn' ? '🎉 মাশাআল্লাহ! আজকের লক্ষ্য অর্জিত হয়েছে।' : "🎉 Masha'Allah! Today's goal achieved.") 
+                      : (lang === 'bn' ? `আজকের অগ্রগতি: ${goalSummary.current} / ${goalSummary.target} আয়াত (${goalSummary.remaining}টি বাকি)` : `Today's Progress: ${goalSummary.current} / ${goalSummary.target} ayahs (${goalSummary.remaining} left)`)}
+                  </p>
+                </div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;">
+                <!-- Quick Log Buttons -->
+                <button class="btn btn-sm btn-secondary home-quick-log-btn" data-count="5" title="${lang === 'bn' ? '+৫ আয়াত যোগ করুন' : 'Add 5 ayahs'}">
+                  +৫ আয়াত
+                </button>
+                <button class="btn btn-sm btn-secondary home-quick-log-btn" data-count="20" title="${lang === 'bn' ? '+১ পৃষ্ঠা যোগ করুন' : 'Add 1 page'}">
+                  +১ পৃষ্ঠা
+                </button>
+                <button class="btn btn-sm btn-primary" id="home-open-goal-btn" style="display: inline-flex; align-items: center; gap: 6px;">
+                  <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DTarget}</span>
+                  <span>${lang === 'bn' ? 'গোল ও স্ট্রিক ড্যাশবোর্ড' : 'Goal & Streak Hub'}</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div style="margin-top: var(--space-4);">
+              <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px;">
+                <span>${lang === 'bn' ? 'আজকের লক্ষ্যপূরণ' : "Today's Target Progress"}</span>
+                <span id="home-goal-percent-text" style="color: var(--color-quran);">${goalSummary.percent}%</span>
+              </div>
+              <div class="home-goal-progress-track" style="height: 8px; background: var(--color-border); border-radius: 999px; overflow: hidden;">
+                <div id="home-goal-progress-bar" style="height: 100%; width: ${goalSummary.percent}%; background: linear-gradient(90deg, #10B981, #059669); border-radius: 999px; transition: width 0.4s ease;"></div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <!-- Daily Featured Verse (আজকের আয়াত) -->
         <section class="section">
@@ -484,6 +547,41 @@ export function bindHomeEvents() {
       openGlobalSearch();
     });
   }
+
+  // Bind Home Goal & Streak Modal Trigger
+  const homeOpenGoalBtn = document.getElementById('home-open-goal-btn');
+  if (homeOpenGoalBtn) {
+    homeOpenGoalBtn.addEventListener('click', () => {
+      openReadingGoalModal();
+    });
+  }
+
+  // Bind Home Quick Log Buttons
+  document.querySelectorAll('.home-quick-log-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const count = parseInt(btn.getAttribute('data-count'), 10) || 5;
+      logManualProgress(count);
+    });
+  });
+
+  // Live update the homepage goal widget
+  const handleGoalUpdate = () => {
+    const s = getGoalProgressSummary();
+    const percentText = document.getElementById('home-goal-percent-text');
+    const progressBar = document.getElementById('home-goal-progress-bar');
+    const statusText = document.getElementById('home-goal-status-text');
+    const card = document.querySelector('.home-goal-card');
+
+    if (percentText) percentText.textContent = `${s.percent}%`;
+    if (progressBar) progressBar.style.width = `${s.percent}%`;
+    if (card) card.classList.toggle('goal-completed-glow', s.isCompleted);
+    if (statusText) {
+      statusText.textContent = s.isCompleted
+        ? (getLang() === 'bn' ? '🎉 মাশাআল্লাহ! আজকের লক্ষ্য অর্জিত হয়েছে।' : "🎉 Masha'Allah! Today's goal achieved.")
+        : (getLang() === 'bn' ? `আজকের অগ্রগতি: ${s.current} / ${s.target} আয়াত (${s.remaining}টি বাকি)` : `Today's Progress: ${s.current} / ${s.target} ayahs (${s.remaining} left)`);
+    }
+  };
+  window.addEventListener('eqra:goal-progress-updated', handleGoalUpdate);
 
   // Bind interactive Tajweed rule tooltips on homepage
   bindTajweedInteractions(document.getElementById('home-page') || document);

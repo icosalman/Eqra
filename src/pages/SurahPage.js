@@ -14,8 +14,11 @@ import { formatColorCodedQuran, renderTajweedLegend, renderTajweedModal } from '
 import { 
   renderSurah3DBadge, 
   Icon3DAudio, 
-  Icon3DQuran 
+  Icon3DQuran,
+  Icon3DFlame 
 } from '../components/Icons3D.js';
+import { getGoalProgressSummary, recordAyahRead } from '../services/quranGoalService.js';
+import { openReadingGoalModal } from '../components/ReadingGoalModal.js';
 
 export function renderSurahPage(params) {
   const lang = getLang();
@@ -61,8 +64,9 @@ export function renderSurahPage(params) {
   const prevNum = meta.number > 1 ? meta.number - 1 : null;
   const nextNum = meta.number < 114 ? meta.number + 1 : null;
 
-  // Retrieve existing reading progress
+  // Retrieve existing reading progress & daily goal
   const progress = getSurahProgress(meta.number);
+  const goalSummary = getGoalProgressSummary();
 
   return `
     <div class="page" id="surah-reader-page" data-surah="${meta.number}">
@@ -107,7 +111,7 @@ export function renderSurahPage(params) {
           </div>
         </header>
 
-        <!-- Reading Progress Banner -->
+        <!-- Reading Progress & Goal Banner -->
         <div class="surah-reading-progress-card card" id="surah-progress-banner" style="display: flex; align-items: center; justify-content: space-between; padding: var(--space-3) var(--space-5); margin-bottom: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); flex-wrap: wrap; gap: var(--space-3);">
           <div style="display: flex; align-items: center; gap: 10px;">
             <span style="font-size: 1.3rem;">🔖</span>
@@ -122,7 +126,14 @@ export function renderSurahPage(params) {
               </div>
             </div>
           </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <!-- Goal Status Pill -->
+            <button class="btn btn-sm btn-ghost surah-reader-goal-btn" id="surah-reader-goal-btn" title="${lang === 'bn' ? 'কুরআন রিডিং গোল ও স্ট্রিক' : 'Quran Reading Goal & Streak'}" style="color: var(--color-text-primary); font-weight: 600; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--color-border); border-radius: var(--radius-full); padding: 4px 10px; background: var(--color-bg);">
+              <span class="icon-3d-wrap" style="width: 16px; height: 16px;">${Icon3DFlame}</span>
+              <span id="surah-reader-goal-text">${goalSummary.current}/${goalSummary.target} ${lang === 'bn' ? 'আয়াত' : 'ayahs'} (${goalSummary.percent}%)</span>
+              <span style="font-size: 10px; background: ${goalSummary.isCompleted ? 'var(--color-primary)' : 'var(--color-border)'}; color: ${goalSummary.isCompleted ? '#fff' : 'var(--color-text-secondary)'}; padding: 1px 6px; border-radius: 10px;">${goalSummary.isCompleted ? '✓' : (lang === 'bn' ? 'লক্ষ্য' : 'Goal')}</span>
+            </button>
+
             <button class="btn btn-sm btn-ghost" id="jump-to-saved-ayah-btn" data-ayah="${progress ? progress.ayah : 1}" style="color: var(--color-quran); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
               <span>📍</span>
               <span>${progress ? (lang === 'bn' ? `আয়াত ${progress.ayah}-এ যান` : `Jump to Ayah ${progress.ayah}`) : (lang === 'bn' ? 'শুরু থেকে পড়ুন' : 'Read from Start')}</span>
@@ -567,6 +578,43 @@ export async function bindSurahPageEvents(params) {
       if (e.target === modalOverlay) {
         modalOverlay.classList.remove('open');
       }
+    });
+  }
+
+  // Reading Goal Modal Trigger in Surah Reader Banner
+  const surahGoalBtn = document.getElementById('surah-reader-goal-btn');
+  if (surahGoalBtn) {
+    surahGoalBtn.addEventListener('click', () => {
+      openReadingGoalModal();
+    });
+  }
+
+  // Live update the goal badge in Surah Banner
+  const updateSurahGoalBadge = () => {
+    const s = getGoalProgressSummary();
+    const txt = document.getElementById('surah-reader-goal-text');
+    if (txt) {
+      txt.textContent = `${s.current}/${s.target} ${getLang() === 'bn' ? 'আয়াত' : 'ayahs'} (${s.percent}%)`;
+    }
+  };
+  window.addEventListener('eqra:goal-progress-updated', updateSurahGoalBadge);
+
+  // Auto-track reading when user scrolls and pauses on Ayahs
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+          const ayahCard = entry.target;
+          const aNum = ayahCard.getAttribute('data-ayah');
+          if (aNum && surahNum) {
+            recordAyahRead(surahNum, aNum);
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+
+    container.querySelectorAll('.ayah-card').forEach(card => {
+      observer.observe(card);
     });
   }
 }

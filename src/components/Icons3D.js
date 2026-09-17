@@ -1129,3 +1129,150 @@ export const Icon3DPercentPie = `
   </svg>
 `;
 
+/**
+ * 3D Fiery Reading Streak Flame Icon (Quran.com & Duolingo style)
+ */
+export const Icon3DFlame = `
+  <svg viewBox="0 0 48 48" width="22" height="22" class="icon-3d-svg icon-3d-flame">
+    <defs>
+      <linearGradient id="flame-outer" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%" stop-color="#DC2626"/>
+        <stop offset="35%" stop-color="#EA580C"/>
+        <stop offset="70%" stop-color="#F59E0B"/>
+        <stop offset="100%" stop-color="#FDE047"/>
+      </linearGradient>
+      <linearGradient id="flame-inner" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%" stop-color="#F97316"/>
+        <stop offset="50%" stop-color="#FBBF24"/>
+        <stop offset="100%" stop-color="#FEF9C3"/>
+      </linearGradient>
+      <linearGradient id="flame-core" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%" stop-color="#FDE047"/>
+        <stop offset="100%" stop-color="#FFFFFF"/>
+      </linearGradient>
+      <filter id="flame-glow" x="-30%" y="-30%" width="160%" height="160%">
+        <feDropShadow dx="0" dy="2" stdDeviation="3.5" flood-color="#EA580C" flood-opacity="0.6"/>
+      </filter>
+    </defs>
+    <g filter="url(#flame-glow)">
+      <!-- Outer Flame Body -->
+      <path d="M24 4 C24 4 19 13 19 18 C19 20.8 20.1 23 21.8 24.5 C15.5 24 10 28.5 10 35 C10 41.5 16 46 24 46 C32 46 38 41.5 38 35 C38 27.5 31 20 31 20 C31 20 29.5 23.5 27.5 24 C27.5 17 24 4 24 4 Z" fill="url(#flame-outer)"/>
+      <!-- Mid Radiant Flame -->
+      <path d="M24 16 C24 16 19 23 19 28 C19 32.5 21.5 35 21.5 35 C21.5 35 22.8 33.5 23.5 32 C24.5 30 26.5 30 27.5 32 C28.5 34 29 36 26.5 39 C31 38.5 33 34.5 33 30.5 C33 24 28 20.5 24 16 Z" fill="url(#flame-inner)" opacity="0.95"/>
+      <!-- Brightest Core Sparkle -->
+      <ellipse cx="24" cy="38" rx="4.5" ry="5.5" fill="url(#flame-core)"/>
+      <!-- Specular Highlight -->
+      <circle cx="24" cy="37" r="2" fill="#FFFFFF"/>
+    </g>
+  </svg>
+`;
+
+/**
+ * 3D Target Bullseye Icon
+ */
+export const Icon3DTarget = `
+  <svg viewBox="0 0 48 48" width="22" height="22" class="icon-3d-svg">
+    <defs>
+      <linearGradient id="target-gold-rim" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FEF08A"/>
+        <stop offset="50%" stop-color="#F59E0B"/>
+        <stop offset="100%" stop-color="#B45309"/>
+      </linearGradient>
+      <linearGradient id="target-red-outer" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#EF4444"/>
+        <stop offset="100%" stop-color="#B91C1C"/>
+      </linearGradient>
+      <linearGradient id="target-emerald" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#34D399"/>
+        <stop offset="100%" stop-color="#059669"/>
+      </linearGradient>
+      <filter id="target-shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#0F172A" flood-opacity="0.35"/>
+      </filter>
+    </defs>
+    <g filter="url(#target-shadow)">
+      <!-- Outer Rim Ring -->
+      <circle cx="24" cy="24" r="20" fill="url(#target-gold-rim)"/>
+      <!-- Outer Red Ring -->
+      <circle cx="24" cy="24" r="17.5" fill="url(#target-red-outer)"/>
+      <!-- White Ring -->
+      <circle cx="24" cy="24" r="13" fill="#F8FAFC"/>
+      <!-- Mid Ring (Emerald) -->
+      <circle cx="24" cy="24" r="8.5" fill="url(#target-emerald)"/>
+      <!-- Center Bullseye Gold -->
+      <circle cx="24" cy="24" r="4.5" fill="url(#target-gold-rim)"/>
+      <circle cx="24" cy="24" r="2" fill="#FFFFFF"/>
+    </g>
+  </svg>
+`;
+
+/**
+ * 3D Golden Championship Trophy Cup Icon
+ */
+export const Icon3DTrophy = `
+  <svg viewBox="0 0 48 48" width="22" height="22" class="icon-3d-svg">
+    <defs>
+      <linearGradient id="trophy-gold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FEF08A"/>
+        <stop offset="40%" stop-color="#FBBF24"/>
+        <stop offset="80%" stop-color="#D97706"/>
+        <stop offset="100%" stop-color="#92400E"/>
+      </linearGradient>
+      <linearGradient id="trophy-base" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#334155"/>
+        <stop offset="100%" stop-color="#0F172A"/>
+      </linearGradient>
+      <filter id="trophy-shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#B45309" flood-opacity="0.35"/>
+      </filter>
+    </defs>
+    <g filter="url(#trophy-shadow)">
+      <!-- Base Pedestal -->
+      <rect x="13" y="38" width="22" height="6" rx="2" fill="url(#trophy-base)"/>
+      <polygon points="17,38 31,38 29,32 19,32" fill="url(#trophy-gold)"/>
+      <rect x="22" y="27" width="4" height="6" rx="1" fill="url(#trophy-gold)"/>
+      <!-- Cup Handles -->
+      <path d="M12 11 C8 11 8 22 17 23 L18 21 C12 20 12 13 14 13 Z" fill="url(#trophy-gold)"/>
+      <path d="M36 11 C40 11 40 22 31 23 L30 21 C36 20 36 13 34 13 Z" fill="url(#trophy-gold)"/>
+      <!-- Cup Body -->
+      <path d="M14 9 L34 9 C34 9 35 22 24 27 C13 22 14 9 14 9 Z" fill="url(#trophy-gold)"/>
+      <!-- Star Emboss -->
+      <polygon points="24,14 25.5,17 29,17.5 26.5,20 27,23.5 24,21.8 21,23.5 21.5,20 19,17.5 22.5,17" fill="#FFFFFF" opacity="0.9"/>
+    </g>
+  </svg>
+`;
+
+/**
+ * 3D Calendar Check Icon
+ */
+export const Icon3DCalendarCheck = `
+  <svg viewBox="0 0 48 48" width="22" height="22" class="icon-3d-svg">
+    <defs>
+      <linearGradient id="cal-top" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#EF4444"/>
+        <stop offset="100%" stop-color="#DC2626"/>
+      </linearGradient>
+      <linearGradient id="cal-check" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#34D399"/>
+        <stop offset="100%" stop-color="#059669"/>
+      </linearGradient>
+      <filter id="cal-shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#0F172A" flood-opacity="0.25"/>
+      </filter>
+    </defs>
+    <g filter="url(#cal-shadow)">
+      <!-- Calendar Body -->
+      <rect x="8" y="10" width="32" height="32" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+      <!-- Top Banner -->
+      <path d="M8 16 C8 12.7 10.7 10 14 10 L34 10 C37.3 10 40 12.7 40 16 L40 18 L8 18 Z" fill="url(#cal-top)"/>
+      <!-- Binders -->
+      <rect x="15" y="6" width="3" height="6" rx="1.5" fill="#475569"/>
+      <rect x="30" y="6" width="3" height="6" rx="1.5" fill="#475569"/>
+      <!-- Checkmark -->
+      <circle cx="24" cy="30" r="9" fill="url(#cal-check)"/>
+      <polyline points="20,30 23,33 28,27" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </svg>
+`;
+
+

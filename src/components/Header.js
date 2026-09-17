@@ -27,13 +27,17 @@ import {
   Icon3DBookSajid2,
   Icon3DUmrah,
   Icon3DVocab,
-  Icon3DPercentPie
+  Icon3DPercentPie,
+  Icon3DFlame
 } from './Icons3D.js';
+import { openReadingGoalModal } from './ReadingGoalModal.js';
+import { getGoalProgressSummary } from '../services/quranGoalService.js';
 
 export function renderHeader() {
   const lang = getLang();
   const currentPath = window.location.hash || `/#/${lang}/`;
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const goalSummary = getGoalProgressSummary();
 
   const isFaithLogicActive = currentPath.includes('/faith-and-logic');
   const isUmrahActive = currentPath.includes('/umrah');
@@ -196,6 +200,13 @@ export function renderHeader() {
 
         <!-- Header Actions -->
         <div class="header-actions">
+          <!-- Reading Goal & Streak Trigger Button -->
+          <button class="header-action-btn streak-header-btn ${goalSummary.isCompleted ? 'streak-active' : ''}" id="open-goal-btn" title="${t('readingGoal')} • ${goalSummary.currentStreak} ${t('streakDays')}" aria-label="Reading Goal & Streak">
+            <span class="action-btn-icon streak-btn-flame">${Icon3DFlame}</span>
+            <span class="streak-btn-count">${goalSummary.currentStreak}</span>
+            <span class="streak-btn-ring" style="--goal-percent: ${goalSummary.percent}%;"></span>
+          </button>
+
           <!-- Search Trigger Button -->
           <button class="header-action-btn search-trigger-btn" id="open-search-btn" title="${t('searchPlaceholder')} (Ctrl+K)" aria-label="Search">
             <span class="action-btn-icon">${Icon3DSearch}</span>
@@ -251,6 +262,20 @@ export function renderHeader() {
             <span class="search-text">${lang === 'bn' ? 'কুরআন, হাদিস ও দোয়া খুঁজুন...' : 'Search Quran, Hadith, Dua...'}</span>
             <span class="search-shortcut">⌘K</span>
           </button>
+
+          <!-- Mobile Streak & Goal Card -->
+          <div class="mobile-drawer-streak-card ${goalSummary.isCompleted ? 'streak-completed' : ''}" id="mobile-streak-trigger">
+            <div class="mobile-streak-left">
+              <span class="mobile-streak-flame">${Icon3DFlame}</span>
+              <div class="mobile-streak-text">
+                <span class="mobile-streak-count">${goalSummary.currentStreak} ${lang === 'bn' ? 'দিনের স্ট্রিক' : 'Day Streak'}</span>
+                <span class="mobile-streak-progress">${goalSummary.current}/${goalSummary.target} ${lang === 'bn' ? 'আয়াত' : 'ayahs'} (${goalSummary.percent}%)</span>
+              </div>
+            </div>
+            <button class="btn btn-sm btn-primary mobile-streak-btn" type="button">
+              ${goalSummary.isCompleted ? '✓' : (lang === 'bn' ? 'লক্ষ্য' : 'Goal')}
+            </button>
+          </div>
 
           <!-- Section: Primary Navigation -->
           <div class="mobile-nav-section">
@@ -540,6 +565,49 @@ export function bindHeaderEvents() {
       closeDrawer();
       openGlobalSearch();
     });
+  }
+
+  // Reading Goal & Streak Modal Triggers
+  const openGoalBtn = document.getElementById('open-goal-btn');
+  const mobileStreakTrigger = document.getElementById('mobile-streak-trigger');
+
+  if (openGoalBtn) {
+    openGoalBtn.addEventListener('click', () => {
+      closeDrawer();
+      openReadingGoalModal();
+    });
+  }
+
+  if (mobileStreakTrigger) {
+    mobileStreakTrigger.addEventListener('click', () => {
+      closeDrawer();
+      openReadingGoalModal();
+    });
+  }
+
+  // Live update streak badge when goal state changes
+  if (!window._eqraGoalListenerAttached) {
+    window.addEventListener('eqra:goal-progress-updated', () => {
+      const summary = getGoalProgressSummary();
+      const desktopBtn = document.getElementById('open-goal-btn');
+      if (desktopBtn) {
+        desktopBtn.classList.toggle('streak-active', summary.isCompleted);
+        const countSpan = desktopBtn.querySelector('.streak-btn-count');
+        if (countSpan) countSpan.textContent = String(summary.currentStreak);
+        const ringSpan = desktopBtn.querySelector('.streak-btn-ring');
+        if (ringSpan) ringSpan.style.setProperty('--goal-percent', `${summary.percent}%`);
+      }
+
+      const mobileCard = document.getElementById('mobile-streak-trigger');
+      if (mobileCard) {
+        mobileCard.classList.toggle('streak-completed', summary.isCompleted);
+        const mCount = mobileCard.querySelector('.mobile-streak-count');
+        const mProg = mobileCard.querySelector('.mobile-streak-progress');
+        if (mCount) mCount.textContent = `${summary.currentStreak} ${getLang() === 'bn' ? 'দিনের স্ট্রিক' : 'Day Streak'}`;
+        if (mProg) mProg.textContent = `${summary.current}/${summary.target} ${getLang() === 'bn' ? 'আয়াত' : 'ayahs'} (${summary.percent}%)`;
+      }
+    });
+    window._eqraGoalListenerAttached = true;
   }
 }
 

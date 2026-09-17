@@ -4,6 +4,7 @@
 // ============================================
 
 import { saveSurahProgress } from '../utils/storage.js';
+import { recordAyahRead } from '../services/quranGoalService.js';
 
 class AudioPlayerManager {
   constructor() {
@@ -271,6 +272,7 @@ class AudioPlayerManager {
         // Auto-save reading progress
         if (surahNum && this.totalAyahs) {
           saveSurahProgress(surahNum, ayahNum, this.totalAyahs);
+          recordAyahRead(surahNum, ayahNum);
         }
 
         // Update player title with active verse

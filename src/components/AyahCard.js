@@ -5,6 +5,7 @@
 
 import { t, getLang } from '../i18n.js';
 import { isBookmarked, toggleBookmark, getSurahProgress, saveSurahProgress } from '../utils/storage.js';
+import { recordAyahRead } from '../services/quranGoalService.js';
 import { audioPlayer } from './AudioPlayer.js';
 import { formatColorCodedQuran, wrapQuranWords, bindTajweedInteractions } from '../utils/quranColors.js';
 import { 
@@ -193,6 +194,7 @@ export function bindAyahCardEvents(container, recitationData = null) {
       const total = btn.getAttribute('data-total');
 
       saveSurahProgress(surah, ayah, total);
+      recordAyahRead(surah, ayah);
 
       // Update all ribbon buttons in this container
       container.querySelectorAll('.progress-ribbon-btn').forEach(b => {
