@@ -57,11 +57,42 @@ function ayahFace(ayah, surah, lang) {
   `;
 }
 
+function closingFace(lang) {
+  const bn = lang === 'bn';
+  return `
+    <div class="qh-inner qh-page qh-closing">
+      <div class="qh-closing-mark font-indopak" aria-hidden="true">۞</div>
+      <div class="qh-surah-name">${bn ? 'সূরা আল-ফাতিহা সম্পূর্ণ' : 'Surah Al-Fatihah complete'}</div>
+      <div class="qh-rule" aria-hidden="true"></div>
+      <p class="qh-trans">${bn
+        ? 'কুরআনের ১১৪টি সূরার প্রথমটি — প্রতি সালাতে যা পড়া হয়।'
+        : 'The first of the 114 Surahs — recited in every prayer.'}</p>
+    </div>
+  `;
+}
+
+/** Shown on the static left page, revealed once the whole surah has been turned. */
+export function renderClosingLeftPage(lang) {
+  const bn = lang === 'bn';
+  return `
+    <div class="qh-inner qh-page qh-closing">
+      <div class="qh-closing-mark font-indopak" aria-hidden="true">اقۡرَاۡ</div>
+      <div class="qh-rule" aria-hidden="true"></div>
+      <div class="qh-surah-name">${bn ? 'পুরো কুরআন পড়ুন' : 'Read the whole Quran'}</div>
+      <p class="qh-trans">${bn
+        ? '১১৪টি সূরা, আয়াতভিত্তিক অনুবাদ ও তিলাওয়াতের অডিও।'
+        : 'All 114 Surahs with translation and audio recitation.'}</p>
+    </div>
+  `;
+}
+
 function buildFaces(lang) {
   const surah = PRELOADED_SURAHS['1'];
   const faces = [coverFace(lang), surahHeaderFace(surah, lang)];
   for (const ayah of surah.ayahs) faces.push(ayahFace(ayah, surah, lang));
-  if (faces.length % 2 !== 0) faces.push(`<div class="qh-inner qh-page"></div>`);
+  faces.push(closingFace(lang));
+  // Leaves carry two faces each, so an odd count would leave a blank back.
+  if (faces.length % 2 !== 0) faces.push(closingFace(lang));
   return faces;
 }
 
@@ -90,7 +121,7 @@ export function renderQuranHero3D(lang = 'bn') {
         role="group" aria-label="${lang === 'bn' ? 'ত্রিমাত্রিক কুরআন — টেনে পাতা উল্টান' : '3D Quran — drag to turn pages'}">
         <div class="qh-book" id="qh-book">
           <div class="qh-base qh-base-right" aria-hidden="true"></div>
-          <div class="qh-base qh-base-left" aria-hidden="true"></div>
+          <div class="qh-base qh-base-left">${renderClosingLeftPage(lang)}</div>
           <div class="qh-leaves">${leaves}</div>
           <div class="qh-shadow" aria-hidden="true"></div>
         </div>
@@ -287,14 +318,39 @@ export function bindQuranHero3D() {
 
   detach = () => {
     clearTimeout(autoplayTimer);
+    window.removeEventListener('resize', refit);
     if (rafId) cancelAnimationFrame(rafId);
     io.disconnect();
     controls.removeEventListener('click', onControlClick);
     detach = null;
   };
 
+  /**
+   * Shrink a page's text until it fits. Ayah lengths vary by 3x in one surah,
+   * so a single font size either crops the long ones or wastes the short ones.
+   */
+  function fitFaces() {
+    root.querySelectorAll('.qh-face').forEach(face => {
+      const inner = face.firstElementChild;
+      if (!inner) return;
+      let scale = 1;
+      inner.style.setProperty('--qh-fit', '1');
+      // 12 steps bottoms out at 0.34 — far past anything the content needs.
+      for (let i = 0; i < 12 && inner.scrollHeight > inner.clientHeight + 1; i++) {
+        scale -= 0.06;
+        inner.style.setProperty('--qh-fit', scale.toFixed(2));
+      }
+    });
+  }
+
+  const refit = () => requestAnimationFrame(fitFaces);
+  window.addEventListener('resize', refit);
+  // The Quranic face changes metrics once loaded, so measure again after it lands.
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refit);
+
   resetTilt();
   paint();
+  fitFaces();
   if (reduced) {
     // No motion: show the open spread and leave it to the buttons.
     turned = 1;

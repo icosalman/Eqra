@@ -19,7 +19,7 @@
   --qh-paper-edge: #C9BC9C;
 }
 
-.qh-glow {
+.qh .qh-glow {
   position: absolute;
   top: 4%;
   left: 50%;
@@ -33,9 +33,9 @@
 
 /* ---------- Scene ---------- */
 
-.qh-scene {
-  --qh-page-w: clamp(138px, 20vw, 232px);
-  --qh-page-h: clamp(206px, 29vw, 330px);
+.qh .qh-scene {
+  --qh-page-w: clamp(146px, 21vw, 250px);
+  --qh-page-h: clamp(220px, 31vw, 356px);
   position: relative;
   perspective: 1800px;
   perspective-origin: 50% 44%;
@@ -45,14 +45,14 @@
   border-radius: var(--radius-lg);
 }
 
-.qh-scene:active { cursor: grabbing; }
+.qh .qh-scene:active { cursor: grabbing; }
 
-.qh-scene:focus-visible {
+.qh .qh-scene:focus-visible {
   outline: 2px solid var(--color-quran);
   outline-offset: 4px;
 }
 
-.qh-book {
+.qh .qh-book {
   --qh-shift: 25%;
   --qh-open: 0;
   --qh-tilt-x: 8deg;
@@ -72,12 +72,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .qh-book { animation: none; transition: none; }
+  .qh .qh-book { animation: none; transition: none; }
 }
 
 /* Static pages sit deeper than the deepest leaf, or 3D depth sorting paints
    them over the whole stack and the spread reads blank. */
-.qh-base {
+.qh .qh-base {
   position: absolute;
   top: 0;
   width: var(--qh-page-w);
@@ -88,20 +88,20 @@
   transform: translateZ(calc(var(--qh-leaves, 5) * -0.6px - 3px));
 }
 
-.qh-base-left {
+.qh .qh-base-left {
   left: 0;
   border-radius: var(--radius-md) 2px 2px var(--radius-md);
   background-image: linear-gradient(270deg, rgba(0, 0, 0, 0.13), transparent 24%), var(--qh-paper);
 }
 
-.qh-base-right {
+.qh .qh-base-right {
   left: 50%;
   border-radius: 2px var(--radius-md) var(--radius-md) 2px;
   background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.13), transparent 24%), var(--qh-paper);
   opacity: min(1, calc(var(--qh-open) * 3));
 }
 
-.qh-shadow {
+.qh .qh-shadow {
   position: absolute;
   left: 50%;
   bottom: -22px;
@@ -114,7 +114,7 @@
 
 /* ---------- Leaves (right-to-left, like a real Mushaf) ---------- */
 
-.qh-leaves {
+.qh .qh-leaves {
   position: absolute;
   top: 0;
   left: 0;
@@ -123,7 +123,7 @@
   transform-style: preserve-3d;
 }
 
-.qh-leaf {
+.qh .qh-leaf {
   --shade: 0;
   position: absolute;
   inset: 0;
@@ -132,7 +132,7 @@
   will-change: transform;
 }
 
-.qh-face {
+.qh .qh-face {
   position: absolute;
   inset: 0;
   overflow: hidden;
@@ -143,12 +143,12 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
 }
 
-.qh-front { transform: translateZ(0.35px); border-radius: var(--radius-md) 2px 2px var(--radius-md); }
-.qh-back  { transform: rotateY(180deg) translateZ(0.35px); border-radius: 2px var(--radius-md) var(--radius-md) 2px; }
+.qh .qh-front { transform: translateZ(0.35px); border-radius: var(--radius-md) 2px 2px var(--radius-md); }
+.qh .qh-back { transform: rotateY(180deg) translateZ(0.35px); border-radius: 2px var(--radius-md) var(--radius-md) 2px; }
 
 /* A back face is mirrored by its own 180deg rotation, so both faces use the
    same gradient direction to land the gutter on the spine side. */
-.qh-face::after {
+.qh .qh-face::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -156,7 +156,7 @@
   background: linear-gradient(270deg, rgba(0, 0, 0, 0.15), transparent 24%);
 }
 
-.qh-face::before {
+.qh .qh-face::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -166,7 +166,7 @@
   opacity: calc(var(--shade) * 0.5);
 }
 
-.qh-inner {
+.qh .qh-inner {
   position: relative;
   height: 100%;
   padding: clamp(9px, 1.6vw, 18px) clamp(10px, 1.5vw, 18px) clamp(22px, 2.6vw, 30px);
@@ -180,14 +180,14 @@
 
 /* ---------- Cover ---------- */
 
-.qh-cover {
+.qh .qh-cover {
   background:
     radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.16), transparent 58%),
     linear-gradient(160deg, #0B5C43, #06301F 58%, #0B5C43);
   color: #F3E7C9;
 }
 
-.qh-cover-frame {
+.qh .qh-cover-frame {
   width: 100%;
   height: 100%;
   display: flex;
@@ -201,24 +201,24 @@
   box-shadow: inset 0 0 0 4px rgba(212, 175, 95, 0.14);
 }
 
-.qh-cover-ornament { font-size: clamp(20px, 3vw, 34px); color: #D4AF5F; line-height: 1; }
-.qh-cover-arabic   { font-size: clamp(17px, 2.4vw, 28px); color: #F6E9C6; direction: rtl; line-height: 1.9; }
-.qh-cover-title    { font-size: clamp(11px, 1.3vw, 15px); font-weight: 700; color: #F3E7C9; }
+.qh .qh-cover-ornament { font-size: clamp(20px, 3vw, 34px); color: #D4AF5F; line-height: 1; }
+.qh .qh-cover-arabic { font-size: calc(clamp(17px, 2.4vw, 28px) * var(--qh-fit, 1)); word-spacing: normal; color: #F6E9C6; direction: rtl; line-height: 1.9; }
+.qh .qh-cover-title { font-size: clamp(11px, 1.3vw, 15px); font-weight: 700; color: #F3E7C9; }
 
-.qh-rule {
+.qh .qh-rule {
   width: 52%;
   height: 1px;
   flex: none;
   background: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.45), transparent);
 }
 
-.qh-rule-gold { background: linear-gradient(90deg, transparent, #D4AF5F, transparent); }
+.qh .qh-rule-gold { background: linear-gradient(90deg, transparent, #D4AF5F, transparent); }
 
 /* ---------- Inner pages ---------- */
 
-.qh-page { color: #2A2115; }
+.qh .qh-page { color: #2A2115; }
 
-.qh-foot {
+.qh .qh-foot {
   position: absolute;
   left: 0;
   right: 0;
@@ -227,11 +227,11 @@
   color: rgba(42, 33, 21, 0.52);
 }
 
-.qh-basmala      { font-size: clamp(14px, 1.9vw, 22px); direction: rtl; color: var(--color-quran-dark); line-height: 2; }
-.qh-surah-arabic { font-size: clamp(19px, 2.7vw, 34px); direction: rtl; color: #2A2115; line-height: 2; }
-.qh-surah-name   { font-size: clamp(12px, 1.4vw, 17px); font-weight: 700; }
+.qh .qh-basmala { font-size: calc(clamp(14px, 1.9vw, 22px) * var(--qh-fit, 1)); word-spacing: normal; direction: rtl; color: var(--color-quran-dark); line-height: 2; }
+.qh .qh-surah-arabic { font-size: calc(clamp(19px, 2.7vw, 34px) * var(--qh-fit, 1)); word-spacing: normal; direction: rtl; color: #2A2115; line-height: 2; }
+.qh .qh-surah-name { font-size: calc(clamp(12px, 1.4vw, 17px) * var(--qh-fit, 1)); font-weight: 700; }
 
-.qh-badge {
+.qh .qh-badge {
   flex: none;
   display: grid;
   place-items: center;
@@ -245,25 +245,34 @@
   color: var(--color-quran-dark);
 }
 
-.qh-arabic {
-  font-size: clamp(15px, 2.1vw, 26px);
+.qh .qh-arabic {
+  font-size: calc(clamp(15px, 2.1vw, 26px) * var(--qh-fit, 1));
   direction: rtl;
-  line-height: 2.1;
+  line-height: 1.9;
+  word-spacing: normal;
   color: #1E1B18;
-  max-height: 48%;
-  overflow: hidden;
 }
 
-.qh-trans {
-  font-size: clamp(10px, 1.1vw, 13px);
+.qh .qh-trans {
+  font-size: calc(clamp(10px, 1.1vw, 13px) * var(--qh-fit, 1));
   line-height: 1.6;
   color: #3B3122;
   margin: 0;
 }
 
+.qh .qh-closing { justify-content: center; gap: clamp(6px, 1vw, 12px); }
+
+.qh .qh-closing-mark {
+  font-size: calc(clamp(17px, 2.4vw, 28px) * var(--qh-fit, 1));
+  word-spacing: normal;
+  direction: rtl;
+  color: rgba(5, 150, 105, 0.75);
+  line-height: 1.6;
+}
+
 /* ---------- Controls ---------- */
 
-.qh-controls {
+.qh .qh-controls {
   position: relative;
   display: flex;
   align-items: center;
@@ -271,7 +280,7 @@
 }
 
 .qh-nav,
-.qh-play {
+.qh .qh-play {
   width: 32px;
   height: 32px;
   display: grid;
@@ -286,14 +295,14 @@
   transition: var(--transition-fast);
 }
 
-.qh-play { font-size: var(--text-xs); margin-left: var(--space-2); }
+.qh .qh-play { font-size: var(--text-xs); margin-left: var(--space-2); }
 
 .qh-nav:hover,
-.qh-play:hover { border-color: var(--color-quran); color: var(--color-quran); }
+.qh .qh-play:hover { border-color: var(--color-quran); color: var(--color-quran); }
 
-.qh-dots { display: flex; align-items: center; gap: 6px; }
+.qh .qh-dots { display: flex; align-items: center; gap: 6px; }
 
-.qh-dot {
+.qh .qh-dot {
   width: 7px;
   height: 7px;
   padding: 0;
@@ -304,7 +313,7 @@
   transition: var(--transition-fast);
 }
 
-.qh-dot.is-active { background: var(--color-quran); transform: scale(1.5); }
+.qh .qh-dot.is-active { background: var(--color-quran); transform: scale(1.5); }
 
 /* ---------- Split hero layout ---------- */
 
@@ -333,7 +342,7 @@
   .hero.hero-split .hero-title-arabic { text-align: center !important; margin-left: auto; }
   .hero.hero-split .hero-subtitle { margin-left: auto; margin-right: auto; }
   .hero.hero-split .hero-cta { justify-content: center; }
-  .qh-scene {
+  .qh .qh-scene {
     --qh-page-w: clamp(118px, 33vw, 168px);
     --qh-page-h: clamp(176px, 47vw, 248px);
     padding-top: 0;
