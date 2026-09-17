@@ -14,6 +14,13 @@ import {
   getRecentActivityGrid,
   MOTIVATIONAL_HADITHS 
 } from '../services/quranGoalService.js';
+import {
+  exportCode,
+  exportFileBlob,
+  parseSnapshot,
+  applySnapshot,
+  snapshotStats
+} from '../services/progressSyncService.js';
 import { 
   Icon3DFlame, 
   Icon3DTarget, 
@@ -108,6 +115,58 @@ function renderPresetCards(activeGoalId, lang) {
           </div>
         `;
       }).join('')}
+    </div>
+  `;
+}
+
+/**
+ * Render the backup / restore pane.
+ * Progress lives in this browser only, so this is how it reaches another device.
+ */
+function renderSyncPane(lang) {
+  const stats = snapshotStats();
+  const bn = lang === 'bn';
+  return `
+    <div class="sync-pane">
+      <div class="sync-stats">
+        <div class="sync-stat"><strong>${stats.surahs}</strong><span>${bn ? 'সূরায় অগ্রগতি' : 'surahs in progress'}</span></div>
+        <div class="sync-stat"><strong>${stats.bookmarks}</strong><span>${bn ? 'বুকমার্ক' : 'bookmarks'}</span></div>
+        <div class="sync-stat"><strong>${stats.streak}</strong><span>${bn ? 'দিনের স্ট্রিক' : 'day streak'}</span></div>
+        <div class="sync-stat"><strong>${stats.days}</strong><span>${bn ? 'দিন তিলাওয়াত' : 'days recited'}</span></div>
+      </div>
+
+      <div class="sync-block">
+        <h4 class="sync-title">${bn ? '১. এই ডিভাইস থেকে কপি করুন' : '1. Copy from this device'}</h4>
+        <p class="sync-desc">${bn
+          ? 'কোডটি কপি করে অন্য ডিভাইসে একই জায়গায় পেস্ট করুন। ফাইল হিসেবেও নামিয়ে রাখতে পারেন।'
+          : 'Copy this code and paste it into the same panel on your other device, or download it as a file.'}</p>
+        <textarea class="sync-code" id="sync-export-code" readonly rows="3"></textarea>
+        <div class="sync-actions">
+          <button class="btn btn-sm btn-primary" id="sync-copy-btn" type="button">${bn ? 'কোড কপি করুন' : 'Copy code'}</button>
+          <button class="btn btn-sm btn-outline" id="sync-download-btn" type="button">${bn ? 'ফাইল ডাউনলোড' : 'Download file'}</button>
+        </div>
+      </div>
+
+      <div class="sync-block">
+        <h4 class="sync-title">${bn ? '২. অন্য ডিভাইসের অগ্রগতি আনুন' : '2. Bring in another device'}</h4>
+        <p class="sync-desc">${bn
+          ? 'কোড পেস্ট করে "যুক্ত করুন" চাপুন। কিছু মুছে যাবে না — প্রতি সূরায় যেটি বেশি এগিয়ে সেটিই থাকবে।'
+          : 'Paste the code and press Merge. Nothing is erased — for each surah the further-along bookmark is kept.'}</p>
+        <textarea class="sync-code" id="sync-import-code" rows="3"
+          placeholder="${bn ? 'এখানে কোড পেস্ট করুন…' : 'Paste the code here…'}"></textarea>
+        <div class="sync-actions">
+          <button class="btn btn-sm btn-primary" id="sync-import-btn" type="button">${bn ? 'যুক্ত করুন' : 'Merge'}</button>
+          <label class="btn btn-sm btn-outline sync-file-label">
+            ${bn ? 'ফাইল থেকে' : 'From file'}
+            <input type="file" id="sync-file-input" accept="application/json,.json" hidden />
+          </label>
+        </div>
+        <div class="sync-result" id="sync-result" role="status" aria-live="polite"></div>
+      </div>
+
+      <p class="sync-note">${bn
+        ? 'এখনো স্বয়ংক্রিয় সিংক নেই — সেটির জন্য লগইন ও সার্ভার লাগবে। এই কোডে সব অগ্রগতি, স্ট্রিক ও বুকমার্ক থাকে।'
+        : 'Automatic sync needs an account and a server, which is not set up yet. This code carries all progress, streak and bookmarks.'}</p>
     </div>
   `;
 }
@@ -260,6 +319,9 @@ function renderModalContent() {
           <button class="goal-tab-btn" data-tab="history">
             ${lang === 'bn' ? 'মাসিক ইতিহাস' : 'Monthly Grid'}
           </button>
+          <button class="goal-tab-btn" data-tab="sync">
+            ${lang === 'bn' ? 'ডিভাইস সিংক' : 'Device Sync'}
+          </button>
         </div>
 
         <!-- Tab Content: Presets -->
@@ -307,6 +369,11 @@ function renderModalContent() {
         <!-- Tab Content: Monthly History -->
         <div class="goal-tab-pane" id="tab-pane-history" style="display: none;">
           ${renderHeatmapGrid(lang)}
+        </div>
+
+        <!-- Tab Content: Device Sync -->
+        <div class="goal-tab-pane" id="tab-pane-sync" style="display: none;">
+          ${renderSyncPane(lang)}
         </div>
 
         <!-- Motivational Hadith Footer -->
@@ -386,6 +453,83 @@ function bindModalEvents() {
       e.preventDefault();
       choosePreset(e.target);
     });
+  }
+
+  // ---- Device sync: export / import ----
+  const syncExport = modalContainer.querySelector('#sync-export-code');
+  if (syncExport) {
+    const bn = getLang() === 'bn';
+    const resultEl = modalContainer.querySelector('#sync-result');
+    const importBox = modalContainer.querySelector('#sync-import-code');
+
+    // Generated on open so it always reflects the current progress.
+    syncExport.value = exportCode();
+
+    const say = (msg, ok = true) => {
+      if (!resultEl) return;
+      resultEl.textContent = msg;
+      resultEl.className = `sync-result ${ok ? 'is-ok' : 'is-error'}`;
+    };
+
+    const copyBtn = modalContainer.querySelector('#sync-copy-btn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(syncExport.value);
+        } catch {
+          // Clipboard API needs a secure context; selecting lets the user copy by hand.
+          syncExport.select();
+        }
+        copyBtn.textContent = bn ? 'কপি হয়েছে ✓' : 'Copied ✓';
+        setTimeout(() => { copyBtn.textContent = bn ? 'কোড কপি করুন' : 'Copy code'; }, 1800);
+      });
+    }
+
+    const downloadBtn = modalContainer.querySelector('#sync-download-btn');
+    if (downloadBtn) {
+      downloadBtn.addEventListener('click', () => {
+        const url = URL.createObjectURL(exportFileBlob());
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `eqra-progress-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    const ERRORS = {
+      EMPTY: bn ? 'আগে কোডটি পেস্ট করুন।' : 'Paste the code first.',
+      UNREADABLE: bn ? 'কোডটি পড়া যাচ্ছে না। পুরোটা কপি হয়েছে কিনা দেখুন।' : 'Could not read that code — check the whole thing was copied.',
+      NOT_EQRA: bn ? 'এটি EQRA-র ব্যাকআপ কোড নয়।' : 'That is not an EQRA backup code.',
+      NEWER_VERSION: bn ? 'কোডটি নতুন ভার্সনের। আগে সাইটটি রিফ্রেশ করুন।' : 'That code is from a newer version — refresh the site first.'
+    };
+
+    const runImport = (text) => {
+      try {
+        const summary = applySnapshot(parseSnapshot(text));
+        say(bn
+          ? `যুক্ত হয়েছে — ${summary.surahsAdvanced}টি সূরার অগ্রগতি এগিয়েছে, ${summary.bookmarksAdded}টি নতুন বুকমার্ক। মোট ${summary.totalSurahs}টি সূরা।`
+          : `Merged — ${summary.surahsAdvanced} surah(s) advanced, ${summary.bookmarksAdded} new bookmark(s). ${summary.totalSurahs} surahs tracked.`);
+        setTimeout(refreshModal, 1600);
+      } catch (err) {
+        say(ERRORS[err.message] || (bn ? 'যুক্ত করা যায়নি।' : 'Could not merge that code.'), false);
+      }
+    };
+
+    const importBtn = modalContainer.querySelector('#sync-import-btn');
+    if (importBtn && importBox) {
+      importBtn.addEventListener('click', () => runImport(importBox.value));
+    }
+
+    const fileInput = modalContainer.querySelector('#sync-file-input');
+    if (fileInput) {
+      fileInput.addEventListener('change', async () => {
+        const file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+        runImport(await file.text());
+        fileInput.value = '';
+      });
+    }
   }
 
   // Quick Log buttons

@@ -1326,6 +1326,18 @@ input, textarea, select {
   border-color: var(--color-text-light);
 }
 
+/* Used by the goal presets and the sync pane, but never defined — those
+   buttons rendered as bare text, so they did not look pressable. */
+.btn-outline {
+  background: transparent;
+  color: var(--color-quran-dark);
+  border: 1.5px solid var(--color-quran);
+}
+.btn-outline:hover {
+  background: var(--color-quran);
+  color: #fff;
+}
+
 .btn-ghost {
   color: var(--color-text-secondary);
   padding: var(--space-2) var(--space-3);
@@ -6636,4 +6648,65 @@ header .hero-title-arabic,
 @media (max-width: 720px) {
   .rs-label { display: none; }
   .reader-settings-body { padding: var(--space-3); }
+}
+
+/* ---------- Device Sync pane (Reading Goal modal) ---------- */
+.sync-pane { display: flex; flex-direction: column; gap: var(--space-4); }
+
+.sync-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.sync-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-3) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  text-align: center;
+}
+
+.sync-stat strong { font-size: var(--text-xl); font-weight: 800; color: var(--color-quran); }
+.sync-stat span { font-size: 11px; color: var(--color-text-muted); line-height: 1.3; }
+
+.sync-block {
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+}
+
+.sync-title { font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-1); }
+.sync-desc { font-size: var(--text-sm); color: var(--color-text-secondary); margin-bottom: var(--space-3); line-height: 1.6; }
+
+.sync-code {
+  width: 100%;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  resize: vertical;
+  word-break: break-all;
+}
+
+.sync-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-top: var(--space-3); }
+.sync-file-label { cursor: pointer; }
+
+.sync-result { margin-top: var(--space-3); font-size: var(--text-sm); line-height: 1.6; }
+.sync-result.is-ok { color: var(--color-quran-dark); font-weight: 600; }
+.sync-result.is-error { color: var(--color-error); font-weight: 600; }
+
+.sync-note { font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.6; }
+
+@media (max-width: 560px) {
+  .sync-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
