@@ -11,8 +11,10 @@ export class Router {
     this.beforeHooks = [];
     this.afterHooks = [];
     
+    this.pending = null;
+    this.pendingHash = null;
+
     window.addEventListener('hashchange', () => this.resolve());
-    window.addEventListener('load', () => this.resolve());
   }
 
   /**
@@ -75,8 +77,26 @@ export class Router {
     return params;
   }
 
-  /** Resolve current hash to a route handler */
+  /**
+   * Resolve the current hash, collapsing duplicate calls for the same hash
+   * while one is still in flight — otherwise a page can bind its event
+   * listeners twice and every click fires two handlers.
+   */
   async resolve() {
+    const hash = window.location.hash;
+    if (this.pending && this.pendingHash === hash) return this.pending;
+
+    this.pendingHash = hash;
+    this.pending = this.#resolve();
+    try {
+      await this.pending;
+    } finally {
+      this.pending = null;
+      this.pendingHash = null;
+    }
+  }
+
+  async #resolve() {
     const { path, query } = this.parse(window.location.hash);
 
     // Run before hooks

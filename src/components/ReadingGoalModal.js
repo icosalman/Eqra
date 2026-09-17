@@ -90,7 +90,9 @@ function renderPresetCards(activeGoalId, lang) {
       ${GOAL_PRESETS.map(preset => {
         const isActive = activeGoalId === preset.id;
         return `
-          <div class="preset-card ${isActive ? 'active-preset' : ''}" data-preset-id="${preset.id}">
+          <div class="preset-card ${isActive ? 'active-preset' : ''}" data-preset-id="${preset.id}"
+            role="button" tabindex="0" aria-pressed="${isActive}"
+            aria-label="${lang === 'bn' ? preset.titleBn : preset.titleEn}">
             <div class="preset-card-header">
               <div class="preset-icon-wrap">${preset.icon}</div>
               <span class="preset-badge">${preset.badge}</span>
@@ -367,16 +369,24 @@ function bindModalEvents() {
     });
   });
 
-  // Preset Selection buttons
-  modalContainer.querySelectorAll('.select-preset-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const presetId = btn.getAttribute('data-preset-id');
-      if (presetId) {
-        setActiveGoal(presetId);
-        refreshModal();
-      }
+  // Preset selection — delegated, so the whole card works, not just its button
+  const presetsGrid = modalContainer.querySelector('.presets-grid');
+  if (presetsGrid) {
+    const choosePreset = (target) => {
+      const card = target.closest('[data-preset-id]');
+      const presetId = card && card.getAttribute('data-preset-id');
+      if (!presetId) return;
+      setActiveGoal(presetId);
+      refreshModal();
+    };
+    presetsGrid.addEventListener('click', (e) => choosePreset(e.target));
+    presetsGrid.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      if (!e.target.classList.contains('preset-card')) return;
+      e.preventDefault();
+      choosePreset(e.target);
     });
-  });
+  }
 
   // Quick Log buttons
   modalContainer.querySelectorAll('.quick-log-btn').forEach(btn => {

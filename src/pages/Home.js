@@ -11,7 +11,7 @@ import { HADITHS_DATA } from '../data/hadiths.js';
 import { audioPlayer } from '../components/AudioPlayer.js';
 import { formatColorCodedQuran, wrapQuranWords, bindTajweedInteractions } from '../utils/quranColors.js';
 import { getSurahRecitation } from '../services/quranService.js';
-import { renderQuran3DBook, bindQuran3DBook } from '../components/Quran3DBook.js';
+import { renderQuranHero3D, bindQuranHero3D } from '../components/QuranHero3D.js';
 import { 
   renderSurah3DBadge, 
   Icon3DQuran, 
@@ -76,7 +76,8 @@ export function renderHomePage() {
     <div class="page" id="home-page">
       <div class="container">
         <!-- Hero Section -->
-        <section class="hero animate-fade-in-up">
+        <section class="hero hero-split animate-fade-in-up">
+          <div class="hero-copy">
           <div class="hero-badge">
             ${t('heroBadge')}
           </div>
@@ -104,6 +105,10 @@ export function renderHomePage() {
               <span>${t('navDua')}</span>
             </a>
           </div>
+          </div>
+
+          <!-- Animated 3D Mushaf -->
+          ${renderQuranHero3D(lang)}
         </section>
 
         <!-- Daily Quran Reading Goal & Streak Widget -->
@@ -161,9 +166,6 @@ export function renderHomePage() {
             </div>
           </div>
         </section>
-
-        <!-- Scroll Driven 3D Quran -->
-        ${renderQuran3DBook(lang)}
 
         <!-- Daily Featured Verse (আজকের আয়াত) -->
         <section class="section">
@@ -344,7 +346,7 @@ export function renderHomePage() {
 
 export function bindHomeEvents() {
   // Scroll driven 3D Quran book
-  bindQuran3DBook();
+  bindQuranHero3D();
 
   // Hero search trigger
   const heroSearch = document.getElementById('hero-search-trigger');

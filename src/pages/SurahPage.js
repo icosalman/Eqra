@@ -141,8 +141,17 @@ export function renderSurahPage(params) {
           </div>
         </div>
 
-        <!-- Reading Controls Toolbar -->
-        <div style="position: sticky; top: var(--header-height); z-index: var(--z-sticky); background: var(--color-surface); padding: var(--space-3) var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--color-border); margin-bottom: var(--space-6); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); box-shadow: var(--shadow-sm);">
+        <!-- Reading Controls Toolbar (collapsed by default: set once, then get out of the way) -->
+        <div class="reader-settings" id="reader-settings">
+          <button class="reader-settings-toggle" id="reader-settings-toggle" type="button"
+            aria-expanded="false" aria-controls="reader-settings-body">
+            <span class="rs-aa" aria-hidden="true">Aa</span>
+            <span class="rs-label">${lang === 'bn' ? 'পাঠ সেটিংস' : 'Reading settings'}</span>
+            <span class="rs-summary" id="reader-settings-summary"></span>
+            <span class="rs-chevron" aria-hidden="true">⌄</span>
+          </button>
+
+          <div class="reader-settings-body" id="reader-settings-body" hidden>
           
           <!-- Font Selection Controls (IndoPak / Nastaliq / Uthmani) -->
           <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
@@ -192,6 +201,7 @@ export function renderSurahPage(params) {
               <button class="font-control-btn" id="font-reset-btn" aria-label="Reset Font Size">A</button>
               <button class="font-control-btn" id="font-inc-btn" aria-label="Increase Font Size">A+</button>
             </div>
+          </div>
           </div>
         </div>
 
@@ -450,6 +460,68 @@ export async function bindSurahPageEvents(params) {
     });
   }
 
+  // Collapsible reader settings panel
+  const lang = getLang();
+  const rsRoot = document.getElementById('reader-settings');
+  const rsToggle = document.getElementById('reader-settings-toggle');
+  const rsBody = document.getElementById('reader-settings-body');
+  const rsSummary = document.getElementById('reader-settings-summary');
+
+  const FONT_LABELS = {
+    indopak: lang === 'bn' ? 'ইন্দো-পাক' : 'Indo-Pak',
+    nastaliq: lang === 'bn' ? 'নাসতালীক' : 'Nastaliq',
+    uthmani: lang === 'bn' ? 'উসমানী' : 'Uthmani'
+  };
+  const MODE_LABELS = {
+    'all': lang === 'bn' ? 'সব' : 'All',
+    'arabic-bn': lang === 'bn' ? 'আরবি+বাংলা' : 'Arabic+BN',
+    'arabic-en': lang === 'bn' ? 'আরবি+ইংরেজি' : 'Arabic+EN',
+    'arabic-only': lang === 'bn' ? 'শুধু আরবি' : 'Arabic only'
+  };
+  const SIZE_LABELS = ['S', 'M', 'L', 'XL', 'XXL'];
+
+  function updateSettingsSummary() {
+    if (!rsSummary) return;
+    const parts = [
+      FONT_LABELS[currentFont] || currentFont,
+      MODE_LABELS[currentDisplayMode] || currentDisplayMode,
+      SIZE_LABELS[currentFontSizeLevel] || 'M'
+    ];
+    if (isTajweedEnabled) parts.push(lang === 'bn' ? 'তাজবীদ' : 'Tajweed');
+    rsSummary.textContent = parts.join(' · ');
+  }
+
+  function setSettingsOpen(open) {
+    if (!rsRoot || !rsToggle || !rsBody) return;
+    rsRoot.setAttribute('data-open', String(open));
+    rsToggle.setAttribute('aria-expanded', String(open));
+    rsBody.hidden = !open;
+    saveSettings({ readerSettingsOpen: open });
+  }
+
+  if (rsToggle && rsBody && rsRoot) {
+    // Default closed: these are set-once preferences, not per-ayah controls.
+    setSettingsOpen(settings.readerSettingsOpen === true);
+    updateSettingsSummary();
+    if (!rsToggle.dataset.rsBound) {
+      rsToggle.dataset.rsBound = '1';
+      rsToggle.addEventListener('click', () => setSettingsOpen(rsBody.hidden));
+    }
+
+    // Collapse once reading resumes, so the panel never covers the ayahs.
+    let lastY = window.scrollY;
+    const collapseOnScroll = () => {
+      if (!document.body.contains(rsRoot)) {
+        window.removeEventListener('scroll', collapseOnScroll);
+        return;
+      }
+      const y = window.scrollY;
+      if (!rsBody.hidden && y > lastY + 40) setSettingsOpen(false);
+      lastY = y;
+    };
+    window.addEventListener('scroll', collapseOnScroll, { passive: true });
+  }
+
   // Display mode switcher
   document.querySelectorAll('.display-toggle-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -457,6 +529,7 @@ export async function bindSurahPageEvents(params) {
       btn.classList.add('active');
       currentDisplayMode = btn.getAttribute('data-mode');
       saveSettings({ displayMode: currentDisplayMode });
+      updateSettingsSummary();
       renderList();
     });
   });
@@ -468,6 +541,7 @@ export async function bindSurahPageEvents(params) {
       btn.classList.add('active');
       currentFont = btn.getAttribute('data-font');
       saveSettings({ quranFont: currentFont });
+      updateSettingsSummary();
       renderList();
     });
   });
@@ -479,6 +553,7 @@ export async function bindSurahPageEvents(params) {
       isTajweedEnabled = !isTajweedEnabled;
       tajweedBtn.classList.toggle('active', isTajweedEnabled);
       saveSettings({ tajweedEnabled: isTajweedEnabled });
+      updateSettingsSummary();
       renderList();
     });
   }
@@ -493,6 +568,7 @@ export async function bindSurahPageEvents(params) {
       if (currentFontSizeLevel < fontSizes.length - 1) {
         currentFontSizeLevel++;
         saveSettings({ quranFontSizeLevel: currentFontSizeLevel });
+        updateSettingsSummary();
         applyFontSize();
       }
     });
@@ -503,6 +579,7 @@ export async function bindSurahPageEvents(params) {
       if (currentFontSizeLevel > 0) {
         currentFontSizeLevel--;
         saveSettings({ quranFontSizeLevel: currentFontSizeLevel });
+        updateSettingsSummary();
         applyFontSize();
       }
     });
@@ -512,6 +589,7 @@ export async function bindSurahPageEvents(params) {
     fontResetBtn.addEventListener('click', () => {
       currentFontSizeLevel = 1;
       saveSettings({ quranFontSizeLevel: currentFontSizeLevel });
+      updateSettingsSummary();
       applyFontSize();
     });
   }

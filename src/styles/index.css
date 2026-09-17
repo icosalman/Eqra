@@ -6257,7 +6257,16 @@ header .hero-title-arabic,
   display: flex;
   flex-direction: column;
   transition: all 0.2s ease;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
+
+.preset-card:focus-visible {
+  outline: 2px solid var(--color-quran);
+  outline-offset: 2px;
+}
+
+.preset-card:active { transform: scale(0.99); }
 
 .preset-card:hover {
   border-color: var(--color-primary);
@@ -6540,3 +6549,91 @@ header .hero-title-arabic,
 
 
 
+
+/* ---------- Collapsible Reader Settings ----------
+   Font, script and display mode are set once per reader, so the panel stays
+   collapsed to a single bar and only the current values are shown inline. */
+.reader-settings {
+  position: sticky;
+  top: var(--header-height);
+  z-index: var(--z-sticky);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-6);
+  overflow: hidden;
+}
+
+.reader-settings-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--color-text-primary);
+  font-family: inherit;
+}
+
+.reader-settings-toggle:hover { background: var(--color-surface-hover); }
+
+.rs-aa {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: var(--color-quran-light);
+  color: var(--color-quran-dark);
+  font-family: var(--font-english);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.rs-label {
+  flex: none;
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.rs-summary {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rs-chevron {
+  flex: none;
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+  line-height: 1;
+  transition: transform var(--transition-base);
+}
+
+.reader-settings[data-open="true"] .rs-chevron { transform: rotate(180deg); }
+
+.reader-settings-body[hidden] { display: none; }
+
+.reader-settings-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border-top: 1px solid var(--color-border-light);
+}
+
+@media (max-width: 720px) {
+  .rs-label { display: none; }
+  .reader-settings-body { padding: var(--space-3); }
+}
