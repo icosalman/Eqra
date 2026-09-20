@@ -28,6 +28,7 @@ import {
   Icon3DCalendarCheck,
   Icon3DSparkle
 } from './Icons3D.js';
+import { showActionToast } from './AyahCard.js';
 
 let modalContainer = null;
 
@@ -308,19 +309,16 @@ function renderModalContent() {
           ${renderWeeklyTracker(lang)}
         </div>
 
-        <!-- Tabs: Preset Goals / Custom Goal / History -->
+        <!-- Tabs: Preset Goals / Custom Goal / History (GreenTech Calm Simplicity) -->
         <div class="goal-tabs-nav" role="tablist">
           <button class="goal-tab-btn active" data-tab="presets">
-            ${lang === 'bn' ? 'প্রিসেট লক্ষ্যসমূহ' : 'Preset Goals'}
+            ${lang === 'bn' ? '🎯 প্রিসেট লক্ষ্যসমূহ' : '🎯 Preset Goals'}
           </button>
           <button class="goal-tab-btn" data-tab="custom">
-            ${lang === 'bn' ? 'কাস্টম লক্ষ্য' : 'Custom Goal'}
+            ${lang === 'bn' ? '⚙️ কাস্টম লক্ষ্য' : '⚙️ Custom Goal'}
           </button>
           <button class="goal-tab-btn" data-tab="history">
-            ${lang === 'bn' ? 'মাসিক ইতিহাস' : 'Monthly Grid'}
-          </button>
-          <button class="goal-tab-btn" data-tab="sync">
-            ${lang === 'bn' ? 'ডিভাইস সিংক' : 'Device Sync'}
+            ${lang === 'bn' ? '📅 তিলাওয়াত ইতিহাস' : '📅 Monthly Grid'}
           </button>
         </div>
 
@@ -371,11 +369,6 @@ function renderModalContent() {
           ${renderHeatmapGrid(lang)}
         </div>
 
-        <!-- Tab Content: Device Sync -->
-        <div class="goal-tab-pane" id="tab-pane-sync" style="display: none;">
-          ${renderSyncPane(lang)}
-        </div>
-
         <!-- Motivational Hadith Footer -->
         <div class="goal-hadith-footer">
           <div class="hadith-header">
@@ -385,6 +378,19 @@ function renderModalContent() {
           <div class="hadith-arabic font-indopak" dir="rtl">${randomHadith.arabic}</div>
           <p class="hadith-translation">${lang === 'bn' ? randomHadith.bn : randomHadith.en}</p>
           <span class="hadith-source">— ${randomHadith.source}</span>
+        </div>
+
+        <!-- Collapsible Device Sync & Backup (Subtle & Non-Intrusive at bottom) -->
+        <div class="goal-sync-accordion" style="margin-top: var(--space-4); border-top: 1px dashed var(--color-border); padding-top: var(--space-3); text-align: center;">
+          <button class="btn btn-ghost btn-sm" id="toggle-sync-drawer-btn" type="button" style="color: var(--color-text-muted); font-size: 11px; display: inline-flex; align-items: center; gap: 6px; margin: 0 auto;">
+            <span>🔄</span>
+            <span>${lang === 'bn' ? 'অগ্রগতি ব্যাকআপ / অন্য ডিভাইসে ট্রান্সফার করুন' : 'Backup or Transfer Progress to Another Device'}</span>
+            <span id="sync-drawer-arrow">▾</span>
+          </button>
+
+          <div id="goal-sync-drawer-content" style="display: none; margin-top: var(--space-3); text-align: left;">
+            ${renderSyncPane(lang)}
+          </div>
         </div>
 
       </div>
@@ -445,6 +451,10 @@ function bindModalEvents() {
       if (!presetId) return;
       setActiveGoal(presetId);
       refreshModal();
+      showActionToast({
+        icon: '🎯',
+        text: getLang() === 'bn' ? 'রিডিং লক্ষ্য সফলভাবে সক্রিয় করা হয়েছে!' : 'Reading goal activated successfully!'
+      });
     };
     presetsGrid.addEventListener('click', (e) => choosePreset(e.target));
     presetsGrid.addEventListener('keydown', (e) => {
@@ -452,6 +462,18 @@ function bindModalEvents() {
       if (!e.target.classList.contains('preset-card')) return;
       e.preventDefault();
       choosePreset(e.target);
+    });
+  }
+
+  // Collapsible Sync Drawer toggle
+  const syncToggleBtn = modalContainer.querySelector('#toggle-sync-drawer-btn');
+  const syncDrawerContent = modalContainer.querySelector('#goal-sync-drawer-content');
+  const syncArrow = modalContainer.querySelector('#sync-drawer-arrow');
+  if (syncToggleBtn && syncDrawerContent) {
+    syncToggleBtn.addEventListener('click', () => {
+      const isClosed = syncDrawerContent.style.display === 'none';
+      syncDrawerContent.style.display = isClosed ? 'block' : 'none';
+      if (syncArrow) syncArrow.textContent = isClosed ? '▴' : '▾';
     });
   }
 
@@ -538,6 +560,10 @@ function bindModalEvents() {
       const count = parseInt(btn.getAttribute('data-count'), 10) || 1;
       logManualProgress(count);
       refreshModal();
+      showActionToast({
+        icon: '⚡',
+        text: getLang() === 'bn' ? `+${count}টি আয়াত আজকের তিলাওয়াতে যোগ হয়েছে` : `+${count} ayahs added to today's reading`
+      });
     });
   });
 
@@ -548,6 +574,10 @@ function bindModalEvents() {
       markTodayFinishedOffline();
       triggerConfettiBurst();
       refreshModal();
+      showActionToast({
+        icon: '🎉',
+        text: getLang() === 'bn' ? 'মাশাআল্লাহ! আজকের তিলাওয়াত সম্পন্ন হয়েছে' : "Masha'Allah! Today's recitation marked as completed"
+      });
     });
   }
 

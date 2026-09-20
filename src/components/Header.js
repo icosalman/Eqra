@@ -32,12 +32,14 @@ import {
 } from './Icons3D.js';
 import { openReadingGoalModal } from './ReadingGoalModal.js';
 import { getGoalProgressSummary } from '../services/quranGoalService.js';
+import { getBookmarks } from '../utils/storage.js';
 
 export function renderHeader() {
   const lang = getLang();
   const currentPath = window.location.hash || `/#/${lang}/`;
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
   const goalSummary = getGoalProgressSummary();
+  const bookmarksCount = getBookmarks().length;
 
   const isFaithLogicActive = currentPath.includes('/faith-and-logic');
   const isUmrahActive = currentPath.includes('/umrah');
@@ -207,6 +209,12 @@ export function renderHeader() {
             <span class="streak-btn-ring" style="--goal-percent: ${goalSummary.percent}%;"></span>
           </button>
 
+          <!-- Bookmarks & Pinned Button -->
+          <a href="#/${lang}/bookmarks" class="header-action-btn bookmarks-header-btn ${currentPath.includes('/bookmarks') ? 'active' : ''}" id="open-bookmarks-btn" title="${lang === 'bn' ? 'সংরক্ষিত বুকমার্ক ও পিন' : 'Saved Bookmarks & Pinned'}" aria-label="Saved Bookmarks & Pinned">
+            <span class="action-btn-icon" style="font-size: 1.15rem; display: inline-flex; align-items: center; justify-content: center;">🔖</span>
+            <span class="bookmarks-badge-count" id="header-bookmarks-badge" style="${bookmarksCount > 0 ? '' : 'display: none;'}">${bookmarksCount}</span>
+          </a>
+
           <!-- Search Trigger Button -->
           <button class="header-action-btn search-trigger-btn" id="open-search-btn" title="${t('searchPlaceholder')} (Ctrl+K)" aria-label="Search">
             <span class="action-btn-icon">${Icon3DSearch}</span>
@@ -301,6 +309,11 @@ export function renderHeader() {
                 <span class="link-icon">${Icon3DPoro}</span>
                 <span class="link-title">${t('navPoro')} (${lang === 'bn' ? 'বই' : 'Book'})</span>
                 <span class="nav-badge nav-badge-poro">NEW</span>
+              </a>
+              <a href="#/${lang}/bookmarks" class="mobile-nav-link ${currentPath.includes('/bookmarks') ? 'active' : ''}">
+                <span class="link-icon" style="font-size: 1.25rem;">🔖</span>
+                <span class="link-title">${lang === 'bn' ? 'সংরক্ষিত বুকমার্ক ও পিন' : 'Saved Bookmarks & Pinned'}</span>
+                <span class="nav-badge" id="mobile-bookmarks-badge" style="background: var(--color-quran-bg); color: var(--color-quran); ${bookmarksCount > 0 ? '' : 'display: none;'}">${bookmarksCount}</span>
               </a>
             </div>
           </div>
@@ -608,6 +621,24 @@ export function bindHeaderEvents() {
       }
     });
     window._eqraGoalListenerAttached = true;
+  }
+
+  // Live update bookmark badge count when bookmarks change
+  if (!window._eqraBookmarksListenerAttached) {
+    window.addEventListener('eqra:bookmarks-updated', (e) => {
+      const count = e.detail?.count ?? getBookmarks().length;
+      const hBadge = document.getElementById('header-bookmarks-badge');
+      if (hBadge) {
+        hBadge.textContent = count;
+        hBadge.style.display = count > 0 ? 'inline-flex' : 'none';
+      }
+      const mBadge = document.getElementById('mobile-bookmarks-badge');
+      if (mBadge) {
+        mBadge.textContent = count;
+        mBadge.style.display = count > 0 ? 'inline-flex' : 'none';
+      }
+    });
+    window._eqraBookmarksListenerAttached = true;
   }
 }
 

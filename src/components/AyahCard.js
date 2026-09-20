@@ -75,14 +75,15 @@ export function renderAyahCard(ayah, surah, displayMode = 'all', options = {}) {
             <span class="icon-3d-wrap" style="width: 17px; height: 17px;">${Icon3DAudio}</span>
           </button>
 
-          <!-- Reading Progress Bookmark Ribbon -->
-          <button class="ayah-action-btn progress-ribbon-btn ${isProgressMarked ? 'active' : ''}" 
+          <!-- Last Read Pin Button (GreenTech Style: Pin 📌 vs Bookmark 🔖) -->
+          <button class="ayah-action-btn pin-ayah-btn ${isProgressMarked ? 'active' : ''}" 
             data-surah="${surah.number}" 
+            data-surah-name="${lang === 'bn' ? surah.banglaName : surah.englishName}"
             data-ayah="${ayah.numberInSurah}"
             data-total="${totalVerses}"
-            title="${isProgressMarked ? (lang === 'bn' ? 'সর্বশেষ পড়ার স্থান চিহ্নিত করা আছে' : 'Current reading progress bookmark') : (lang === 'bn' ? 'সর্বশেষ পড়ার স্থান হিসেবে চিহ্নিত করুন' : 'Bookmark as reading progress')}" 
-            aria-label="Reading progress bookmark">
-            <span class="ribbon-icon" style="font-size: 16px; display: inline-block; transition: transform 0.2s ease;">🔖</span>
+            title="${isProgressMarked ? (lang === 'bn' ? '📌 সর্বশেষ পড়ার স্থান হিসেবে পিন করা আছে' : 'Pinned as last read position') : (lang === 'bn' ? '📌 সর্বশেষ পড়ার স্থান হিসেবে পিন করুন' : 'Pin as last read position')}" 
+            aria-label="Pin as last read position">
+            <span class="pin-icon" style="font-size: 15px; display: inline-block; transition: transform 0.2s ease;">📌</span>
           </button>
         </div>
 
@@ -95,7 +96,7 @@ export function renderAyahCard(ayah, surah, displayMode = 'all', options = {}) {
             <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${Icon3DCopy}</span>
           </button>
 
-          <!-- Favorite / Star Bookmark Verse -->
+          <!-- Favorite / Bookmark Verse -->
           <button class="ayah-action-btn bookmark-ayah-btn ${bookmarked ? 'active' : ''}" 
             data-id="${bookmarkId}" 
             data-type="ayah"
@@ -105,7 +106,7 @@ export function renderAyahCard(ayah, surah, displayMode = 'all', options = {}) {
             data-arabic="${encodeURIComponent(rawArabic)}"
             data-bangla="${encodeURIComponent(ayah.bangla)}"
             data-english="${encodeURIComponent(ayah.english)}"
-            title="${t('bookmark')}" 
+            title="${bookmarked ? (lang === 'bn' ? '🔖 বুকমার্কে সংরক্ষিত আছে' : 'Bookmarked') : (lang === 'bn' ? '🔖 বুকমার্কে সংরক্ষণ করুন' : 'Bookmark Ayah')}" 
             aria-label="Bookmark Ayah">
             <span class="icon-3d-wrap" style="width: 18px; height: 18px;">${bookmarked ? Icon3DStarFilled : Icon3DStarOutline}</span>
           </button>
@@ -185,30 +186,43 @@ export function bindAyahCardEvents(container, recitationData = null) {
     });
   });
 
-  // Reading Progress Bookmark Ribbon click
-  container.querySelectorAll('.progress-ribbon-btn').forEach(btn => {
+  // Pin Ayah click (GreenTech Style: Pin 📌 vs Bookmark 🔖)
+  container.querySelectorAll('.pin-ayah-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
+      const lang = getLang();
       const surah = btn.getAttribute('data-surah');
+      const surahName = btn.getAttribute('data-surah-name') || `সূরা ${surah}`;
       const ayah = btn.getAttribute('data-ayah');
       const total = btn.getAttribute('data-total');
 
       saveSurahProgress(surah, ayah, total);
       recordAyahRead(surah, ayah);
 
-      // Update all ribbon buttons in this container
-      container.querySelectorAll('.progress-ribbon-btn').forEach(b => {
+      // Update all pin buttons in this container
+      container.querySelectorAll('.pin-ayah-btn').forEach(b => {
         const isTarget = b.getAttribute('data-ayah') === ayah;
         b.classList.toggle('active', isTarget);
+        b.title = isTarget 
+          ? (lang === 'bn' ? '📌 সর্বশেষ পড়ার স্থান হিসেবে পিন করা আছে' : 'Pinned as last read position') 
+          : (lang === 'bn' ? '📌 সর্বশেষ পড়ার স্থান হিসেবে পিন করুন' : 'Pin as last read position');
       });
 
       container.querySelectorAll('.ayah-card').forEach(card => {
         const isTarget = card.getAttribute('data-ayah') === ayah;
         card.classList.toggle('has-progress-bookmark', isTarget);
+        card.classList.toggle('has-pinned-marker', isTarget);
       });
 
-      // Show temporary toast feedback
-      showBookmarkToast(ayah);
+      // Show temporary toast feedback with direct navigation
+      showActionToast({
+        icon: '📌',
+        text: lang === 'bn' 
+          ? `<strong>${surahName} : আয়াত ${ayah}</strong> পিন করা হয়েছে (সর্বশেষ পড়ার স্থান)`
+          : `<strong>${surahName} : Ayah ${ayah}</strong> pinned as last read`,
+        linkText: lang === 'bn' ? 'পিন তালিকা দেখুন ➔' : 'View Pinned ➔',
+        linkUrl: `#/${lang}/bookmarks?tab=pinned`
+      });
     });
   });
 
@@ -244,14 +258,17 @@ export function bindAyahCardEvents(container, recitationData = null) {
 
   // Bookmark Verse (Favorite list)
   container.querySelectorAll('.bookmark-ayah-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const lang = getLang();
       const id = btn.getAttribute('data-id');
+      const title = btn.getAttribute('data-title') || 'আয়াত';
       const item = {
         id,
         type: 'ayah',
         surah: btn.getAttribute('data-surah'),
         ayah: btn.getAttribute('data-ayah'),
-        title: btn.getAttribute('data-title'),
+        title: title,
         arabic: decodeURIComponent(btn.getAttribute('data-arabic')),
         bangla: decodeURIComponent(btn.getAttribute('data-bangla')),
         english: decodeURIComponent(btn.getAttribute('data-english'))
@@ -260,6 +277,27 @@ export function bindAyahCardEvents(container, recitationData = null) {
       const added = toggleBookmark(item);
       btn.innerHTML = `<span class="icon-3d-wrap" style="width: 18px; height: 18px;">${added ? Icon3DStarFilled : Icon3DStarOutline}</span>`;
       btn.classList.toggle('active', added);
+      btn.title = added 
+        ? (lang === 'bn' ? '🔖 বুকমার্কে সংরক্ষিত আছে' : 'Bookmarked') 
+        : (lang === 'bn' ? '🔖 বুকমার্কে সংরক্ষণ করুন' : 'Bookmark Ayah');
+
+      if (added) {
+        showActionToast({
+          icon: '🔖',
+          text: lang === 'bn' 
+            ? `<strong>${title}</strong> বুকমার্কে সংরক্ষিত হয়েছে!`
+            : `<strong>${title}</strong> added to Bookmarks!`,
+          linkText: lang === 'bn' ? 'সংরক্ষিত বুকমার্ক দেখুন ➔' : 'View Bookmarks ➔',
+          linkUrl: `#/${lang}/bookmarks?tab=bookmarks`
+        });
+      } else {
+        showActionToast({
+          icon: 'ℹ️',
+          text: lang === 'bn' 
+            ? `<strong>${title}</strong> বুকমার্ক থেকে সরানো হয়েছে`
+            : `Removed from Bookmarks`
+        });
+      }
     });
   });
 
@@ -289,7 +327,7 @@ export function bindAyahCardEvents(container, recitationData = null) {
   bindTajweedInteractions(container);
 }
 
-function showBookmarkToast(ayahNum) {
+export function showActionToast({ icon = '🔖', text = '', linkText = '', linkUrl = '' }) {
   const existing = document.getElementById('progress-toast');
   if (existing) existing.remove();
 
@@ -297,13 +335,19 @@ function showBookmarkToast(ayahNum) {
   toast.id = 'progress-toast';
   toast.className = 'progress-toast animate-slide-up';
   toast.innerHTML = `
-    <span>🔖</span>
-    <span>আয়াত <strong>${ayahNum}</strong> পড়ার অগ্রগতি হিসেবে সংরক্ষিত হয়েছে</span>
+    <span class="toast-icon" style="font-size: 1.25rem;">${icon}</span>
+    <span class="toast-text">${text}</span>
+    ${linkText && linkUrl ? `
+      <a href="${linkUrl}" class="toast-nav-link" style="color: var(--color-quran); font-weight: 700; text-decoration: underline; margin-left: 8px; white-space: nowrap;">
+        ${linkText}
+      </a>
+    ` : ''}
   `;
   document.body.appendChild(toast);
 
   setTimeout(() => {
     toast.classList.add('fade-out');
-    setTimeout(() => toast.remove(), 300);
-  }, 2500);
+    setTimeout(() => toast.remove(), 350);
+  }, 4000);
 }
+

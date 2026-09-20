@@ -114,10 +114,10 @@ export function renderSurahPage(params) {
         <!-- Reading Progress & Goal Banner -->
         <div class="surah-reading-progress-card card" id="surah-progress-banner" style="display: flex; align-items: center; justify-content: space-between; padding: var(--space-3) var(--space-5); margin-bottom: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); flex-wrap: wrap; gap: var(--space-3);">
           <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-size: 1.3rem;">🔖</span>
+            <span style="font-size: 1.3rem;">📌</span>
             <div>
-              <div style="font-size: var(--text-xs); color: var(--color-text-muted); font-weight: 600; text-transform: uppercase;">
-                ${lang === 'bn' ? 'পড়ার অগ্রগতি' : 'Reading Progress'}
+              <div style="font-size: var(--text-xs); color: var(--color-text-muted); font-weight: 700; text-transform: uppercase;">
+                ${lang === 'bn' ? 'সর্বশেষ পিন' : 'Last Pinned Position'}
               </div>
               <div id="toolbar-progress-text" style="font-size: var(--text-sm); font-weight: 700; color: var(--color-quran);">
                 ${progress 
@@ -136,8 +136,14 @@ export function renderSurahPage(params) {
 
             <button class="btn btn-sm btn-ghost" id="jump-to-saved-ayah-btn" data-ayah="${progress ? progress.ayah : 1}" style="color: var(--color-quran); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
               <span>📍</span>
-              <span>${progress ? (lang === 'bn' ? `আয়াত ${progress.ayah}-এ যান` : `Jump to Ayah ${progress.ayah}`) : (lang === 'bn' ? 'শুরু থেকে পড়ুন' : 'Read from Start')}</span>
+              <span>${progress ? (lang === 'bn' ? `পিনে যান (আয়াত ${progress.ayah})` : `Jump to Pin (${progress.ayah})`) : (lang === 'bn' ? 'শুরু থেকে পড়ুন' : 'Read from Start')}</span>
             </button>
+
+            <!-- Direct Link to Bookmarks & Pinned Verses -->
+            <a href="#/${lang}/bookmarks" class="btn btn-sm btn-outline" style="display: inline-flex; align-items: center; gap: 5px; font-weight: 600; border-radius: var(--radius-full);">
+              <span>🔖</span>
+              <span>${lang === 'bn' ? 'সংরক্ষিত তালিকা' : 'Saved Collection'}</span>
+            </a>
           </div>
         </div>
 
@@ -195,11 +201,12 @@ export function renderSurahPage(params) {
               </button>
             </div>
 
-            <!-- Font Size Adjuster -->
-            <div class="font-controls" title="${lang === 'bn' ? 'হরফের আকার পরিবর্তন' : 'Adjust Font Size'}">
-              <button class="font-control-btn" id="font-dec-btn" aria-label="Decrease Font Size">A-</button>
-              <button class="font-control-btn" id="font-reset-btn" aria-label="Reset Font Size">A</button>
-              <button class="font-control-btn" id="font-inc-btn" aria-label="Increase Font Size">A+</button>
+            <!-- Font Size Adjuster Stepper with Percentage -->
+            <div class="font-controls" title="${lang === 'bn' ? 'হরফের আকার পরিবর্তন (A- / A+)' : 'Adjust Font Size'}" style="display: inline-flex; align-items: center; gap: 5px;">
+              <button class="font-control-btn" id="font-dec-btn" aria-label="Decrease Font Size" title="${lang === 'bn' ? 'ফন্ট ছোট করুন' : 'Decrease Font'}">A−</button>
+              <span class="font-size-level-badge" id="font-size-percent" style="font-size: 12px; font-weight: 700; min-width: 48px; text-align: center; color: var(--color-text-primary); background: var(--color-bg-alt); padding: 4px 8px; border-radius: var(--radius-sm); border: 1px solid var(--color-border);">100%</span>
+              <button class="font-control-btn" id="font-inc-btn" aria-label="Increase Font Size" title="${lang === 'bn' ? 'ফন্ট বড় করুন' : 'Increase Font'}">A+</button>
+              <button class="font-control-btn" id="font-reset-btn" aria-label="Reset Font Size" title="${lang === 'bn' ? 'স্বাভাবিক ফন্ট' : 'Reset Font'}">↺</button>
             </div>
           </div>
           </div>
@@ -275,20 +282,29 @@ export async function bindSurahPageEvents(params) {
   let currentFont = settings.quranFont || 'indopak';
   let isTajweedEnabled = settings.tajweedEnabled !== false;
 
-  // Arabic Quran Font Scale — Default is large and comfortable
-  const fontSizes = ['2.0rem', '2.45rem', '2.95rem', '3.5rem'];
-  let currentFontSizeLevel = typeof settings.quranFontSizeLevel === 'number' ? settings.quranFontSizeLevel : 1;
+  // Quran Arabic & Translation Font Scaling (GreenTech Responsive Stepper)
+  const FONT_LEVELS = [
+    { label: '৮৫%', percent: '85%', scale: 0.85, trans: 0.90 },
+    { label: '১০০%', percent: '100%', scale: 1.00, trans: 1.00 },
+    { label: '১১৫%', percent: '115%', scale: 1.15, trans: 1.10 },
+    { label: '১৩০%', percent: '130%', scale: 1.30, trans: 1.20 },
+    { label: '১৫০%', percent: '150%', scale: 1.50, trans: 1.35 }
+  ];
+  let currentFontSizeLevel = typeof settings.quranFontSizeLevel === 'number' 
+    ? Math.max(0, Math.min(FONT_LEVELS.length - 1, settings.quranFontSizeLevel)) 
+    : 1;
 
   function applyFontSize() {
-    const arabicElements = document.querySelectorAll('.ayah-arabic');
-    const baseSize = fontSizes[currentFontSizeLevel] || '2.45rem';
-    arabicElements.forEach(el => {
-      if (el.classList.contains('font-nastaliq')) {
-        el.style.fontSize = `calc(${baseSize} * 1.08)`;
-      } else {
-        el.style.fontSize = baseSize;
-      }
-    });
+    const lvl = FONT_LEVELS[currentFontSizeLevel] || FONT_LEVELS[1];
+    const readerRoot = document.getElementById('surah-reader-page');
+    if (readerRoot) {
+      readerRoot.style.setProperty('--quran-font-scale', lvl.scale);
+      readerRoot.style.setProperty('--quran-trans-scale', lvl.trans);
+    }
+    const percentBadge = document.getElementById('font-size-percent');
+    if (percentBadge) {
+      percentBadge.textContent = getLang() === 'bn' ? lvl.label : lvl.percent;
+    }
   }
 
   function renderList() {
@@ -478,14 +494,13 @@ export async function bindSurahPageEvents(params) {
     'arabic-en': lang === 'bn' ? 'আরবি+ইংরেজি' : 'Arabic+EN',
     'arabic-only': lang === 'bn' ? 'শুধু আরবি' : 'Arabic only'
   };
-  const SIZE_LABELS = ['S', 'M', 'L', 'XL', 'XXL'];
-
   function updateSettingsSummary() {
     if (!rsSummary) return;
+    const lvl = FONT_LEVELS[currentFontSizeLevel] || FONT_LEVELS[1];
     const parts = [
       FONT_LABELS[currentFont] || currentFont,
       MODE_LABELS[currentDisplayMode] || currentDisplayMode,
-      SIZE_LABELS[currentFontSizeLevel] || 'M'
+      getLang() === 'bn' ? lvl.label : lvl.percent
     ];
     if (isTajweedEnabled) parts.push(lang === 'bn' ? 'তাজবীদ' : 'Tajweed');
     rsSummary.textContent = parts.join(' · ');
@@ -507,19 +522,6 @@ export async function bindSurahPageEvents(params) {
       rsToggle.dataset.rsBound = '1';
       rsToggle.addEventListener('click', () => setSettingsOpen(rsBody.hidden));
     }
-
-    // Collapse once reading resumes, so the panel never covers the ayahs.
-    let lastY = window.scrollY;
-    const collapseOnScroll = () => {
-      if (!document.body.contains(rsRoot)) {
-        window.removeEventListener('scroll', collapseOnScroll);
-        return;
-      }
-      const y = window.scrollY;
-      if (!rsBody.hidden && y > lastY + 40) setSettingsOpen(false);
-      lastY = y;
-    };
-    window.addEventListener('scroll', collapseOnScroll, { passive: true });
   }
 
   // Display mode switcher
@@ -558,14 +560,14 @@ export async function bindSurahPageEvents(params) {
     });
   }
 
-  // Font size adjustment
+  // Font size adjustment (GreenTech responsive scale)
   const fontDecBtn = document.getElementById('font-dec-btn');
   const fontResetBtn = document.getElementById('font-reset-btn');
   const fontIncBtn = document.getElementById('font-inc-btn');
 
   if (fontIncBtn) {
     fontIncBtn.addEventListener('click', () => {
-      if (currentFontSizeLevel < fontSizes.length - 1) {
+      if (currentFontSizeLevel < FONT_LEVELS.length - 1) {
         currentFontSizeLevel++;
         saveSettings({ quranFontSizeLevel: currentFontSizeLevel });
         updateSettingsSummary();
@@ -587,7 +589,7 @@ export async function bindSurahPageEvents(params) {
 
   if (fontResetBtn) {
     fontResetBtn.addEventListener('click', () => {
-      currentFontSizeLevel = 1;
+      currentFontSizeLevel = 1; // 100% standard baseline
       saveSettings({ quranFontSizeLevel: currentFontSizeLevel });
       updateSettingsSummary();
       applyFontSize();

@@ -22,18 +22,26 @@ export function isBookmarked(id) {
 export function toggleBookmark(item) {
   const list = getBookmarks();
   const index = list.findIndex(i => i.id === item.id);
+  let added = false;
   if (index > -1) {
     list.splice(index, 1);
     localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(list));
-    return false; // removed
+    added = false;
   } else {
     list.unshift({
       ...item,
       savedAt: new Date().toISOString()
     });
     localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(list));
-    return true; // added
+    added = true;
   }
+
+  // Dispatch event for UI updates (e.g. Header bookmark badge count)
+  window.dispatchEvent(new CustomEvent('eqra:bookmarks-updated', { 
+    detail: { count: list.length, added, item } 
+  }));
+
+  return added;
 }
 
 export function getSettings() {
@@ -108,6 +116,24 @@ export function saveSurahProgress(surahNum, ayahNum, totalAyahs = 0) {
   }
 }
 
+export function removeSurahProgress(surahNum) {
+  if (!surahNum) return false;
+  try {
+    const all = getAllProgress();
+    const num = String(surahNum);
+    if (all[num]) {
+      delete all[num];
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(all));
+      window.dispatchEvent(new CustomEvent('eqra:progress-updated', { detail: { surah: parseInt(surahNum, 10), removed: true } }));
+      return true;
+    }
+    return false;
+  } catch (e) {
+    console.warn('Failed to remove reading progress:', e);
+    return false;
+  }
+}
+
 export function getLastRead() {
   try {
     const raw = localStorage.getItem(LAST_READ_KEY);
@@ -121,4 +147,6 @@ export function getLastRead() {
     return null;
   }
 }
+
+
 
